@@ -1,14 +1,18 @@
 package br.com.transformers.ems.algashop.ordering.domain.validator;
 
-import br.com.transformers.ems.algashop.ordering.domain.entity.Customer;
-import br.com.transformers.ems.algashop.ordering.domain.exception.*;
-import br.com.transformers.ems.algashop.ordering.domain.valueobject.*;
-import br.com.transformers.ems.algashop.ordering.domain.valueobject.BirthDate;
+import java.time.LocalDate;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
+import br.com.transformers.ems.algashop.ordering.domain.exception.BirthDateException;
+import br.com.transformers.ems.algashop.ordering.domain.exception.EmailException;
+import br.com.transformers.ems.algashop.ordering.domain.exception.FullNameException;
+import br.com.transformers.ems.algashop.ordering.domain.exception.ZipCodeException;
+import br.com.transformers.ems.algashop.ordering.domain.valueobject.BirthDate;
+import br.com.transformers.ems.algashop.ordering.domain.valueobject.Email;
+import br.com.transformers.ems.algashop.ordering.domain.valueobject.FullName;
+import br.com.transformers.ems.algashop.ordering.domain.valueobject.ZipCode;
 
 public class ValidatorsTest {
 

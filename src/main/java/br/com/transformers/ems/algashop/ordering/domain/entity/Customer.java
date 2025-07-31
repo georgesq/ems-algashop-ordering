@@ -4,6 +4,7 @@ import br.com.transformers.ems.algashop.ordering.domain.exception.CustomerArchiv
 import br.com.transformers.ems.algashop.ordering.domain.exception.RegisteredAtException;
 import br.com.transformers.ems.algashop.ordering.domain.validator.NotNullNonEmptyValidator;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.*;
+import br.com.transformers.ems.algashop.ordering.domain.valueobject.id.CustomerId;
 import lombok.Builder;
 
 import java.time.OffsetDateTime;
@@ -38,10 +39,10 @@ public class Customer {
 
     private static final NotNullNonEmptyValidator nnnev = NotNullNonEmptyValidator.getInstance();
 
-    @Builder(builderClassName = "NewSimpleCustomerBuild", builderMethodName = "newInstance")
+    @Builder(builderClassName = "NewSimpleCustomerBuild", builderMethodName = "draft")
     private static Customer createNewInstance(FullName fullName, BirthDate birthDate, Email email, Phone phone,
-                                       Document document, Boolean promotionNotificaficationsAllowed,
-                                       Address address) {
+            Document document, Boolean promotionNotificaficationsAllowed,
+            Address address) {
 
         return new Customer(
                 new CustomerId(),

@@ -1,11 +1,9 @@
 package br.com.transformers.ems.algashop.ordering.domain.validator;
 
-import br.com.transformers.ems.algashop.ordering.domain.valueobject.ZipCode;
+import java.util.Objects;
+
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-
-import java.time.LocalDate;
-import java.util.Objects;
 
 public class ZipCodeValidator implements ConstraintValidator<ZipCodeAnnotation, String> {
 
