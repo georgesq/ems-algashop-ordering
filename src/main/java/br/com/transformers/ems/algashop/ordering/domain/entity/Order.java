@@ -8,12 +8,11 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import br.com.transformers.ems.algashop.ordering.domain.exception.OrderCannotBeChangedException;
 import br.com.transformers.ems.algashop.ordering.domain.exception.OrderCannotBePlacedException;
 import br.com.transformers.ems.algashop.ordering.domain.exception.OrderCannotChangeItemException;
-import br.com.transformers.ems.algashop.ordering.domain.exception.OrderCannotBeChangedException;
 import br.com.transformers.ems.algashop.ordering.domain.exception.OrderItemNoFoundException;
 import br.com.transformers.ems.algashop.ordering.domain.exception.PaidException;
-import br.com.transformers.ems.algashop.ordering.domain.exception.ReadyException;
 import br.com.transformers.ems.algashop.ordering.domain.exception.UnavailableProductException;
 import br.com.transformers.ems.algashop.ordering.domain.validator.NotNullNonEmptyValidator;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.Billing;
@@ -182,7 +181,12 @@ public class Order {
 
         Objects.requireNonNull(newStatus);
 
+        if (this.status().cannotChangeTo(newStatus)) {
+            throw new OrderCannotBeChangedException(this.id(), this.status(), newStatus);
+        }
+
         this.setStatus(newStatus);
+
     }
 
     private void verifyIfChangeable() {
@@ -231,20 +235,25 @@ public class Order {
     }
 
     public void markAsPaid() {
-        if (isPaid()) {
-            throw new PaidException();
+
+        if (this.status().cannotChangeTo(OrderStatus.PAID) || this.isPaid()) {
+            throw new OrderCannotBeChangedException(this.id(), this.status(), OrderStatus.PAID);
         }
 
         this.setPaidAt(OffsetDateTime.now());
         this.changeStatus(OrderStatus.PAID);
+
     }
 
     public void markAsReady() {
-        if (this.isReady()) {
-            throw new ReadyException();
+
+        if (this.status().cannotChangeTo(OrderStatus.READY) || this.isReady()) {
+            throw new OrderCannotBeChangedException(this.id(), this.status(), OrderStatus.READY);
         }
 
-        this.setPaidAt(OffsetDateTime.now());
+        this.setReadAt(OffsetDateTime.now());
+        this.changeStatus(OrderStatus.READY);
+
     }
 
     public boolean isCanceled() {

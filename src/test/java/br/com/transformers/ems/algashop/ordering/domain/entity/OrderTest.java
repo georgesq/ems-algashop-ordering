@@ -233,5 +233,4 @@ public class OrderTest {
             .isThrownBy(() ->order.changeShipping(ShippingTestDataBuilder.aShipping().build()));
     }
 
-
 }
