@@ -22,7 +22,7 @@ public enum OrderStatus {
 
     }
 
-    public boolean canotChangeTo(OrderStatus newStatus) {
+    public boolean cannotChangeTo(OrderStatus newStatus) {
 
         return !canChangeTo(newStatus);
 

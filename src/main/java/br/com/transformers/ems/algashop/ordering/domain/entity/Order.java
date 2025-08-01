@@ -83,6 +83,27 @@ public class Order {
 
     }
 
+    @Builder(builderClassName = "NewSimpleOrderBuild", builderMethodName = "draft")
+    public static Order draft(CustomerId customerId) {
+
+        return new Order(
+            new OrderId(), 
+            customerId, 
+            Money.ZERO, 
+            Quantity.ZERO, 
+            null,
+            null, 
+            null, 
+            null, 
+            null, 
+            null,
+            OrderStatus.DRAFT, 
+            null, 
+            new HashSet<OrderItem>()
+        );
+        
+    }
+
     private void setId(OrderId id) {
 
         if (!NNEV.isValid(id, null)) {
@@ -158,16 +179,22 @@ public class Order {
     }
 
     private void changeStatus(OrderStatus newStatus) {
-        Objects.requireNonNull(newStatus);
 
-        if (this.status().canotChangeTo(newStatus)) {
-            throw new OrderExceptionCannotBeChanged(this.id(), this.status(), newStatus);
-        }
+        Objects.requireNonNull(newStatus);
 
         this.setStatus(newStatus);
     }
 
+    private void verifyIfChangeable() {
+        if (!this.isDraft()) {
+            throw new OrderExceptionCannotBeChanged(this.id(), this.status(), OrderStatus.DRAFT);
+        }
+    }
+
     private void verifyIfCanChangeToPlace() {
+        if (this.isPlaced()) {
+            throw OrderCannotBePlacedException.noShipping(this.id());
+        }
         if (Objects.isNull(this.shipping())) {
             throw OrderCannotBePlacedException.noShipping(this.id());
         }
@@ -182,11 +209,11 @@ public class Order {
         }
     }
 
-    private OrderItem findOrderItem(OrderItemId orderItemId) {
+    public OrderItem findOrderItem(OrderItemId orderItemId) {
         return this.items().stream().filter(i -> i.id() == orderItemId).findFirst().orElseThrow(() -> new OrderItemNoFoundException(this.id()));
     }
 
-    private void verifyIfCanChangeItem(OrderItemId orderItemId, Quantity quantity) {
+    private void verifyRequireds(OrderItemId orderItemId, Quantity quantity) {
         if (Objects.isNull(orderItemId)) {
             OrderCannotChangeItemException.noOrderItemId(this.id);
         }
@@ -201,27 +228,6 @@ public class Order {
         if (product.checkOutOfStock()) {
             throw new UnavailableProductException(product.id());
         }
-    }
-
-    @Builder(builderClassName = "NewSimpleOrderBuild", builderMethodName = "draft")
-    public static Order draft(CustomerId customerId) {
-
-        return new Order(
-            new OrderId(), 
-            customerId, 
-            Money.ZERO, 
-            Quantity.ZERO, 
-            null,
-            null, 
-            null, 
-            null, 
-            null, 
-            null,
-            OrderStatus.DRAFT, 
-            null, 
-            new HashSet<OrderItem>()
-        );
-        
     }
 
     public void markAsPaid() {
@@ -312,6 +318,7 @@ public class Order {
     public void changeBilling(Billing billing) {
 
         Objects.requireNonNull(billing);
+        this.verifyIfChangeable();
 
         this.setBilling(billing);
 
@@ -320,6 +327,7 @@ public class Order {
     public void changeShipping(Shipping shipping) {
 
         Objects.requireNonNull(shipping);
+        this.verifyIfChangeable();
 
         this.setShipping(shipping);
 
@@ -327,7 +335,8 @@ public class Order {
 
     public void changeQuantity(OrderItemId orderItemId, Quantity quantity) {
 
-        this.verifyIfCanChangeItem(orderItemId, quantity);
+        this.verifyIfChangeable();
+        this.verifyRequireds(orderItemId, quantity);
 
         var orderItem = this.findOrderItem(orderItemId);
 
@@ -344,6 +353,7 @@ public class Order {
     public void changePaymentMethod(PaymentMethod paymentMethod) {
 
         Objects.requireNonNull(paymentMethod);
+        this.verifyIfChangeable();
         
         this.setPaymentMethod(paymentMethod);
 

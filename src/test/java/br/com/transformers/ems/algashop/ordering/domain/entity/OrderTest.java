@@ -11,6 +11,7 @@ import br.com.transformers.ems.algashop.ordering.domain.entity.databuilder.Order
 import br.com.transformers.ems.algashop.ordering.domain.entity.databuilder.ProductTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.entity.databuilder.ShippingTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.exception.InvalidShippingDateException;
+import br.com.transformers.ems.algashop.ordering.domain.exception.OrderCannotBePlacedException;
 import br.com.transformers.ems.algashop.ordering.domain.exception.OrderExceptionCannotBeChanged;
 import br.com.transformers.ems.algashop.ordering.domain.exception.UnavailableProductException;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.Document;
@@ -19,6 +20,7 @@ import br.com.transformers.ems.algashop.ordering.domain.valueobject.Phone;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.ProductName;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.Quantity;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.id.CustomerId;
+import br.com.transformers.ems.algashop.ordering.domain.valueobject.id.OrderItemId;
 
 public class OrderTest {
 
@@ -106,10 +108,11 @@ public class OrderTest {
     void testGivenPlaceOrderWhenCallPlaceThenException() {
 
         var order = OrderTestDataBuilder.anOrder()
-            .status(OrderStatus.PLACED)
             .build();
 
-        Assertions.assertThatExceptionOfType(OrderExceptionCannotBeChanged.class).isThrownBy(order::place);
+        order.place();
+
+        Assertions.assertThatExceptionOfType(OrderCannotBePlacedException.class).isThrownBy(order::place);
 
     }
 
@@ -198,7 +201,7 @@ public class OrderTest {
         order.changeQuantity(orderItemId, newQuantity);
 
         Assertions.assertWith(order, 
-            (o) -> Assertions.assertThat(o.items().iterator().next().quantity()).isEqualTo(newQuantity),
+            (o) -> Assertions.assertThat(o.findOrderItem(orderItemId).quantity()).isEqualTo(newQuantity),
             (o) -> Assertions.assertThat(o.totalItems()).isEqualTo(new Quantity(15))
         );
     }
@@ -211,4 +214,22 @@ public class OrderTest {
         Assertions.assertThatExceptionOfType(UnavailableProductException.class)
             .isThrownBy(() ->order.addItem(ProductTestDataBuilder.aUnavailableProduct().build(), new Quantity(1)));
     }
+
+    @Test
+    void testGivenOrderInNonDraftStatusWhenChangeOrderThenOrderExceptionCannotBeChanged() {
+        
+        var order = OrderTestDataBuilder.anOrder().build();
+
+        order.place();
+
+        Assertions.assertThatExceptionOfType(OrderExceptionCannotBeChanged.class)
+            .isThrownBy(() ->order.changeBilling(BillingTestDataBuilder.aBilling().build()));
+        Assertions.assertThatExceptionOfType(OrderExceptionCannotBeChanged.class)
+            .isThrownBy(() ->order.changePaymentMethod(PaymentMethod.CREDIT_CARD));
+        Assertions.assertThatExceptionOfType(OrderExceptionCannotBeChanged.class)
+            .isThrownBy(() ->order.changeQuantity(new OrderItemId(), new Quantity(15)));
+        Assertions.assertThatExceptionOfType(OrderExceptionCannotBeChanged.class)
+            .isThrownBy(() ->order.changeShipping(ShippingTestDataBuilder.aShipping().build()));
+    }
+
 }
