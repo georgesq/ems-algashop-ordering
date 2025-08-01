@@ -12,7 +12,6 @@ import br.com.transformers.ems.algashop.ordering.domain.exception.OrderCannotBeC
 import br.com.transformers.ems.algashop.ordering.domain.exception.OrderCannotBePlacedException;
 import br.com.transformers.ems.algashop.ordering.domain.exception.OrderCannotChangeItemException;
 import br.com.transformers.ems.algashop.ordering.domain.exception.OrderItemNoFoundException;
-import br.com.transformers.ems.algashop.ordering.domain.exception.PaidException;
 import br.com.transformers.ems.algashop.ordering.domain.exception.UnavailableProductException;
 import br.com.transformers.ems.algashop.ordering.domain.validator.NotNullNonEmptyValidator;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.Billing;
@@ -317,9 +316,9 @@ public class Order {
 
         BigDecimal shippingCost  = this.shipping().cost().value();
 
-        var totalAmount = totalItemsAmmount.add(shippingCost);
+        var totalAmmount = totalItemsAmmount.add(shippingCost);
 
-        this.setTotalAmount(new Money(totalAmount));
+        this.setTotalAmount(new Money(totalAmmount));
         this.setTotalItems(new Quantity(totalItemsQuantity));
 
     }
