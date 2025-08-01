@@ -198,7 +198,7 @@ public class Order {
     private void verifyProduct(Product product) {
         Objects.requireNonNull(product);
 
-        if (!product.inStock()) {
+        if (product.checkOutOfStock()) {
             throw new UnavailableProductException(product.id());
         }
     }

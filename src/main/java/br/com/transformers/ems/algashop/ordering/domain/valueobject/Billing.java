@@ -8,7 +8,8 @@ public record Billing(
         FullName fullName,
         Document document,
         Phone phone,
-        Address address
+        Address address,
+        Email email
 
 ) {
 
@@ -19,9 +20,10 @@ public record Billing(
             FullName fullName,
             Document document,
             Phone phone,
-            Address address) {
+            Address address,
+            Email email) {
 
-        if (!NNNEV.isValid(fullName, null) || !NNNEV.isValid(document, null) || !NNNEV.isValid(phone, null) || !NNNEV.isValid(address, null)) {
+        if (!NNNEV.isValid(fullName, null) || !NNNEV.isValid(document, null) || !NNNEV.isValid(phone, null) || !NNNEV.isValid(address, null) || !NNNEV.isValid(email, null)) {
             throw new IllegalArgumentException();
         }
 
@@ -29,6 +31,7 @@ public record Billing(
         this.document = document;
         this.phone = phone;
         this.address = address;
+        this.email = email;
     }
 
     @Override

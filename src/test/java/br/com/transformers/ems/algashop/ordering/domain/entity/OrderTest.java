@@ -6,16 +6,14 @@ import java.time.LocalDate;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import br.com.transformers.ems.algashop.ordering.domain.entity.databuilder.BillingTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.entity.databuilder.OrderTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.entity.databuilder.ProductTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.entity.databuilder.ShippingTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.exception.InvalidShippingDateException;
 import br.com.transformers.ems.algashop.ordering.domain.exception.OrderExceptionCannotBeChanged;
 import br.com.transformers.ems.algashop.ordering.domain.exception.UnavailableProductException;
-import br.com.transformers.ems.algashop.ordering.domain.valueobject.Address;
-import br.com.transformers.ems.algashop.ordering.domain.valueobject.Billing;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.Document;
-import br.com.transformers.ems.algashop.ordering.domain.valueobject.FullName;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.Money;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.Phone;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.ProductName;
@@ -150,20 +148,12 @@ public class OrderTest {
         var order = Order.draft(new CustomerId());
 
         order.changeBilling(
-            Billing.builder()
-                .document(new Document("doct"))
-                .fullName(new FullName("fn", "ln"))
-                .address(Address.builder()
-                    .city("Salvador")
-                    .build()
-                )
-                .phone(new Phone("phone"))
-            .build()
+            BillingTestDataBuilder.aBilling().build()
         );
 
         Assertions.assertWith(order,
             (o) -> Assertions.assertThat(o.billing().document()).isEqualTo(new Document("doct")),
-            (o) -> Assertions.assertThat(o.billing().address().city()).isEqualTo("Salvador"),
+            (o) -> Assertions.assertThat(o.billing().address().city()).isEqualTo("ssa"),
             (o) -> Assertions.assertThat(o.billing().phone()).isEqualTo(new Phone("phone"))
         );
 
@@ -209,7 +199,7 @@ public class OrderTest {
 
         Assertions.assertWith(order, 
             (o) -> Assertions.assertThat(o.items().iterator().next().quantity()).isEqualTo(newQuantity),
-            (o) -> Assertions.assertThat(o.totalItems()).isEqualTo(new Quantity(18))
+            (o) -> Assertions.assertThat(o.totalItems()).isEqualTo(new Quantity(15))
         );
     }
 
