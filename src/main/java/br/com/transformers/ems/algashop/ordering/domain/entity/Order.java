@@ -10,7 +10,7 @@ import java.util.Set;
 
 import br.com.transformers.ems.algashop.ordering.domain.exception.OrderCannotBePlacedException;
 import br.com.transformers.ems.algashop.ordering.domain.exception.OrderCannotChangeItemException;
-import br.com.transformers.ems.algashop.ordering.domain.exception.OrderExceptionCannotBeChanged;
+import br.com.transformers.ems.algashop.ordering.domain.exception.OrderCannotBeChangedException;
 import br.com.transformers.ems.algashop.ordering.domain.exception.OrderItemNoFoundException;
 import br.com.transformers.ems.algashop.ordering.domain.exception.PaidException;
 import br.com.transformers.ems.algashop.ordering.domain.exception.ReadyException;
@@ -187,7 +187,7 @@ public class Order {
 
     private void verifyIfChangeable() {
         if (!this.isDraft()) {
-            throw new OrderExceptionCannotBeChanged(this.id(), this.status(), OrderStatus.DRAFT);
+            throw new OrderCannotBeChangedException(this.id(), this.status(), OrderStatus.DRAFT);
         }
     }
 
@@ -347,6 +347,15 @@ public class Order {
     }
 
     public void removeItem(OrderItemId orderItemId) {
+        
+        verifyIfChangeable();
+        Objects.requireNonNull(orderItemId);
+
+        var orderItem = this.findOrderItem(orderItemId);
+
+        this.items.remove(orderItem);
+
+        this.recalculateTotals();
 
     }
 

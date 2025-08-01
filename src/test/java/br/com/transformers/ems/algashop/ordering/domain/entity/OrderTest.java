@@ -12,7 +12,7 @@ import br.com.transformers.ems.algashop.ordering.domain.entity.databuilder.Produ
 import br.com.transformers.ems.algashop.ordering.domain.entity.databuilder.ShippingTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.exception.InvalidShippingDateException;
 import br.com.transformers.ems.algashop.ordering.domain.exception.OrderCannotBePlacedException;
-import br.com.transformers.ems.algashop.ordering.domain.exception.OrderExceptionCannotBeChanged;
+import br.com.transformers.ems.algashop.ordering.domain.exception.OrderCannotBeChangedException;
 import br.com.transformers.ems.algashop.ordering.domain.exception.UnavailableProductException;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.Document;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.Money;
@@ -195,14 +195,15 @@ public class OrderTest {
         var order = OrderTestDataBuilder.anOrder()
             .build();
 
-        var orderItemId = order.items().iterator().next().id();
+        OrderItem orderItem = order.items().iterator().next();
+        var orderItemId = orderItem.id();
         var newQuantity = new Quantity(13);
 
         order.changeQuantity(orderItemId, newQuantity);
 
         Assertions.assertWith(order, 
             (o) -> Assertions.assertThat(o.findOrderItem(orderItemId).quantity()).isEqualTo(newQuantity),
-            (o) -> Assertions.assertThat(o.totalItems()).isEqualTo(new Quantity(15))
+            (o) -> Assertions.assertThat(o.totalItems()).isEqualTo(new Quantity(order.totalItems().value() + newQuantity.value() - orderItem.quantity().value()))
         );
     }
 
@@ -222,14 +223,57 @@ public class OrderTest {
 
         order.place();
 
-        Assertions.assertThatExceptionOfType(OrderExceptionCannotBeChanged.class)
+        Assertions.assertThatExceptionOfType(OrderCannotBeChangedException.class)
             .isThrownBy(() ->order.changeBilling(BillingTestDataBuilder.aBilling().build()));
-        Assertions.assertThatExceptionOfType(OrderExceptionCannotBeChanged.class)
+        Assertions.assertThatExceptionOfType(OrderCannotBeChangedException.class)
             .isThrownBy(() ->order.changePaymentMethod(PaymentMethod.CREDIT_CARD));
-        Assertions.assertThatExceptionOfType(OrderExceptionCannotBeChanged.class)
+        Assertions.assertThatExceptionOfType(OrderCannotBeChangedException.class)
             .isThrownBy(() ->order.changeQuantity(new OrderItemId(), new Quantity(15)));
-        Assertions.assertThatExceptionOfType(OrderExceptionCannotBeChanged.class)
+        Assertions.assertThatExceptionOfType(OrderCannotBeChangedException.class)
             .isThrownBy(() ->order.changeShipping(ShippingTestDataBuilder.aShipping().build()));
+    }
+
+    @Test
+    void testGivenDraftOrderWhenRemoveItemThenItemRemovedAndTotalsUpdated() {
+        var order = OrderTestDataBuilder.anOrder().build();
+        var initialTotalItems = order.totalItems();
+        var initialTotalAmount = order.totalAmount();
+
+        OrderItem orderItem = order.items().iterator().next();
+        var orderItemId = orderItem.id();
+
+        order.removeItem(orderItemId);
+
+        Assertions.assertThat(order.items().stream().anyMatch(i -> i.id().equals(orderItemId))).isFalse();
+        Assertions.assertThat(order.totalItems()).isEqualTo(new Quantity(initialTotalItems.value() - orderItem.quantity().value()));
+        Assertions.assertThat(order.totalAmount()).isEqualTo(new Money(initialTotalAmount.value().subtract(orderItem.totalAmmount().value())));
+    }
+
+    @Test
+    void testGivenNonDraftOrderWhenRemoveItemThenExceptionThrown() {
+        var order = OrderTestDataBuilder.anOrder().build();
+        order.place();
+        var orderItemId = order.items().iterator().next().id();
+
+        Assertions.assertThatExceptionOfType(OrderCannotBeChangedException.class)
+            .isThrownBy(() -> order.removeItem(orderItemId));
+    }
+
+    @Test
+    void testGivenNullOrderItemIdWhenRemoveItemThenExceptionThrown() {
+        var order = OrderTestDataBuilder.anOrder().build();
+
+        Assertions.assertThatExceptionOfType(NullPointerException.class)
+            .isThrownBy(() -> order.removeItem(null));
+    }
+
+    @Test
+    void testGivenNonExistingOrderItemIdWhenRemoveItemThenExceptionThrown() {
+        var order = OrderTestDataBuilder.anOrder().build();
+        var nonExistingId = new OrderItemId();
+
+        Assertions.assertThatExceptionOfType(br.com.transformers.ems.algashop.ordering.domain.exception.OrderItemNoFoundException.class)
+            .isThrownBy(() -> order.removeItem(nonExistingId));
     }
 
 }
