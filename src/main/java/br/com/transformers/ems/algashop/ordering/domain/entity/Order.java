@@ -377,6 +377,16 @@ public class Order {
 
     }
 
+    public void cancel() {
+
+        if (this.status().cannotChangeTo(OrderStatus.CANCELED)) {
+            throw new OrderCannotBeChangedException(this.id(), this.status(), OrderStatus.CANCELED);
+        }
+
+        this.markAsCancel();
+
+    }
+
     public OrderId id() {
         return id;
     }

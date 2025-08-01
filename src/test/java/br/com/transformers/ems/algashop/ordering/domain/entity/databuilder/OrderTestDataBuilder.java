@@ -13,7 +13,6 @@ import br.com.transformers.ems.algashop.ordering.domain.valueobject.Email;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.FullName;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.Money;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.Phone;
-import br.com.transformers.ems.algashop.ordering.domain.valueobject.Product;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.Quantity;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.Shipping;
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.ZipCode;
@@ -77,6 +76,12 @@ public class OrderTestDataBuilder {
     public static OrderTestDataBuilder anPaidOrder() {
         return anOrder()
             .status(OrderStatus.PAID)
+            ;
+    }
+
+    public static OrderTestDataBuilder anCanCancelOrder() {
+        return anOrder()
+            .status(OrderStatus.READY)
             ;
     }
 
