@@ -3,6 +3,7 @@ package br.com.transformers.ems.algashop.ordering.domain.entity;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import br.com.transformers.ems.algashop.ordering.domain.valueobject.Money;
@@ -68,7 +69,7 @@ public class ShoppingCart {
         shoppingCart.setTotalAmount(Money.ZERO);
         shoppingCart.setTotalItems(Quantity.ZERO);
         shoppingCart.setCreatedAt(OffsetDateTime.now());
-        shoppingCart.setItems(Set.of());
+        shoppingCart.setItems(new HashSet<>());
 
         return shoppingCart;
         
@@ -84,7 +85,7 @@ public class ShoppingCart {
     public void removeItem(ShoppingCartItemId id) {
 
         if (!isEmpty()) {
-            this.items().remove(this.findItem(id));
+            this.items.remove(this.findItem(id));
             this.recalculateTotals();
         }
         
@@ -93,7 +94,7 @@ public class ShoppingCart {
     public void addItem(Product product, Quantity quantity) {
         
         ShoppingCartItem item = ShoppingCartItem.brandNew(this.id(), product, quantity);
-     
+
         this.items.add(item);
      
         this.recalculateTotals();
@@ -128,11 +129,12 @@ public class ShoppingCart {
 
     }
 
-    public void changeItem(ShoppingCartItemId id, Quantity quantity) {
+    public void changeItem(ShoppingCartItemId id, Quantity quantity, Boolean available) {
 
         ShoppingCartItem item = this.findItem(id);
 
         item.changeQuantity(quantity);
+        item.changeAvaliable(available);
 
         this.recalculateTotals();
 
@@ -141,7 +143,7 @@ public class ShoppingCart {
     public boolean containsUnavailableItems() {
 
         return this.items.stream()
-                .anyMatch(item -> item.available());
+                .anyMatch(item -> !item.available());
 
     }
 

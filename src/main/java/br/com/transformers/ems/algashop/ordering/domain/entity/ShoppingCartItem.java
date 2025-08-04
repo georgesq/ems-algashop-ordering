@@ -30,8 +30,8 @@ public class ShoppingCartItem {
     private Boolean available;
 
     @Builder(builderClassName = "ExistingShoppingCartBuilder", builderMethodName = "existing")
-    public ShoppingCartItem(ShoppingCartItemId shoppingCartItemId, ShoppingCartId shoppingCartId,
-            ProductId productId, ProductName name, Money value, Quantity quantity, Money money) {
+    public ShoppingCartItem(ShoppingCartItemId id, ShoppingCartId shoppingCartId,
+            ProductId productId, ProductName productName, Money price, Quantity quantity, Money totalAmmount, Boolean available) {
 
         this.setId(id);
         this.setShoppingCartId(shoppingCartId);
@@ -39,7 +39,9 @@ public class ShoppingCartItem {
         this.setProductName(productName);
         this.setPrice(price);
         this.setQuantity(quantity);
+        this.setAvailable(true);
         this.setTotalAmmount(totalAmmount);
+        this.setAvailable(available);
 
     }
 
@@ -57,7 +59,8 @@ public class ShoppingCartItem {
             product.name(),
             product.value(),
             quantity,
-            recalculate(product, quantity)
+            recalculate(product.value(), quantity),
+            product.inStock()
         );
 
     }
@@ -72,7 +75,7 @@ public class ShoppingCartItem {
         this.setPrice(product.value());
         this.setAvailable(product.inStock());
 
-        recalculate(product, this.quantity());
+        recalculate(this.price, this.quantity());
     }
 
     protected void changeQuantity(Quantity quantity) {
@@ -81,6 +84,8 @@ public class ShoppingCartItem {
         }
         
         this.quantity = quantity;
+
+        this.setTotalAmmount(recalculate(this.price, this.quantity()));
 
     }
 
@@ -181,8 +186,12 @@ public class ShoppingCartItem {
         return this;
     }
 
-    private static Money recalculate(Product product, Quantity quantity) {
-        return new Money(new BigDecimal(quantity.value()).multiply(product.value().value()));
+    private static Money recalculate(Money productValue, Quantity quantity) {
+        return new Money(new BigDecimal(quantity.value()).multiply(productValue.value()));
+    }
+
+    public void changeAvaliable(Boolean available) {
+        this.setAvailable(available);
     }
 
 }
