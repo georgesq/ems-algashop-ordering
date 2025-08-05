@@ -1,17 +1,22 @@
 package br.com.transformers.ems.algashop.ordering.domain.model.entity;
 
+import java.time.OffsetDateTime;
+import java.util.Objects;
+
 import br.com.transformers.ems.algashop.ordering.domain.model.exception.CustomerArchivedException;
 import br.com.transformers.ems.algashop.ordering.domain.model.exception.RegisteredAtException;
 import br.com.transformers.ems.algashop.ordering.domain.model.validator.NotNullNonEmptyValidator;
-import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.*;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Address;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.BirthDate;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Document;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Email;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.FullName;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.LoyaltPoints;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Phone;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import lombok.Builder;
 
-import java.time.OffsetDateTime;
-import java.util.Objects;
-import java.util.UUID;
-
-public class Customer {
+public class Customer implements AggregateRoot<CustomerId> {
 
     private CustomerId id;
 
@@ -128,8 +133,8 @@ public class Customer {
         this.phone = value;
     }
 
-    public UUID id() {
-        return id.value();
+    public CustomerId id() {
+        return id;
     }
 
     public FullName fullName() {

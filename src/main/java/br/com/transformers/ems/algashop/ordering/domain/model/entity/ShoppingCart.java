@@ -13,7 +13,7 @@ import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.Cus
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.ShoppingCartId;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.ShoppingCartItemId;
 
-public class ShoppingCart {
+public class ShoppingCart implements AggregateRoot<ShoppingCartId> {
 
     private ShoppingCartId id;
     private CustomerId customerId;

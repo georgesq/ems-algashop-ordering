@@ -25,7 +25,7 @@ import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.Ord
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.ProductId;
 import lombok.Builder;
 
-public class Order {
+public class Order implements AggregateRoot<OrderId> {
 
     private static final NotNullNonEmptyValidator NNEV = NotNullNonEmptyValidator.getInstance();
 
