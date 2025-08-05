@@ -9,8 +9,6 @@ import java.time.OffsetDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import br.com.transformers.ems.algashop.ordering.domain.model.entity.ShoppingCart;
-import br.com.transformers.ems.algashop.ordering.domain.model.entity.ShoppingCartItem;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.ProductTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Money;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Product;

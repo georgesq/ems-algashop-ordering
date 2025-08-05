@@ -3,7 +3,6 @@ package br.com.transformers.ems.algashop.ordering.domain.model.entity;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderStatus;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.OrderTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.model.exception.OrderCannotBeChangedException;
 

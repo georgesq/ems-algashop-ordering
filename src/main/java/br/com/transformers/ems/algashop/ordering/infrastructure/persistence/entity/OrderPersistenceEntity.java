@@ -4,7 +4,13 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -15,8 +21,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
-
 @Entity
 @Table(name = "\"order\"")
 @Getter
@@ -26,6 +30,7 @@ import lombok.ToString;
 @Builder
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"})
+@EntityListeners(AuditingEntityListener.class)
 public class OrderPersistenceEntity {
 
     @Id
@@ -49,4 +54,12 @@ public class OrderPersistenceEntity {
     private String paymentMethod;
     
     // private Set<OrderItem> items;
+
+    @CreatedBy
+    private UUID createdByUser;
+    @LastModifiedDate
+    private OffsetDateTime lastModifiedAt;
+    @LastModifiedBy
+    private UUID lastModifiedByUser;
+
 }

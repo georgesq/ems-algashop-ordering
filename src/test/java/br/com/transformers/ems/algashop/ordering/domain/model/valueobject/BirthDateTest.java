@@ -1,11 +1,9 @@
 package br.com.transformers.ems.algashop.ordering.domain.model.valueobject;
 
+import java.time.LocalDate;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.BirthDate;
-
-import java.time.LocalDate;
 
 class BirthDateTest {
 

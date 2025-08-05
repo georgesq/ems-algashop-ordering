@@ -1,12 +1,11 @@
 package br.com.transformers.ems.algashop.ordering.domain.model.entity;
 
-import br.com.transformers.ems.algashop.ordering.domain.model.exception.OrderItemNoFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderItem;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.OrderTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.model.exception.OrderCannotBeChangedException;
+import br.com.transformers.ems.algashop.ordering.domain.model.exception.OrderItemNoFoundException;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Money;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Quantity;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.OrderItemId;

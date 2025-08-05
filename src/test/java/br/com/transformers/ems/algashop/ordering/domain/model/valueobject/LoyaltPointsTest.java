@@ -1,10 +1,9 @@
 package br.com.transformers.ems.algashop.ordering.domain.model.valueobject;
 
-import br.com.transformers.ems.algashop.ordering.domain.model.exception.LoyaltyPointException;
-import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.LoyaltPoints;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import br.com.transformers.ems.algashop.ordering.domain.model.exception.LoyaltyPointException;
 
 class LoyaltPointsTest {
 

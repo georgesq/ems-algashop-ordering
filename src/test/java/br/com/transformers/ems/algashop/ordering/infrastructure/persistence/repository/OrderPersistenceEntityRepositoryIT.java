@@ -13,13 +13,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderStatus;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.PaymentMethod;
 import br.com.transformers.ems.algashop.ordering.domain.model.utility.IdGenerator;
+import br.com.transformers.ems.algashop.ordering.infrastructure.config.SpringDataAuditingConfig;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 
 @DataJpaTest
+@Import(SpringDataAuditingConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class OrderPersistenceEntityRepositoryIT {
 
@@ -50,6 +53,20 @@ class OrderPersistenceEntityRepositoryIT {
         OrderPersistenceEntity saved = repository.save(order);
 
         Assertions.assertThat(repository.existsById(saved.getId())).isTrue();
+
+    }
+
+    @Test
+    @DisplayName("should save and retrieve an order, auditing fields should be populated")
+    void auditingOK() {
+
+        OrderPersistenceEntity saved = repository.save(order);
+
+        Assertions.assertWith(saved,
+            o -> assertThat(o.getCreatedByUser()).isNotNull(),
+            o -> assertThat(o.getLastModifiedByUser()).isNotNull(),
+            o -> assertThat(o.getLastModifiedAt()).isNotNull()
+        );
 
     }
 

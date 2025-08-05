@@ -7,7 +7,6 @@ import br.com.transformers.ems.algashop.ordering.domain.model.entity.PaymentMeth
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.BillingTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.ProductTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.ShippingTestDataBuilder;
-import br.com.transformers.ems.algashop.ordering.domain.model.factory.OrderFactory;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Billing;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Product;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Quantity;

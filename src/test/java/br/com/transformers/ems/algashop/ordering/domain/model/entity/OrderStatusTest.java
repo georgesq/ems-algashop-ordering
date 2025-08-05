@@ -3,8 +3,6 @@ package br.com.transformers.ems.algashop.ordering.domain.model.entity;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderStatus;
-
 public class OrderStatusTest {
 
     @Test

@@ -6,10 +6,6 @@ import java.time.LocalDate;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
-import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderItem;
-import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderStatus;
-import br.com.transformers.ems.algashop.ordering.domain.model.entity.PaymentMethod;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.BillingTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.OrderTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.ProductTestDataBuilder;
