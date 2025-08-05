@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
+import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderStatus;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.OrderTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.assembler.OrderPersistenceEntityAssembler;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
@@ -49,8 +50,30 @@ class OrdersIT {
             s -> Assertions.assertThat(s.placedAt()).isEqualTo(order.placedAt()),
             s -> Assertions.assertThat(s.paidAt()).isEqualTo(order.paidAt()),
             s -> Assertions.assertThat(s.readAt()).isEqualTo(order.readAt())
-            // ,
-            // s -> Assertions.assertThat(s.items()).hasSize(order.items().size())
+        );
+
+    }
+
+    @Test
+    @DisplayName("should update an existing order")
+    void updateOrder() {
+
+        Order order = OrderTestDataBuilder.anOrder()
+            .status(OrderStatus.PLACED)
+        .build();
+
+        orders.add(order);
+        order = orders.ofId(order.id()).orElseThrow();
+
+        order.markAsPaid();
+
+        orders.add(order);
+        order = orders.ofId(order.id()).orElseThrow();
+
+        System.out.println(order);
+
+        Assertions.assertThat(order).satisfies(
+            s -> Assertions.assertThat(s.isPaid()).isTrue()
         );
 
     }

@@ -9,6 +9,7 @@ import br.com.transformers.ems.algashop.ordering.domain.model.repository.Orders;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.OrderId;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.assembler.OrderPersistenceEntityAssembler;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.repository.OrderPersistenceEntityRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -37,10 +38,32 @@ public class OrdersPersistenceProvider implements Orders {
 
     @Override
     public void add(Order aggregateRoot) {
+        long orderId = aggregateRoot.id().value().toLong();
 
-        var orderPersistenceEntity = this.assembler.fromDomain(aggregateRoot);
+        this.repository.findById(orderId).ifPresentOrElse(
+            (pe) -> {
+                update(aggregateRoot, pe);
+            }, 
+            () -> {
+                insert(aggregateRoot);
+            }
+        );
 
-        this.repository.saveAndFlush(orderPersistenceEntity);
+    }
+
+    private void update(Order aggregateRoot, OrderPersistenceEntity persistenceEntity) {
+
+        OrderPersistenceEntity merged = assembler.merge(persistenceEntity, aggregateRoot);
+
+        this.repository.saveAndFlush(merged);
+
+    }
+
+    private void insert(Order aggregateRoot) {
+
+        OrderPersistenceEntity persistenceEntity = assembler.fromDomain(aggregateRoot);
+
+        this.repository.saveAndFlush(persistenceEntity);
 
     }
 
