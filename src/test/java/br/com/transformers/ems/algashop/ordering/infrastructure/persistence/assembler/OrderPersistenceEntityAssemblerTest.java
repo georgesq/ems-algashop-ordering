@@ -1,0 +1,42 @@
+package br.com.transformers.ems.algashop.ordering.infrastructure.persistence.assembler;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
+import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.OrderTestDataBuilder;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
+
+class OrderPersistenceEntityAssemblerTest {
+
+    private OrderPersistenceEntityAssembler assembler;
+
+    @BeforeEach
+    void setUp() {
+        assembler = new OrderPersistenceEntityAssembler();
+    }
+
+    @Test
+    void fromDomain_shouldMapAllFields() {
+
+        Order order = OrderTestDataBuilder.anOrder().build();
+
+        OrderPersistenceEntity entity = assembler.fromDomain(order);
+
+        assertThat(entity.getId()).isEqualTo(order.id().value().toLong());
+        assertThat(entity.getCustomerId()).isEqualTo(order.customerId().value());
+        assertThat(entity.getTotalAmount()).isEqualTo(order.totalAmount().value());
+        assertThat(entity.getTotalItems()).isEqualTo(order.totalItems().value());
+        assertThat(entity.getCreatedAt()).isEqualTo(order.createdAt());
+        assertThat(entity.getPlacedAt()).isEqualTo(order.placedAt());
+        assertThat(entity.getPaidAt()).isEqualTo(order.paidAt());
+        assertThat(entity.getCanceledAt()).isEqualTo(order.canceledAt());
+        assertThat(entity.getReadAt()).isEqualTo(order.readAt());
+        assertThat(entity.getStatus()).isEqualTo(order.status().toString());
+        assertThat(entity.getPaymentMethod()).isEqualTo(order.paymentMethod().toString());
+
+    }
+
+}

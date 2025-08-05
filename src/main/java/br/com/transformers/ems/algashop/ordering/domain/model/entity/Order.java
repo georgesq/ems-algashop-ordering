@@ -35,6 +35,7 @@ public class Order implements AggregateRoot<OrderId> {
     private Money totalAmount;
     private Quantity totalItems;
     
+    private OffsetDateTime createdAt;
     private OffsetDateTime placedAt;
     private OffsetDateTime paidAt;
     private OffsetDateTime canceledAt;
@@ -54,6 +55,7 @@ public class Order implements AggregateRoot<OrderId> {
         CustomerId customerId,
         Money totalAmount, 
         Quantity totalItems, 
+        OffsetDateTime createdAt,
         OffsetDateTime placedAt,
         OffsetDateTime paidAt, 
         OffsetDateTime canceledAt, 
@@ -68,6 +70,7 @@ public class Order implements AggregateRoot<OrderId> {
         this.setCustomerId(customerId);
         this.setTotalAmount(totalAmount);
         this.setTotalItems(totalItems);
+        this.setCreatedAt(createdAt);
         this.setPlacedAt(placedAt);
         this.setPaidAt(paidAt);
         this.setCanceledAt(canceledAt);
@@ -95,11 +98,16 @@ public class Order implements AggregateRoot<OrderId> {
             null, 
             null, 
             null,
+            null,
             OrderStatus.DRAFT, 
             null, 
             new HashSet<OrderItem>()
         );
         
+    }
+
+    private void setCreatedAt(OffsetDateTime now) {
+        this.createdAt = now;
     }
 
     private void setId(OrderId id) {
@@ -400,6 +408,10 @@ public class Order implements AggregateRoot<OrderId> {
 
     public Quantity totalItems() {
         return totalItems;
+    }
+
+    public OffsetDateTime createdAt() {
+        return createdAt;
     }
 
     public OffsetDateTime placedAt() {
