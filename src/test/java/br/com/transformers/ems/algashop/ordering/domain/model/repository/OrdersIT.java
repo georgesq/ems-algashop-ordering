@@ -1,13 +1,12 @@
 package br.com.transformers.ems.algashop.ordering.domain.model.repository;
 
-import java.util.Optional;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderStatus;
@@ -35,11 +34,7 @@ class OrdersIT {
 
         orders.add(order);
 
-        Optional<Order> possibleOrder = orders.ofId(order.id());
-
-        Assertions.assertThat(possibleOrder).isPresent();
-
-        var savedOrder = possibleOrder.get();
+        var savedOrder = orders.ofId(order.id()).orElseThrow();
 
         Assertions.assertThat(savedOrder).satisfies(
             s -> Assertions.assertThat(s.id()).isEqualTo(order.id()),
@@ -78,4 +73,31 @@ class OrdersIT {
 
     }
 
+    @Test
+    @DisplayName("should concurrent update then error")
+    void shouldConcurrentUpdateThenThrow() {
+
+        Order order = OrderTestDataBuilder.anOrder()
+            .status(OrderStatus.PLACED)
+        .build();
+
+        orders.add(order);
+
+        var savedOrder = orders.ofId(order.id()).orElseThrow();
+        var savedOrder2 = orders.ofId(order.id()).orElseThrow();
+
+        savedOrder.markAsPaid();
+        orders.add(savedOrder);
+        savedOrder2.cancel();
+
+        Assertions.assertThatExceptionOfType(ObjectOptimisticLockingFailureException.class)
+            .isThrownBy(() -> orders.add(savedOrder2));
+
+        savedOrder = orders.ofId(order.id()).orElseThrow();
+
+        Assertions.assertThat(savedOrder).satisfies(
+            s -> Assertions.assertThat(s.isCanceled()).isFalse(),
+            s -> Assertions.assertThat(s.isPaid()).isTrue()
+        );
+    }
 }

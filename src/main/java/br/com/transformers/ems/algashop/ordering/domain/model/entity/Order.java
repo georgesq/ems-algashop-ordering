@@ -49,6 +49,8 @@ public class Order implements AggregateRoot<OrderId> {
     
     private Set<OrderItem> items;
 
+    private Long version;
+
     @Builder(builderClassName = "ExistingOrderBuilder", builderMethodName = "existing")    
     public Order(
         OrderId id, 
@@ -64,7 +66,8 @@ public class Order implements AggregateRoot<OrderId> {
         Shipping shipping, 
         OrderStatus status, 
         PaymentMethod paymentMethod,
-        Set<OrderItem> items) {
+        Set<OrderItem> items,
+        Long version) {
 
         this.setId(id);
         this.setCustomerId(customerId);
@@ -81,6 +84,7 @@ public class Order implements AggregateRoot<OrderId> {
         this.setPaymentMethod(paymentMethod);
         this.setShipping(shipping);
         this.setItems(items);
+        this.setVersion(version);
 
     }
 
@@ -101,9 +105,14 @@ public class Order implements AggregateRoot<OrderId> {
             null,
             OrderStatus.DRAFT, 
             null, 
-            new HashSet<OrderItem>()
+            new HashSet<OrderItem>(),
+            null
         );
         
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
     private void setCreatedAt(OffsetDateTime now) {
@@ -239,6 +248,10 @@ public class Order implements AggregateRoot<OrderId> {
         if (product.checkOutOfStock()) {
             throw new UnavailableProductException(product.id());
         }
+    }
+
+    public Long version() {
+        return version;
     }
 
     public void markAsPaid() {

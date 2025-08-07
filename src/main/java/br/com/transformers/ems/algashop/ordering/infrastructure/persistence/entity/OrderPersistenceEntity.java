@@ -13,6 +13,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -61,5 +62,8 @@ public class OrderPersistenceEntity {
     private OffsetDateTime lastModifiedAt;
     @LastModifiedBy
     private UUID lastModifiedByUser;
+
+    @Version
+    private Long version;
 
 }

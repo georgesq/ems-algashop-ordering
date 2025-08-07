@@ -31,6 +31,7 @@ public class OrderPersistenceEntityDisassembler {
             .status(OrderStatus.valueOf(persistenceEntity.getStatus()))
             .paymentMethod(PaymentMethod.valueOf(persistenceEntity.getPaymentMethod()))
             .items(Collections.emptySet())
+            .version(persistenceEntity.getVersion())
         .build();
 
     }

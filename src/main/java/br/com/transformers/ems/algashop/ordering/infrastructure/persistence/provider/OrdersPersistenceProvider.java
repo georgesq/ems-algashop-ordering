@@ -11,6 +11,7 @@ import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.asse
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.repository.OrderPersistenceEntityRepository;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -20,6 +21,7 @@ public class OrdersPersistenceProvider implements Orders {
     private final OrderPersistenceEntityRepository repository;
     private final OrderPersistenceEntityAssembler assembler;
     private final OrderPersistenceEntityDisassembler disassembler;
+    private final EntityManager entityManager;
 
     @Override
     public Optional<Order> ofId(OrderId id) {
@@ -32,8 +34,7 @@ public class OrdersPersistenceProvider implements Orders {
 
     @Override
     public Boolean exists(OrderId id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'exists'");
+        return this.repository.existsById(id.value().toLong());
     }
 
     @Override
@@ -55,7 +56,11 @@ public class OrdersPersistenceProvider implements Orders {
 
         OrderPersistenceEntity merged = assembler.merge(persistenceEntity, aggregateRoot);
 
-        this.repository.saveAndFlush(merged);
+        this.entityManager.detach(persistenceEntity);
+
+        persistenceEntity = this.repository.saveAndFlush(merged);
+
+        aggregateRoot.setVersion(persistenceEntity.getVersion());
 
     }
 
@@ -64,6 +69,8 @@ public class OrdersPersistenceProvider implements Orders {
         OrderPersistenceEntity persistenceEntity = assembler.fromDomain(aggregateRoot);
 
         this.repository.saveAndFlush(persistenceEntity);
+
+        aggregateRoot.setVersion(persistenceEntity.getVersion());
 
     }
 

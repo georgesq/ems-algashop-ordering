@@ -25,6 +25,7 @@ public class OrderPersistenceEntityAssembler {
         orderPersistenceEntity.setReadAt(order.readAt());
         orderPersistenceEntity.setStatus(order.status().toString());
         orderPersistenceEntity.setPaymentMethod(order.paymentMethod().toString());
+        orderPersistenceEntity.setVersion(order.version());
 
         return orderPersistenceEntity;
 
