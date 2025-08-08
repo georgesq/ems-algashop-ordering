@@ -1,8 +1,11 @@
 package br.com.transformers.ems.algashop.ordering.infrastructure.persistence.provider;
 
+import java.lang.reflect.Field;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
 import br.com.transformers.ems.algashop.ordering.domain.model.repository.Orders;
@@ -39,6 +42,7 @@ public class OrdersPersistenceProvider implements Orders {
 
     @Override
     public void add(Order aggregateRoot) {
+
         long orderId = aggregateRoot.id().value().toLong();
 
         this.repository.findById(orderId).ifPresentOrElse(
@@ -60,7 +64,7 @@ public class OrdersPersistenceProvider implements Orders {
 
         persistenceEntity = this.repository.saveAndFlush(merged);
 
-        aggregateRoot.setVersion(persistenceEntity.getVersion());
+        updateVersion(aggregateRoot, persistenceEntity);
 
     }
 
@@ -70,14 +74,26 @@ public class OrdersPersistenceProvider implements Orders {
 
         this.repository.saveAndFlush(persistenceEntity);
 
-        aggregateRoot.setVersion(persistenceEntity.getVersion());
+        updateVersion(aggregateRoot, persistenceEntity);
 
     }
 
+    private void updateVersion(Order aggregateRoot, OrderPersistenceEntity persistenceEntity) {
+
+        Field field = ReflectionUtils.findField(aggregateRoot.getClass(), "version");;
+        Objects.requireNonNull(field);
+        field.setAccessible(true);
+
+        ReflectionUtils.setField(field, aggregateRoot, persistenceEntity.getVersion());
+
+        field.setAccessible(false);
+        
+    }
+
+
     @Override
-    public int count() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'count'");
+    public Long count() {
+        return this.repository.count();
     }
 
 }
