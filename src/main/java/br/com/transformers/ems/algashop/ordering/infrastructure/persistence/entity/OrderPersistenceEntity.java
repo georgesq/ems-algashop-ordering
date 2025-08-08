@@ -9,6 +9,9 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.embeddeble.BillingEmbeddable;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.embeddeble.ShippingEmbeddable;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
@@ -48,8 +51,10 @@ public class OrderPersistenceEntity {
     private OffsetDateTime canceledAt;
     private OffsetDateTime readAt;
     
-    // private Billing billing;
-    // private Shipping shipping;
+    @Embedded
+    private BillingEmbeddable billing;
+    @Embedded
+    private ShippingEmbeddable shipping;
     
     private String status;
     private String paymentMethod;

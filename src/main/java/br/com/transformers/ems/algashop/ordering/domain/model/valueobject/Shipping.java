@@ -10,6 +10,7 @@ public record Shipping(
 
         Money cost,
         LocalDate expectedDate,
+        Address address,
         Recipient recipient
 
 ) {
@@ -20,9 +21,10 @@ public record Shipping(
     public Shipping(
             Money cost,
             LocalDate expectedDate,
+            Address address,
             Recipient recipient) {
 
-        if (!NNNEV.isValid(cost, null) || !NNNEV.isValid(expectedDate, null) || !NNNEV.isValid(recipient, null)) {
+        if (!NNNEV.isValid(cost, null) || !NNNEV.isValid(expectedDate, null) || !NNNEV.isValid(recipient, null) || !NNNEV.isValid(address, null)) {
             throw new IllegalArgumentException();
         }
 
@@ -33,12 +35,13 @@ public record Shipping(
         this.cost = cost;
         this.expectedDate = expectedDate;
         this.recipient = recipient;
+        this.address = address;
 
     }
 
     @Override
     public final String toString() {
-        return this.cost.toString() + " " + this.expectedDate.toString() + " " + this.recipient.toString();
+        return this.cost.toString() + " " + this.expectedDate.toString() + " " + this.recipient.toString() + " " + this.address.toString();
     }
 
 }

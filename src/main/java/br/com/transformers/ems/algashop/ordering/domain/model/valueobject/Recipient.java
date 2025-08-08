@@ -4,6 +4,7 @@ import br.com.transformers.ems.algashop.ordering.domain.model.validator.NotNullN
 import lombok.Builder;
 
 public record Recipient(
+    
         FullName fullName,
         Document document,
         Phone phone,
