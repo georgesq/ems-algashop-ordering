@@ -25,6 +25,10 @@ public class OrderPersistenceEntityAssembler {
         orderPersistenceEntity.setReadAt(order.readAt());
         orderPersistenceEntity.setStatus(order.status().toString());
         orderPersistenceEntity.setPaymentMethod(order.paymentMethod().toString());
+
+        orderPersistenceEntity.setBilling(BillingEmbeddableAssembler.fromDomain(order.billing()));
+        orderPersistenceEntity.setShipping(ShippingEmbeddableAssembler.fromDomain(order.shipping()));
+
         orderPersistenceEntity.setVersion(order.version());
 
         return orderPersistenceEntity;

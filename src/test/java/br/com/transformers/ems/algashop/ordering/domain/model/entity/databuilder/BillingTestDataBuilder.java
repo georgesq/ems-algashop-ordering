@@ -17,7 +17,7 @@ public class BillingTestDataBuilder {
         return Billing.builder()
                 .document(new Document("doct"))
                 .fullName(new FullName("fn", "ln"))
-                .address(AddressTestDataBuilder.aAddress().build())
+                .address(AddressTestDataBuilder.anAddress().build())
                 .phone(new Phone("phone"))
                 .email(new Email("a@aa.com"))
             ;

@@ -13,7 +13,7 @@ public class AddressTestDataBuilder {
 
     }
 
-    public static Address.AddressBuilder aAddress() {
+    public static Address.AddressBuilder anAddress() {
 
         return Address.builder()
             .city("ssa" )

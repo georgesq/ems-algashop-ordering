@@ -65,6 +65,7 @@ public class OrderTestDataBuilder {
         return Shipping.builder()
             .cost(Money.ZERO)
             .expectedDate(LocalDate.now())
+            .address(AddressTestDataBuilder.anAddress().build())
             .recipient(RecipientTestDataBuilder.aRecipient().build())
             .build();
     }

@@ -2,6 +2,7 @@ package br.com.transformers.ems.algashop.ordering.infrastructure.persistence.ass
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,6 +37,12 @@ class OrderPersistenceEntityAssemblerTest {
         assertThat(entity.getReadAt()).isEqualTo(order.readAt());
         assertThat(entity.getStatus()).isEqualTo(order.status().toString());
         assertThat(entity.getPaymentMethod()).isEqualTo(order.paymentMethod().toString());
+
+        Assertions.assertThat(entity).satisfies(e -> {
+            assertThat(e.getBilling()).isNotNull();
+            assertThat(e.getShipping()).isNotNull();
+            assertThat(e.getVersion()).isEqualTo(order.version());
+        });
 
     }
 

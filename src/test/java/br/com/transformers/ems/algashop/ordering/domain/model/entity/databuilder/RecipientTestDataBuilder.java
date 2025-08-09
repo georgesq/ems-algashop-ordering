@@ -14,7 +14,7 @@ public class RecipientTestDataBuilder {
     public static Recipient.RecipientBuilder aRecipient() {
 
         return Recipient.builder()
-            .address(AddressTestDataBuilder.aAddress().build())
+            .address(AddressTestDataBuilder.anAddress().build())
             .document(new Document("newDocto"))
             .fullName(new FullName("fN", "lN"))
             .phone(new Phone("11993044469"))

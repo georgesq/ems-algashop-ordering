@@ -17,6 +17,7 @@ public class ShippingTestDataBuilder {
         return Shipping.builder()
             .cost(new Money(BigDecimal.valueOf(10)))
             .expectedDate(LocalDate.now())
+            .address(AddressTestDataBuilder.anAddress().build())
             .recipient(RecipientTestDataBuilder.aRecipient().build())
             ;
 
