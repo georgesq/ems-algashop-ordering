@@ -31,6 +31,10 @@ public class OrderPersistenceEntityDisassembler {
             .status(OrderStatus.valueOf(persistenceEntity.getStatus()))
             .paymentMethod(PaymentMethod.valueOf(persistenceEntity.getPaymentMethod()))
             .items(Collections.emptySet())
+
+            .billing(BillingPersistenceEntityDisassembler.toDomainEntity(persistenceEntity.getBilling()))
+            .shipping(ShippingPersistenceEntityDisassembler.toDomainEntity(persistenceEntity.getShipping()))
+
             .version(persistenceEntity.getVersion())
         .build();
 
