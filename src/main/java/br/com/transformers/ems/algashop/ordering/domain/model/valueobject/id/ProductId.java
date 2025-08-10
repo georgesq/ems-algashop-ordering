@@ -1,13 +1,13 @@
 package br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.utility.IdGenerator;
-import io.hypersistence.tsid.TSID;
 
 public record ProductId(
 
-    TSID value
+    UUID value
 
 ) {
 
@@ -16,15 +16,7 @@ public record ProductId(
     }
 
     public ProductId() {
-        this(IdGenerator.generateTSID());
-    }
-
-    public ProductId(Long value) {
-        this(TSID.from(value));
-    }
-
-    public ProductId(String value) {
-        this(TSID.from(value));
+        this(IdGenerator.generateUUID());
     }
 
     @Override

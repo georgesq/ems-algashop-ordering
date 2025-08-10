@@ -15,14 +15,14 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
-import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderStatus;
-import br.com.transformers.ems.algashop.ordering.domain.model.entity.PaymentMethod;
 import br.com.transformers.ems.algashop.ordering.domain.model.utility.IdGenerator;
+import br.com.transformers.ems.algashop.ordering.infrastructure.config.JpaConfig;
 import br.com.transformers.ems.algashop.ordering.infrastructure.config.SpringDataAuditingConfig;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.databuilder.OrderPersistenceEntityTestDataBuilder;
 
 @DataJpaTest
-@Import(SpringDataAuditingConfig.class)
+@Import({SpringDataAuditingConfig.class, JpaConfig.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class OrderPersistenceEntityRepositoryIT {
 
@@ -34,15 +34,7 @@ class OrderPersistenceEntityRepositoryIT {
     @BeforeEach
     void setUp() {
 
-        order = OrderPersistenceEntity.builder()
-            .id(IdGenerator.generateTSID().toLong())
-            .customerId(IdGenerator.generateUUID())
-            .totalAmount(BigDecimal.valueOf(100))
-            .createdAt(OffsetDateTime.now())
-            .status(OrderStatus.DRAFT.toString())
-            .paymentMethod(PaymentMethod.CREDIT_CARD.toString())
-        .build();
-
+        order = OrderPersistenceEntityTestDataBuilder.anPersistenceEntity();
 
     }
 
@@ -52,6 +44,7 @@ class OrderPersistenceEntityRepositoryIT {
 
         OrderPersistenceEntity saved = repository.save(order);
 
+        Assertions.assertThat(saved.getItems()).isNotEmpty();
         Assertions.assertThat(repository.existsById(saved.getId())).isTrue();
 
     }

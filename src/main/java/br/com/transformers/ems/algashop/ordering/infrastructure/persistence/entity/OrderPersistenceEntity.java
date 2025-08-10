@@ -2,6 +2,9 @@ package br.com.transformers.ems.algashop.ordering.infrastructure.persistence.ent
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.annotation.CreatedBy;
@@ -11,10 +14,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.embeddeble.BillingEmbeddable;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.embeddeble.ShippingEmbeddable;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
@@ -59,7 +64,8 @@ public class OrderPersistenceEntity {
     private String status;
     private String paymentMethod;
     
-    // private Set<OrderItem> items;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private Set<OrderItemPersistenceEntity> items;
 
     @CreatedBy
     private UUID createdByUser;
@@ -71,4 +77,11 @@ public class OrderPersistenceEntity {
     @Version
     private Long version;
 
+    public void replaceItems(OrderItemPersistenceEntity items) {
+        if (Objects.isNull(this.items)) {
+            this.setItems(new HashSet<>());
+        }
+
+        this.items.forEach(i-> i.setOrder(this));
+    }
 }

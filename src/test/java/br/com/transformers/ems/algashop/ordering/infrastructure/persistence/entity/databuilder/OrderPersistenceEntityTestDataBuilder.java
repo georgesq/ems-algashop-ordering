@@ -14,7 +14,7 @@ public class OrderPersistenceEntityTestDataBuilder {
     }
     
     public static OrderPersistenceEntity anPersistenceEntity() {
-        return OrderPersistenceEntity.builder()
+        OrderPersistenceEntity order = OrderPersistenceEntity.builder()
                 .id(IdGenerator.generateTSID().toLong())
                 .customerId(IdGenerator.generateUUID())
                 .totalAmount(new BigDecimal("99.99"))
@@ -27,5 +27,9 @@ public class OrderPersistenceEntityTestDataBuilder {
                 .billing(BillingEmbeddableTestDataBuilder.aBilling())
                 .shipping(ShippingEmbeddableTestDataBuilder.aShipping())
             .build();
+
+            order.setItems(OrderItemPersistenceTestDataBuilder.anOrderItem(order));
+
+        return order;
     }
 }
