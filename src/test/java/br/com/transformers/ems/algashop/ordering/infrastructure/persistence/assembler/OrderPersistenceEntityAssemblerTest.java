@@ -2,13 +2,18 @@ package br.com.transformers.ems.algashop.ordering.infrastructure.persistence.ass
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.HashSet;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.OrderTestDataBuilder;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.embeddeble.OrderPersistenceEntityAssembler;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.databuilder.OrderItemPersistenceTestDataBuilder;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.databuilder.OrderPersistenceEntityTestDataBuilder;
 
 class OrderPersistenceEntityAssemblerTest {
 
@@ -46,4 +51,37 @@ class OrderPersistenceEntityAssemblerTest {
 
     }
 
+    @Test
+    public void givenOrderWithNoItems_thenRemoveAllPersistenceEntityItems() {
+ 
+        Order order = OrderTestDataBuilder.anOrder().withItems(false).build();
+        OrderPersistenceEntity ope = OrderPersistenceEntityTestDataBuilder.existingOrder();
+
+        ope.addItem(OrderItemPersistenceTestDataBuilder.anOrderItem(ope));
+
+        Assertions.assertThat(order.items()).isEmpty();
+        Assertions.assertThat(ope.getItems()).isNotEmpty();
+
+        assembler.merge(ope, order);
+
+        Assertions.assertThat(ope.getItems()).isEmpty();
+
+    }
+
+    @Test
+    public void givenOrderWithItems_thenAddToPersistenceEntity() {
+
+        Order order = OrderTestDataBuilder.anOrder().build();
+        OrderPersistenceEntity ope = OrderPersistenceEntityTestDataBuilder.existingOrder();
+
+        ope.addItem(OrderItemPersistenceTestDataBuilder.anOrderItem(ope));
+
+        Assertions.assertThat(order.items()).isNotEmpty();
+        Assertions.assertThat(ope.getItems()).isNotEmpty();
+
+        assembler.merge(ope, order);
+
+        Assertions.assertThat(ope.getItems().size()).isEqualTo(order.items().size());
+        
+    }
 }

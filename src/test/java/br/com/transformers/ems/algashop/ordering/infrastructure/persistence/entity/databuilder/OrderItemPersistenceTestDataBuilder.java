@@ -14,7 +14,8 @@ public class OrderItemPersistenceTestDataBuilder {
 
     }
 
-    public static Set<OrderItemPersistenceEntity> anOrderItem(OrderPersistenceEntity order) {
+    public static OrderItemPersistenceEntity anOrderItem(OrderPersistenceEntity order) {
+        
         OrderItemPersistenceEntity oi = OrderItemPersistenceEntity.builder()
                     .id(IdGenerator.generateTSID().toLong())
                     .orderId(order.getId())
@@ -24,12 +25,10 @@ public class OrderItemPersistenceTestDataBuilder {
                     .quantity(Long.MIN_VALUE)
                     .totalAmmount(BigDecimal.TWO)
                     .order(order)
-                .build();;
+                .build();
 
-        HashSet<OrderItemPersistenceEntity> items = new HashSet<>();
-        items.add(oi);
-        
-        return items;
+        return oi;
+
     }
 
 }

@@ -35,8 +35,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"})
 @EntityListeners(AuditingEntityListener.class)
@@ -77,11 +75,66 @@ public class OrderPersistenceEntity {
     @Version
     private Long version;
 
-    public void replaceItems(OrderItemPersistenceEntity items) {
-        if (Objects.isNull(this.items)) {
+    @Builder
+    public OrderPersistenceEntity(Long id, UUID customerId, BigDecimal totalAmount, Integer totalItems,
+            OffsetDateTime createdAt, OffsetDateTime placedAt, OffsetDateTime paidAt, OffsetDateTime canceledAt,
+            OffsetDateTime readAt, BillingEmbeddable billing, ShippingEmbeddable shipping, String status,
+            String paymentMethod, Set<OrderItemPersistenceEntity> items, UUID createdByUser,
+            OffsetDateTime lastModifiedAt, UUID lastModifiedByUser, Long version) {
+        this.id = id;
+        this.customerId = customerId;
+        this.totalAmount = totalAmount;
+        this.totalItems = totalItems;
+        this.createdAt = createdAt;
+        this.placedAt = placedAt;
+        this.paidAt = paidAt;
+        this.canceledAt = canceledAt;
+        this.readAt = readAt;
+        this.billing = billing;
+        this.shipping = shipping;
+        this.status = status;
+        this.paymentMethod = paymentMethod;
+        this.replaceItems(items);
+        this.createdByUser = createdByUser;
+        this.lastModifiedAt = lastModifiedAt;
+        this.lastModifiedByUser = lastModifiedByUser;
+        this.version = version;
+    }
+
+    private Boolean itemsIsNull() {
+
+        boolean result = Objects.isNull(this.items);
+        if (result) {
             this.setItems(new HashSet<>());
         }
 
+        return result;
+
+    }
+
+    public void replaceItems(Set<OrderItemPersistenceEntity> items) {
+
+        if (itemsIsNull()) {
+            return;
+        }
+
         this.items.forEach(i-> i.setOrder(this));
+
+        this.setItems(items);
+
+    }
+
+    public void addItem(OrderItemPersistenceEntity item) {
+
+        if (Objects.isNull(item)) {
+            return;
+        }
+
+        itemsIsNull();
+
+        item.setOrder(this);
+
+        this.getItems().add(item);
+
     }
 }

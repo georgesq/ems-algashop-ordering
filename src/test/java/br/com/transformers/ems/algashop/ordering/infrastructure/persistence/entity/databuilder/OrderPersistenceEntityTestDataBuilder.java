@@ -13,7 +13,7 @@ public class OrderPersistenceEntityTestDataBuilder {
 
     }
     
-    public static OrderPersistenceEntity anPersistenceEntity() {
+    public static OrderPersistenceEntity existingOrder() {
         OrderPersistenceEntity order = OrderPersistenceEntity.builder()
                 .id(IdGenerator.generateTSID().toLong())
                 .customerId(IdGenerator.generateUUID())
@@ -28,7 +28,7 @@ public class OrderPersistenceEntityTestDataBuilder {
                 .shipping(ShippingEmbeddableTestDataBuilder.aShipping())
             .build();
 
-            order.setItems(OrderItemPersistenceTestDataBuilder.anOrderItem(order));
+            order.addItem(OrderItemPersistenceTestDataBuilder.anOrderItem(order));
 
         return order;
     }
