@@ -84,7 +84,7 @@ public class OrderTest {
         order.addItem(product, new Quantity(2L));
 
         Assertions.assertWith(order,
-            (o) -> Assertions.assertThat(o.totalAmount()).isEqualTo(new Money("90")),
+            (o) -> Assertions.assertThat(o.totalAmount()).isEqualTo(new Money("140")),
             (o) -> Assertions.assertThat(o.totalItems()).isEqualTo(new Quantity(14L))
         );
 

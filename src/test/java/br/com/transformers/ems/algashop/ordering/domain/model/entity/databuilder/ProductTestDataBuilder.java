@@ -16,7 +16,7 @@ public class ProductTestDataBuilder {
         return Product.builder()
             .id(new ProductId())
             .name(new ProductName("pn"))
-            .value(Money.ZERO)
+            .value(Money.DEZ)
             .inStock(true)
             ;
 

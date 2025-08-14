@@ -56,7 +56,7 @@ class OrderPersistenceEntityAssemblerTest {
     public void givenOrderWithNoItems_thenRemoveAllPersistenceEntityItems() {
  
         Order order = OrderTestDataBuilder.anOrder().withItems(false).build();
-        OrderPersistenceEntity ope = OrderPersistenceEntityTestDataBuilder.existingOrder().build();
+        OrderPersistenceEntity ope = OrderPersistenceEntityTestDataBuilder.draft().build();
 
         ope.addItem(OrderItemPersistenceTestDataBuilder.anOrderItem(ope));
 
@@ -73,9 +73,7 @@ class OrderPersistenceEntityAssemblerTest {
     public void givenOrderWithItems_thenAddToPersistenceEntity() {
 
         Order order = OrderTestDataBuilder.anOrder().withItems(true).build();
-        OrderPersistenceEntity ope = OrderPersistenceEntityTestDataBuilder.existingOrder()
-            .items(new HashSet<>())
-            .build();
+        OrderPersistenceEntity ope = OrderPersistenceEntityTestDataBuilder.draft().items(new HashSet<>()).build();
 
         ope.addItem(OrderItemPersistenceTestDataBuilder.anOrderItem(ope));
 
@@ -97,7 +95,7 @@ class OrderPersistenceEntityAssemblerTest {
             .map(i -> this.assembler.fromDomain(i))
             .collect(Collectors.toSet());
 
-        var ope = OrderPersistenceEntityTestDataBuilder.existingOrder()
+        var ope = OrderPersistenceEntityTestDataBuilder.draft()
             .items(oipe)
             .build();
 

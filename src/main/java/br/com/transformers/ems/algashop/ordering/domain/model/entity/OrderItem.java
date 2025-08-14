@@ -53,7 +53,7 @@ public class OrderItem {
                 product.name(),
                 product.value(),
                 quantity,
-                Money.ZERO);
+                Money.DEZ);
 
         orderItem.recalculateTotals();
 

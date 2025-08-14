@@ -14,6 +14,7 @@ public record Money (
     private static final NotNullNonEmptyValidator NNNEV = NotNullNonEmptyValidator.getInstance();
     
     public static final Money ZERO = new Money(BigDecimal.ZERO);
+    public static final Money DEZ = new Money(BigDecimal.TEN);
 
 
     public Money(String value) {

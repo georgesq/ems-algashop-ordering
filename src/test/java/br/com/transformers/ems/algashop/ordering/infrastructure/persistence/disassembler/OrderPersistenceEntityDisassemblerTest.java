@@ -19,7 +19,7 @@ class OrderPersistenceEntityDisassemblerTest {
 
     @Test
     void toDomainEntity_shouldMapAllFieldsCorrectly() {
-        OrderPersistenceEntity entity = OrderPersistenceEntityTestDataBuilder.existingOrder().build();
+        OrderPersistenceEntity entity = OrderPersistenceEntityTestDataBuilder.draft().withItems(true).build();
         
         // Act
         Order order = disassembler.toDomainEntity(entity);
@@ -37,6 +37,10 @@ class OrderPersistenceEntityDisassemblerTest {
         Assertions.assertThat(order.readAt()).isEqualTo(entity.getReadAt());
         Assertions.assertThat(order.status()).isEqualTo(OrderStatus.PLACED);
         Assertions.assertThat(order.paymentMethod()).isEqualTo(PaymentMethod.CREDIT_CARD);
+
+        Assertions.assertThat(order).satisfies(o ->
+            Assertions.assertThat(o.items()).isNotEmpty()
+        );
     }
 
 }

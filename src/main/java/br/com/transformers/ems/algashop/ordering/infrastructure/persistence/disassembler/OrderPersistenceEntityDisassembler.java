@@ -1,7 +1,5 @@
 package br.com.transformers.ems.algashop.ordering.infrastructure.persistence.disassembler;
 
-import java.util.Collections;
-
 import org.springframework.stereotype.Component;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
@@ -30,7 +28,7 @@ public class OrderPersistenceEntityDisassembler {
             .readAt(persistenceEntity.getReadAt())
             .status(OrderStatus.valueOf(persistenceEntity.getStatus()))
             .paymentMethod(PaymentMethod.valueOf(persistenceEntity.getPaymentMethod()))
-            .items(Collections.emptySet())
+            .items(OrderItemDisassembler.toDomain(persistenceEntity.getItems()))
 
             .billing(BillingPersistenceEntityDisassembler.toDomainEntity(persistenceEntity.getBilling()))
             .shipping(ShippingPersistenceEntityDisassembler.toDomainEntity(persistenceEntity.getShipping()))

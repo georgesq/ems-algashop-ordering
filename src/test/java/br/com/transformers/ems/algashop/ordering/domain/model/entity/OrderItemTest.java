@@ -14,7 +14,7 @@ public class OrderItemTest {
         OrderItem.brandNew(
             new OrderId(),
             ProductTestDataBuilder.aProduct().build(),
-            Quantity.ZERO
+            Quantity.DEZ
         );
 
     }
