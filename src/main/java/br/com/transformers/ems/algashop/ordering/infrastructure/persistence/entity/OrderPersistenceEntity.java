@@ -22,7 +22,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -46,7 +45,7 @@ public class OrderPersistenceEntity {
     private UUID customerId;
 
     private BigDecimal totalAmount;
-    private Integer totalItems;
+    private Long totalItems;
     
     private OffsetDateTime createdAt;
     private OffsetDateTime placedAt;
@@ -76,7 +75,7 @@ public class OrderPersistenceEntity {
     private Long version;
 
     @Builder
-    public OrderPersistenceEntity(Long id, UUID customerId, BigDecimal totalAmount, Integer totalItems,
+    public OrderPersistenceEntity(Long id, UUID customerId, BigDecimal totalAmount, Long totalItems,
             OffsetDateTime createdAt, OffsetDateTime placedAt, OffsetDateTime paidAt, OffsetDateTime canceledAt,
             OffsetDateTime readAt, BillingEmbeddable billing, ShippingEmbeddable shipping, String status,
             String paymentMethod, Set<OrderItemPersistenceEntity> items, UUID createdByUser,
@@ -137,4 +136,5 @@ public class OrderPersistenceEntity {
         this.getItems().add(item);
 
     }
+
 }

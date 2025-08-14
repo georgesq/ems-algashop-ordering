@@ -19,7 +19,7 @@ class OrderPersistenceEntityDisassemblerTest {
 
     @Test
     void toDomainEntity_shouldMapAllFieldsCorrectly() {
-        OrderPersistenceEntity entity = OrderPersistenceEntityTestDataBuilder.existingOrder();
+        OrderPersistenceEntity entity = OrderPersistenceEntityTestDataBuilder.existingOrder().build();
         
         // Act
         Order order = disassembler.toDomainEntity(entity);

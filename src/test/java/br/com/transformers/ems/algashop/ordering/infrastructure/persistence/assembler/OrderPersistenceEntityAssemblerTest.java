@@ -3,6 +3,7 @@ package br.com.transformers.ems.algashop.ordering.infrastructure.persistence.ass
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,7 +56,7 @@ class OrderPersistenceEntityAssemblerTest {
     public void givenOrderWithNoItems_thenRemoveAllPersistenceEntityItems() {
  
         Order order = OrderTestDataBuilder.anOrder().withItems(false).build();
-        OrderPersistenceEntity ope = OrderPersistenceEntityTestDataBuilder.existingOrder();
+        OrderPersistenceEntity ope = OrderPersistenceEntityTestDataBuilder.existingOrder().build();
 
         ope.addItem(OrderItemPersistenceTestDataBuilder.anOrderItem(ope));
 
@@ -71,8 +72,10 @@ class OrderPersistenceEntityAssemblerTest {
     @Test
     public void givenOrderWithItems_thenAddToPersistenceEntity() {
 
-        Order order = OrderTestDataBuilder.anOrder().build();
-        OrderPersistenceEntity ope = OrderPersistenceEntityTestDataBuilder.existingOrder();
+        Order order = OrderTestDataBuilder.anOrder().withItems(true).build();
+        OrderPersistenceEntity ope = OrderPersistenceEntityTestDataBuilder.existingOrder()
+            .items(new HashSet<>())
+            .build();
 
         ope.addItem(OrderItemPersistenceTestDataBuilder.anOrderItem(ope));
 
@@ -83,5 +86,25 @@ class OrderPersistenceEntityAssemblerTest {
 
         Assertions.assertThat(ope.getItems().size()).isEqualTo(order.items().size());
         
+    }
+
+    @Test
+    public void givenOrderWithItems_whenMerge_thenRemoveCorretly() {
+
+        Order order = OrderTestDataBuilder.anOrder().withItems(true).build();
+        
+        var oipe = order.items().stream()
+            .map(i -> this.assembler.fromDomain(i))
+            .collect(Collectors.toSet());
+
+        var ope = OrderPersistenceEntityTestDataBuilder.existingOrder()
+            .items(oipe)
+            .build();
+
+        order.removeItem(order.items().iterator().next().id());
+
+        this.assembler.merge(ope, order);
+
+        Assertions.assertThat(order.items().size()).isEqualTo(ope.getItems().size());
     }
 }

@@ -22,7 +22,7 @@ class OrderFactoryTest {
         Billing billing = BillingTestDataBuilder.aBilling().build();
         PaymentMethod paymentMethod = PaymentMethod.GATEWAY_BALANCE;
         Product product = ProductTestDataBuilder.aProduct().build();
-        Quantity quantity = new Quantity(2);
+        Quantity quantity = new Quantity(2L);
 
         var order = OrderFactory.filled(customerId, shipping, billing, paymentMethod, product, quantity);
 
@@ -43,7 +43,7 @@ class OrderFactoryTest {
         Billing billing = BillingTestDataBuilder.aBilling().build();
         PaymentMethod paymentMethod = PaymentMethod.GATEWAY_BALANCE;
         Product product = ProductTestDataBuilder.aProduct().build();
-        Quantity quantity = new Quantity(2);
+        Quantity quantity = new Quantity(2L);
 
         Assertions.assertThatNullPointerException()
             .isThrownBy(() -> OrderFactory.filled(null, shipping, billing, paymentMethod, product, quantity))
@@ -56,7 +56,7 @@ class OrderFactoryTest {
         Billing billing = BillingTestDataBuilder.aBilling().build();
         PaymentMethod paymentMethod = PaymentMethod.GATEWAY_BALANCE;
         Product product = ProductTestDataBuilder.aProduct().build();
-        Quantity quantity = new Quantity(2);
+        Quantity quantity = new Quantity(2L);
 
         Assertions.assertThatNullPointerException()
             .isThrownBy(() -> OrderFactory.filled(customerId, null, billing, paymentMethod, product, quantity))
@@ -69,7 +69,7 @@ class OrderFactoryTest {
         Shipping shipping = ShippingTestDataBuilder.aShipping().build();
         PaymentMethod paymentMethod = PaymentMethod.GATEWAY_BALANCE;
         Product product = ProductTestDataBuilder.aProduct().build();
-        Quantity quantity = new Quantity(2);
+        Quantity quantity = new Quantity(2L);
 
         Assertions.assertThatNullPointerException()
             .isThrownBy(() -> OrderFactory.filled(customerId, shipping, null, paymentMethod, product, quantity))
@@ -82,7 +82,7 @@ class OrderFactoryTest {
         Shipping shipping = ShippingTestDataBuilder.aShipping().build();
         Billing billing = BillingTestDataBuilder.aBilling().build();
         Product product = ProductTestDataBuilder.aProduct().build();
-        Quantity quantity = new Quantity(2);
+        Quantity quantity = new Quantity(2L);
 
         Assertions.assertThatNullPointerException()
             .isThrownBy(() -> OrderFactory.filled(customerId, shipping, billing, null, product, quantity))
@@ -95,7 +95,7 @@ class OrderFactoryTest {
         Shipping shipping = ShippingTestDataBuilder.aShipping().build();
         Billing billing = BillingTestDataBuilder.aBilling().build();
         PaymentMethod paymentMethod = PaymentMethod.GATEWAY_BALANCE;
-        Quantity quantity = new Quantity(2);
+        Quantity quantity = new Quantity(2L);
 
         Assertions.assertThatNullPointerException()
             .isThrownBy(() -> OrderFactory.filled(customerId, shipping, billing, paymentMethod, null, quantity))

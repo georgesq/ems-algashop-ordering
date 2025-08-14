@@ -7,7 +7,7 @@ public class QuantityTest {
 
     @Test
     void testGivenNegativeValueThenThrowsIllegalArgumentException() {
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new Quantity(-1));
+        Assertions.assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new Quantity(-1L));
     }
 
     @Test

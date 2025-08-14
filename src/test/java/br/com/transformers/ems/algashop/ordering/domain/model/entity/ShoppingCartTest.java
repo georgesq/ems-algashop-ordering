@@ -28,8 +28,7 @@ class ShoppingCartTest {
         product = ProductTestDataBuilder.aProduct()
                 .value(new Money(BigDecimal.valueOf(10)))
             .build(); 
-        // new Product(UUID.randomUUID(), "Test Product", new Money(BigDecimal.valueOf(10)), true);
-        quantity = new Quantity(2);
+        quantity = new Quantity(2L);
     }
 
     @Test
@@ -121,7 +120,7 @@ class ShoppingCartTest {
         cart.addItem(product, quantity);
         ShoppingCartItem item = cart.items().iterator().next();
 
-        Quantity newQuantity = new Quantity(5);
+        Quantity newQuantity = new Quantity(5L);
         cart.changeItem(item.id(), newQuantity, product.inStock());
 
         assertThat(item.quantity()).isEqualTo(newQuantity);
@@ -136,7 +135,7 @@ class ShoppingCartTest {
             .name(new ProductName("Unavailable"))
             .inStock(false)
             .build();
-        cart.addItem(unavailableProduct, new Quantity(1));
+        cart.addItem(unavailableProduct, new Quantity(1L));
 
         assertThat(cart.containsUnavailableItems()).isTrue();
     }

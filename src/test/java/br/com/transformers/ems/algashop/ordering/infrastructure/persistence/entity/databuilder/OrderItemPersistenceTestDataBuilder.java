@@ -1,8 +1,6 @@
 package br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.databuilder;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.utility.IdGenerator;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderItemPersistenceEntity;

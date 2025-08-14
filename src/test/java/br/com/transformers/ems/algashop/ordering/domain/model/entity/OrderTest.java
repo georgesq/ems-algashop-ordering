@@ -36,7 +36,7 @@ public class OrderTest {
         var order = OrderTestDataBuilder.anOrder().build();
 
         var product = ProductTestDataBuilder.aProduct().build();
-        Quantity quantity = new Quantity(5);
+        Quantity quantity = new Quantity(5L);
 
         order.addItem(product, quantity);
 
@@ -57,7 +57,7 @@ public class OrderTest {
         var order = OrderTestDataBuilder.anOrder().build();
 
         var product = ProductTestDataBuilder.aProduct().build();
-        Quantity quantity = new Quantity(5);
+        Quantity quantity = new Quantity(5L);
 
         order.addItem(product, quantity);
 
@@ -74,18 +74,18 @@ public class OrderTest {
         var order = OrderTestDataBuilder.anOrder().build();
 
         var product = ProductTestDataBuilder.aProduct().build();
-        order.addItem(product, new Quantity(5));
+        order.addItem(product, new Quantity(5L));
 
         product = ProductTestDataBuilder.aProduct()
                 .name(new ProductName("pn2"))
                 .value(new Money(BigDecimal.TEN))
             .build();
 
-        order.addItem(product, new Quantity(2));
+        order.addItem(product, new Quantity(2L));
 
         Assertions.assertWith(order,
             (o) -> Assertions.assertThat(o.totalAmount()).isEqualTo(new Money("90")),
-            (o) -> Assertions.assertThat(o.totalItems()).isEqualTo(new Quantity(14))
+            (o) -> Assertions.assertThat(o.totalItems()).isEqualTo(new Quantity(14L))
         );
 
     }
@@ -197,7 +197,7 @@ public class OrderTest {
 
         OrderItem orderItem = order.items().iterator().next();
         var orderItemId = orderItem.id();
-        var newQuantity = new Quantity(13);
+        var newQuantity = new Quantity(13L);
 
         order.changeQuantity(orderItemId, newQuantity);
 
@@ -213,7 +213,7 @@ public class OrderTest {
         var order = Order.draft(new CustomerId());
 
         Assertions.assertThatExceptionOfType(UnavailableProductException.class)
-            .isThrownBy(() ->order.addItem(ProductTestDataBuilder.aUnavailableProduct().build(), new Quantity(1)));
+            .isThrownBy(() ->order.addItem(ProductTestDataBuilder.aUnavailableProduct().build(), new Quantity(1L)));
     }
 
     @Test
@@ -228,7 +228,7 @@ public class OrderTest {
         Assertions.assertThatExceptionOfType(OrderCannotBeChangedException.class)
             .isThrownBy(() ->order.changePaymentMethod(PaymentMethod.CREDIT_CARD));
         Assertions.assertThatExceptionOfType(OrderCannotBeChangedException.class)
-            .isThrownBy(() ->order.changeQuantity(new OrderItemId(), new Quantity(15)));
+            .isThrownBy(() ->order.changeQuantity(new OrderItemId(), new Quantity(15L)));
         Assertions.assertThatExceptionOfType(OrderCannotBeChangedException.class)
             .isThrownBy(() ->order.changeShipping(ShippingTestDataBuilder.aShipping().build()));
     }

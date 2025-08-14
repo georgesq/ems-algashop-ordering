@@ -3,9 +3,11 @@ package br.com.transformers.ems.algashop.ordering.infrastructure.persistence.emb
 import org.springframework.stereotype.Component;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
+import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderItem;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.assembler.BillingEmbeddableAssembler;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.assembler.OrderItemEmbeddableAssembler;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.assembler.ShippingEmbeddableAssembler;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderItemPersistenceEntity;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 
 @Component
@@ -39,4 +41,17 @@ public class OrderPersistenceEntityAssembler {
         return orderPersistenceEntity;
 
     }
+
+    public OrderItemPersistenceEntity fromDomain(OrderItem orderItem) {
+        return OrderItemPersistenceEntity.builder()
+            .id(orderItem.id().value().toLong())
+            .orderId(orderItem.orderId().value().toLong())
+            .price(orderItem.price().value())
+            .productId(orderItem.productId().value())
+            .productName(orderItem.productName().toString())
+            .quantity(orderItem.quantity().value())
+            .build()
+            ;
+    }
+
 }

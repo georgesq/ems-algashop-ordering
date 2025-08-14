@@ -51,9 +51,9 @@ public class ShoppingCart implements AggregateRoot<ShoppingCartId> {
         BigDecimal totalAmmount = this.items.stream()
             .map(i -> i.totalAmmount().value())
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-        Integer totalItemsQuantity = this.items.stream()
+        Long totalItemsQuantity = this.items.stream()
             .map(i -> i.quantity().value())
-            .reduce(0, Integer::sum);            
+            .reduce(0L, Long::sum);            
 
         this.setTotalAmount(new Money(totalAmmount));
         this.setTotalItems(new Quantity(totalItemsQuantity));

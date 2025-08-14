@@ -6,6 +6,7 @@ import java.time.OffsetDateTime;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderStatus;
 import br.com.transformers.ems.algashop.ordering.domain.model.utility.IdGenerator;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity.OrderPersistenceEntityBuilder;
 
 public class OrderPersistenceEntityTestDataBuilder {
 
@@ -13,12 +14,11 @@ public class OrderPersistenceEntityTestDataBuilder {
 
     }
     
-    public static OrderPersistenceEntity existingOrder() {
-        OrderPersistenceEntity order = OrderPersistenceEntity.builder()
+    public static OrderPersistenceEntityBuilder existingOrder() {
+        return OrderPersistenceEntity.builder()
                 .id(IdGenerator.generateTSID().toLong())
-                .customerId(IdGenerator.generateUUID())
                 .totalAmount(new BigDecimal("99.99"))
-                .totalItems(5)
+                .totalItems(5L)
                 .createdAt(OffsetDateTime.now().minusDays(2))
                 .placedAt(OffsetDateTime.now().minusDays(1))
                 .paidAt(OffsetDateTime.now())
@@ -26,10 +26,6 @@ public class OrderPersistenceEntityTestDataBuilder {
                 .status(OrderStatus.PLACED.toString())
                 .billing(BillingEmbeddableTestDataBuilder.aBilling())
                 .shipping(ShippingEmbeddableTestDataBuilder.aShipping())
-            .build();
-
-            order.addItem(OrderItemPersistenceTestDataBuilder.anOrderItem(order));
-
-        return order;
+        ;
     }
 }

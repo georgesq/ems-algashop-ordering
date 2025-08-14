@@ -331,9 +331,9 @@ public class Order implements AggregateRoot<OrderId> {
         BigDecimal totalItemsAmmount = this.items.stream()
             .map(i -> i.totalAmmount().value())
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-        Integer totalItemsQuantity = this.items.stream()
+        Long totalItemsQuantity = this.items.stream()
             .map(i -> i.quantity().value())
-            .reduce(0, Integer::sum);            
+            .reduce(0L, Long::sum);            
 
         BigDecimal shippingCost  = this.shipping().cost().value();
 

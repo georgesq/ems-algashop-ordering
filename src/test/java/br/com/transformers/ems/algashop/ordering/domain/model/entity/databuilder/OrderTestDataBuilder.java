@@ -98,11 +98,11 @@ public class OrderTestDataBuilder {
             order.addItem(ProductTestDataBuilder.aProduct()
                 .value(new Money(BigDecimal.TEN))
                 .build(), 
-                new Quantity(5));
+                new Quantity(5L));
             order.addItem(ProductTestDataBuilder.aProduct()
                 .value(new Money(BigDecimal.TEN))
                 .build(), 
-                new Quantity(2));
+                new Quantity(2L));
         }
 
         switch (this.status) {

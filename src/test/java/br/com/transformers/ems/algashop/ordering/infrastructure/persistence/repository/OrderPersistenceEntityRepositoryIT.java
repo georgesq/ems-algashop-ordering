@@ -34,7 +34,7 @@ class OrderPersistenceEntityRepositoryIT {
     @BeforeEach
     void setUp() {
 
-        order = OrderPersistenceEntityTestDataBuilder.existingOrder();
+        order = OrderPersistenceEntityTestDataBuilder.existingOrder().build();
 
     }
 

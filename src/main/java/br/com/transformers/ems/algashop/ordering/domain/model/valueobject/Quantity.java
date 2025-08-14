@@ -4,17 +4,17 @@ import br.com.transformers.ems.algashop.ordering.domain.model.validator.NotNullN
 
 public record Quantity(
 
-    Integer value
+    Long value
 
-) implements Comparable<Integer> {
+) implements Comparable<Long> {
     
     private static NotNullNonEmptyValidator NNNEV = NotNullNonEmptyValidator.getInstance();
     
-    public static final Quantity ZERO = new Quantity(0);
+    public static final Quantity ZERO = new Quantity(0L);
 
 
-    public Quantity(Integer value) {
-        if (!NNNEV.isValid(value, null) || value.compareTo(-1) < 0) {
+    public Quantity(Long value) {
+        if (!NNNEV.isValid(value, null) || value.compareTo(-1L) < 0) {
             throw new IllegalArgumentException();
         }
 
@@ -22,7 +22,7 @@ public record Quantity(
     }
 
     @Override
-    public int compareTo(Integer value) {
+    public int compareTo(Long value) {
         return this.value.compareTo(value);
     }
 

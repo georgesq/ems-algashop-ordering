@@ -38,7 +38,7 @@ public class MoneyTest {
     void testGivenLessThanOneValueWhenMultiplyThenThrowsIllegalArgumentException() {
 
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> new Money(BigDecimal.valueOf(10)).multiply(new Quantity(0)));
+            .isThrownBy(() -> new Money(BigDecimal.valueOf(10)).multiply(new Quantity(0L)));
 
     }
 
