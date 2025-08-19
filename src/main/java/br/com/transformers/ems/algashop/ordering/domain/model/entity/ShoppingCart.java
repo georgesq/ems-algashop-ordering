@@ -202,5 +202,4 @@ public class ShoppingCart implements AggregateRoot<ShoppingCartId> {
         return true;
     }
 
-
 }

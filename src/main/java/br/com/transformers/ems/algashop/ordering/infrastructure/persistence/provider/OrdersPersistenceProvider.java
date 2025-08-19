@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class OrdersPersistenceProvider implements Orders {
 
     private final OrderPersistenceEntityRepository repository;
@@ -41,6 +43,7 @@ public class OrdersPersistenceProvider implements Orders {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void add(Order aggregateRoot) {
 
         long orderId = aggregateRoot.id().value().toLong();

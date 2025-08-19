@@ -11,12 +11,19 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderStatus;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.OrderTestDataBuilder;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.OrderId;
+import br.com.transformers.ems.algashop.ordering.infrastructure.config.JpaConfig;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.embeddeble.OrderPersistenceEntityAssembler;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.provider.OrdersPersistenceProvider;
 
 @DataJpaTest
-@Import({OrdersPersistenceProvider.class, OrderPersistenceEntityAssembler.class, OrderPersistenceEntityDisassembler.class})
+@Import({
+    OrdersPersistenceProvider.class, 
+    OrderPersistenceEntityAssembler.class, 
+    OrderPersistenceEntityDisassembler.class,
+    JpaConfig.class
+})
 class OrdersIT {
 
     private Orders orders;
@@ -99,5 +106,31 @@ class OrdersIT {
             s -> Assertions.assertThat(s.isCanceled()).isFalse(),
             s -> Assertions.assertThat(s.isPaid()).isTrue()
         );
+    }
+
+    @Test
+    void shouldCountCorrect() {
+
+        Assertions.assertThat(orders.count()).isZero();
+
+        Order order = OrderTestDataBuilder.anOrder().withItems(true).build();
+
+        orders.add(order);
+
+        Assertions.assertThat(orders).satisfies(
+            o -> Assertions.assertThat(o.count()).isEqualTo(1L)
+        );
+
+    }
+
+    @Test
+    void shouldExists() {
+
+        Order order = OrderTestDataBuilder.anOrder().withItems(true).build();
+        orders.add(order);
+
+        Assertions.assertThat(orders.exists(order.id())).isTrue();
+        Assertions.assertThat(orders.exists(new OrderId())).isFalse();
+        
     }
 }

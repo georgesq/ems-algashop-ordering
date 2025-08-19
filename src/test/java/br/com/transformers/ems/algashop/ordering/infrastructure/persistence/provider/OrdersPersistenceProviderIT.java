@@ -6,9 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderStatus;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.OrderTestDataBuilder;
+import br.com.transformers.ems.algashop.ordering.infrastructure.config.JpaConfig;
 import br.com.transformers.ems.algashop.ordering.infrastructure.config.SpringDataAuditingConfig;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.embeddeble.OrderPersistenceEntityAssembler;
@@ -19,7 +23,8 @@ import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.repo
         OrdersPersistenceProvider.class,
         OrderPersistenceEntityAssembler.class,
         OrderPersistenceEntityDisassembler.class,
-        SpringDataAuditingConfig.class
+        SpringDataAuditingConfig.class,
+        JpaConfig.class
 })
 public class OrdersPersistenceProviderIT {
 
@@ -52,6 +57,20 @@ public class OrdersPersistenceProviderIT {
         Assertions.assertThat(persistenceEntity.getLastModifiedAt()).isNotNull();
         Assertions.assertThat(persistenceEntity.getLastModifiedByUser()).isNotNull();        
 
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    void shouldAddFindAndNotFailWhenNoTransaction() {
+
+        Order order = OrderTestDataBuilder.anOrder().build();
+
+        this.persistenceProvider.add(order);
+
+        Assertions.assertThatNoException().isThrownBy(
+            () -> this.persistenceProvider.ofId(order.id()).orElseThrow()
+        );
+        
     }
 
 }
