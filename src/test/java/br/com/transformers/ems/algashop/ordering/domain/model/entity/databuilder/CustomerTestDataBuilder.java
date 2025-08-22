@@ -15,7 +15,7 @@ public class CustomerTestDataBuilder {
     private CustomerTestDataBuilder() {
     }
 
-    public static Customer.NewSimpleCustomerBuild newInstance() {
+    public static Customer.NewSimpleCustomerBuild aCustomerBuilder() {
 
         return Customer.draft()
                 .fullName(new FullName("fn", "ln"))

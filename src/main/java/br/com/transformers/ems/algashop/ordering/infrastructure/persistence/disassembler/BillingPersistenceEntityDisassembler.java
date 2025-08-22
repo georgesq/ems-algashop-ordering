@@ -14,11 +14,11 @@ public class BillingPersistenceEntityDisassembler {
     public static Billing toDomainEntity(BillingEmbeddable embeddable) {
 
         return Billing.builder()
-            .fullName(FullNameEmbeddableDisassembler.toDomainEntity(embeddable.getFullName()))
+            .fullName(FullNameEmbeddablePersistenceEntityDisassembler.toDomainEntity(embeddable.getFullName()))
             .email(new Email(embeddable.getEmail()))
             .phone(new Phone(embeddable.getPhone()))
             .document(new Document(embeddable.getDocument()))
-            .address(AddressPersistenceEntityDisassembler.toDomainEntity(embeddable.getAddress()))
+            .address(AddressEmbeddablePersistenceEntityDisassembler.toDomainEntity(embeddable.getAddress()))
         .build();
             
     }

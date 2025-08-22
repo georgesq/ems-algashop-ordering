@@ -62,7 +62,7 @@ public class OrderPersistenceEntity {
     private String paymentMethod;
     
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private Set<OrderItemPersistenceEntity> items;
+    private Set<OrderItemPersistenceEntity> items = new HashSet<>();
 
     @CreatedBy
     private UUID createdByUser;
@@ -80,24 +80,24 @@ public class OrderPersistenceEntity {
             OffsetDateTime readAt, BillingEmbeddable billing, ShippingEmbeddable shipping, String status,
             String paymentMethod, Set<OrderItemPersistenceEntity> items, UUID createdByUser,
             OffsetDateTime lastModifiedAt, UUID lastModifiedByUser, Long version) {
-        this.id = id;
-        this.customerId = customerId;
-        this.totalAmount = totalAmount;
-        this.totalItems = totalItems;
-        this.createdAt = createdAt;
-        this.placedAt = placedAt;
-        this.paidAt = paidAt;
-        this.canceledAt = canceledAt;
-        this.readAt = readAt;
-        this.billing = billing;
-        this.shipping = shipping;
-        this.status = status;
-        this.paymentMethod = paymentMethod;
+        this.setId(id);
+        this.setCustomerId(customerId);
+        this.setTotalAmount(totalAmount);
+        this.setTotalItems(totalItems);
+        this.setCreatedAt(createdAt);
+        this.setPlacedAt(placedAt);
+        this.setPaidAt(paidAt);
+        this.setCanceledAt(canceledAt);
+        this.setReadAt(readAt);
+        this.setBilling(billing);
+        this.setShipping(shipping);
+        this.setStatus(status);
+        this.setPaymentMethod(paymentMethod);
         this.replaceItems(items);
-        this.createdByUser = createdByUser;
-        this.lastModifiedAt = lastModifiedAt;
-        this.lastModifiedByUser = lastModifiedByUser;
-        this.version = version;
+        this.setCreatedByUser(createdByUser);
+        this.setLastModifiedAt(lastModifiedAt);
+        this.setLastModifiedByUser(lastModifiedByUser);
+        this.setVersion(version);
     }
 
     private Boolean itemsIsNull() {

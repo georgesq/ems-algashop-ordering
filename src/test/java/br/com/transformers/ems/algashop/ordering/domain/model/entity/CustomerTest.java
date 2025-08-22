@@ -16,7 +16,7 @@ import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Phone;
 
 public class CustomerTest {
 
-    Customer customer = CustomerTestDataBuilder.newInstance().build();
+    Customer customer = CustomerTestDataBuilder.aCustomerBuilder().build();
 
     @Test
     public void given_newpoints_then_loyaltyPoints_correct() {

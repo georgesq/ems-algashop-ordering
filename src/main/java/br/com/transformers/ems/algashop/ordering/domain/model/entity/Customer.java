@@ -42,6 +42,8 @@ public class Customer implements AggregateRoot<CustomerId> {
 
     private Address address;
 
+    private Long version;
+
     private static final NotNullNonEmptyValidator nnnev = NotNullNonEmptyValidator.getInstance();
 
     @Builder(builderClassName = "NewSimpleCustomerBuild", builderMethodName = "draft")
@@ -61,15 +63,27 @@ public class Customer implements AggregateRoot<CustomerId> {
                 OffsetDateTime.now(),
                 null,
                 new LoyaltPoints(),
-                address
+                address,
+            null
         );
 
     }
 
     @Builder(builderClassName = "NewFullCustomerBuild", builderMethodName = "existing")
-    private Customer(CustomerId id, FullName fullName, BirthDate birthDate, Email email, Phone phone, Document document,
-                    Boolean promotionNotificaficationsAllowed, Boolean archived, OffsetDateTime registeredAt,
-                    OffsetDateTime archivedAt, LoyaltPoints loyaltyPoints, Address address) {
+    private Customer(
+        CustomerId id, 
+        FullName fullName, 
+        BirthDate birthDate, 
+        Email email, 
+        Phone phone, 
+        Document document,
+        Boolean promotionNotificaficationsAllowed, 
+        Boolean archived, 
+        OffsetDateTime registeredAt,
+        OffsetDateTime archivedAt, 
+        LoyaltPoints loyaltyPoints, 
+        Address address,
+        Long version) {
 
         this.setId(id);
         this.setFullName(fullName);
@@ -84,6 +98,7 @@ public class Customer implements AggregateRoot<CustomerId> {
         this.setLoyaltyPoints(loyaltyPoints);
         this.setArchived(archived);
         this.setArchivedAt(archivedAt);
+        this.setVersion(version);
     }
 
     public void addLoyaltyPoints(Integer value) {
@@ -181,6 +196,10 @@ public class Customer implements AggregateRoot<CustomerId> {
         return this.address;
     }
 
+    public Long version() {
+        return version;
+    }
+
     public void changeAddress(Address value) {
         verifyIsChangeble();
 
@@ -276,6 +295,10 @@ public class Customer implements AggregateRoot<CustomerId> {
         }
 
         this.address = value;
+    }
+
+    private void setVersion(Long version) {
+        this.version = version;
     }
 
     private void verifyIsChangeble() {

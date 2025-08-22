@@ -28,7 +28,7 @@ public class OrderPersistenceEntityDisassembler {
             .readAt(persistenceEntity.getReadAt())
             .status(OrderStatus.valueOf(persistenceEntity.getStatus()))
             .paymentMethod(PaymentMethod.valueOf(persistenceEntity.getPaymentMethod()))
-            .items(OrderItemDisassembler.toDomain(persistenceEntity.getItems()))
+            .items(OrderItemPersistenceEntityDisassembler.toDomain(persistenceEntity.getItems()))
 
             .billing(BillingPersistenceEntityDisassembler.toDomainEntity(persistenceEntity.getBilling()))
             .shipping(ShippingPersistenceEntityDisassembler.toDomainEntity(persistenceEntity.getShipping()))

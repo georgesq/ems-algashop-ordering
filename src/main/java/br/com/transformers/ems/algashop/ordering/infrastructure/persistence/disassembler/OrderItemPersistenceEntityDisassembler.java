@@ -13,7 +13,7 @@ import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.Ord
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.ProductId;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderItemPersistenceEntity;
 
-public class OrderItemDisassembler {
+public class OrderItemPersistenceEntityDisassembler {
 
     public static Set<OrderItem> toDomain(Set<OrderItemPersistenceEntity> items) {
         if (items == null || items.isEmpty()) {

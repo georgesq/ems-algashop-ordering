@@ -16,7 +16,6 @@ public class OrderItemPersistenceTestDataBuilder {
         
         OrderItemPersistenceEntity oi = OrderItemPersistenceEntity.builder()
                     .id(IdGenerator.generateTSID().toLong())
-                    .orderId(order.getId())
                     .price(BigDecimal.ONE)
                     .productId(IdGenerator.generateUUID())
                     .productName("pn")

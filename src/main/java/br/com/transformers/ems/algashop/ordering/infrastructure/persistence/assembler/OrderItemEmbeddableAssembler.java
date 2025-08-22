@@ -47,7 +47,6 @@ public class OrderItemEmbeddableAssembler {
             OrderItem orderItem) {
 
         orderItemPersistenceEntity.setId(orderItem.id().value().toLong());                
-        orderItemPersistenceEntity.setOrderId(orderItem.orderId().value().toLong());
         orderItemPersistenceEntity.setPrice(orderItem.price().value());
         orderItemPersistenceEntity.setProductId(orderItem.productId().value());
         orderItemPersistenceEntity.setProductName(orderItem.productName().toString());

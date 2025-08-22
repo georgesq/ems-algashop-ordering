@@ -18,7 +18,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "\"order_item\"")
+@Table(name = "order_item")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,7 +30,6 @@ public class OrderItemPersistenceEntity {
 
     @Id
     private Long id;
-    private Long orderId;
 
     private UUID productId;
     private String productName;
@@ -40,8 +39,8 @@ public class OrderItemPersistenceEntity {
 
     private BigDecimal totalAmmount;
 
-    @JoinColumn
-    @ManyToOne
+    @JoinColumn(name = "order_id")
+    @ManyToOne(optional = false)
     private OrderPersistenceEntity order;
 
     public Long getOrderId() {

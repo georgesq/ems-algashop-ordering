@@ -11,19 +11,18 @@ import org.junit.jupiter.api.Test;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.OrderTestDataBuilder;
-import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.embeddeble.OrderPersistenceEntityAssembler;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.databuilder.OrderItemPersistenceTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.databuilder.OrderPersistenceEntityTestDataBuilder;
 
 class OrderPersistenceEntityAssemblerTest {
 
-    private OrderPersistenceEntityAssembler assembler;
+        private OrderPersistenceEntityAssembler assembler;
 
-    @BeforeEach
-    void setUp() {
-        assembler = new OrderPersistenceEntityAssembler();
-    }
+        @BeforeEach
+        void setUp() {
+            assembler = new OrderPersistenceEntityAssembler();
+        }
 
     @Test
     void fromDomain_shouldMapAllFields() {
@@ -91,12 +90,12 @@ class OrderPersistenceEntityAssemblerTest {
 
         Order order = OrderTestDataBuilder.anOrder().withItems(true).build();
         
-        var oipe = order.items().stream()
-            .map(i -> this.assembler.fromDomain(i))
+        var oipes = order.items().stream()
+            .map(oi -> this.assembler.fromDomain(oi))
             .collect(Collectors.toSet());
 
         var ope = OrderPersistenceEntityTestDataBuilder.draft()
-            .items(oipe)
+            .items(oipes)
             .build();
 
         order.removeItem(order.items().iterator().next().id());
@@ -104,5 +103,6 @@ class OrderPersistenceEntityAssemblerTest {
         this.assembler.merge(ope, order);
 
         Assertions.assertThat(order.items().size()).isEqualTo(ope.getItems().size());
+        
     }
 }

@@ -7,7 +7,7 @@ import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.ZipCod
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.embeddeble.AddressEmbeddable;
 
 @Component
-public class AddressPersistenceEntityDisassembler {
+public class AddressEmbeddablePersistenceEntityDisassembler {
     
     public static Address toDomainEntity(AddressEmbeddable embeddable) {
 

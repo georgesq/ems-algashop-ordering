@@ -9,10 +9,10 @@ public class RecipientPersistenceEntityDisassembler {
 
     public static Recipient toDomainEntity(RecipientEmbeddable recipient) {
         return Recipient.builder()
-            .fullName(FullNameEmbeddableDisassembler.toDomainEntity(recipient.getFullName()))
+            .fullName(FullNameEmbeddablePersistenceEntityDisassembler.toDomainEntity(recipient.getFullName()))
             .phone(new Phone(recipient.getPhone()))
             .document(new Document(recipient.getDocument()))
-            .address(AddressPersistenceEntityDisassembler.toDomainEntity(recipient.getAddress()))
+            .address(AddressEmbeddablePersistenceEntityDisassembler.toDomainEntity(recipient.getAddress()))
         .build();
     }
 

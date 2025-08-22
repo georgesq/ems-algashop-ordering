@@ -12,7 +12,7 @@ public class ShippingPersistenceEntityDisassembler {
     public static Shipping toDomainEntity(ShippingEmbeddable embeddable) {
 
         return Shipping.builder()
-            .address(AddressPersistenceEntityDisassembler.toDomainEntity(embeddable.getAddress()))
+            .address(AddressEmbeddablePersistenceEntityDisassembler.toDomainEntity(embeddable.getAddress()))
             .cost(new Money(embeddable.getCost()))
             .expectedDate(embeddable.getExpectedDate())
             .recipient(RecipientPersistenceEntityDisassembler.toDomainEntity(embeddable.getRecipient()))
