@@ -3,6 +3,7 @@ package br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilde
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import br.com.transformers.ems.algashop.ordering.domain.model.entity.Customer;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderStatus;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.PaymentMethod;
@@ -16,11 +17,10 @@ import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Phone;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Quantity;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Shipping;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.ZipCode;
-import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.CustomerId;
 
 public class OrderTestDataBuilder {
 
-    CustomerId customerId = new CustomerId();
+    Customer customer = CustomerTestDataBuilder.aCustomerBuilder().build();
 
     PaymentMethod paymentMethod = PaymentMethod.CREDIT_CARD;
 
@@ -88,7 +88,7 @@ public class OrderTestDataBuilder {
 
     public Order build() {
         
-        Order order = Order.draft(this.customerId);
+        Order order = Order.draft(this.customer);
 
         order.changeShipping(this.shipping);
         order.changeBilling(this.billing);
@@ -138,19 +138,28 @@ public class OrderTestDataBuilder {
 
     }
 
-    public OrderTestDataBuilder customerId(CustomerId customerId) {
-        this.customerId = customerId;
+    public OrderTestDataBuilder customer(Customer customer) {
+
+        this.customer = customer;
+
         return this;
+
     }
 
     public OrderTestDataBuilder paymentMethod(PaymentMethod paymentMethod) {
+
         this.paymentMethod = paymentMethod;
+
         return this;
+
     }
 
     public OrderTestDataBuilder shippingCost(Money shippingCost) {
+
         this.shippingCost = shippingCost;
+
         return this;
+        
     }
 
     public OrderTestDataBuilder expectedDeliveryDate(LocalDate expectedDeliveryDate) {

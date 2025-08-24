@@ -7,18 +7,21 @@ import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderStatus
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.PaymentMethod;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Money;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Quantity;
-import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.OrderId;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class OrderPersistenceEntityDisassembler {
     
+    private CustomerPersistenceEntityDisassembler customerPersistenceEntityDisassembler = new CustomerPersistenceEntityDisassembler();
+
     public Order toDomainEntity(OrderPersistenceEntity persistenceEntity) {
 
         return Order.existing()
             .id(new OrderId(persistenceEntity.getId()))
-            .customerId(new CustomerId(persistenceEntity.getCustomerId()))
+            .customer(customerPersistenceEntityDisassembler.toDomainEntity(persistenceEntity.getCustomer()))
             .totalAmount(new Money(persistenceEntity.getTotalAmount()))
             .totalItems(new Quantity(persistenceEntity.getTotalItems()))
             .createdAt(persistenceEntity.getCreatedAt())

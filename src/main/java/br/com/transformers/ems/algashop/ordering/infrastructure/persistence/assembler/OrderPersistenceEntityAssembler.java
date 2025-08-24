@@ -11,9 +11,14 @@ import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderItem;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderItemPersistenceEntity;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.repository.CustomerPersistenceEntityRepository;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class OrderPersistenceEntityAssembler {
+
+    private CustomerPersistenceEntityRepository customerPersistenceEntityRepository;
 
     public OrderPersistenceEntity fromDomain(Order order) {
         return merge(new OrderPersistenceEntity(), order);
@@ -22,7 +27,10 @@ public class OrderPersistenceEntityAssembler {
     public OrderPersistenceEntity merge(OrderPersistenceEntity orderPersistenceEntity, Order order) {
 
         orderPersistenceEntity.setId(order.id().value().toLong());
-        orderPersistenceEntity.setCustomerId(order.customerId().value());
+
+        var customerPersistenceEntity = customerPersistenceEntityRepository.getReferenceById(order.customer().id().value());
+        orderPersistenceEntity.setCustomer(customerPersistenceEntity);
+
         orderPersistenceEntity.setTotalAmount(order.totalAmount().value());
         orderPersistenceEntity.setTotalItems(order.totalItems().value());
         orderPersistenceEntity.setCreatedAt(order.createdAt());

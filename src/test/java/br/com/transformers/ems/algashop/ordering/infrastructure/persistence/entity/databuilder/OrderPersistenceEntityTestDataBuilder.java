@@ -47,7 +47,7 @@ public class OrderPersistenceEntityTestDataBuilder {
     private OrderPersistenceEntity anOPE() {
         return OrderPersistenceEntity.builder()
                 .id(IdGenerator.generateTSID().toLong())
-                .customerId(IdGenerator.generateUUID())
+                .customer(CustomerPersistenceEntityTestDataBuilder.aCustomerPersistenceEntity().build())
                 .totalAmount(new BigDecimal("99.99"))
                 .totalItems(5L)
                 .createdAt(OffsetDateTime.now().minusDays(2))

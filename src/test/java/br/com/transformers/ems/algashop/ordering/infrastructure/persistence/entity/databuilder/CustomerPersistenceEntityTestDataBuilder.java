@@ -8,8 +8,8 @@ import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.enti
 
 public class CustomerPersistenceEntityTestDataBuilder {
 
-    public static CustomerPersistenceEntity aCustomerPersistenceEntity() {
-        var customerPE = CustomerPersistenceEntity.builder()
+    public static CustomerPersistenceEntity.CustomerPersistenceEntityBuilder aCustomerPersistenceEntity() {
+        return CustomerPersistenceEntity.builder()
             .address(AddressEmbeddableTestDataBuilder.anAddress())
             .archived(false)
             .archivedAt(null)
@@ -25,10 +25,8 @@ public class CustomerPersistenceEntityTestDataBuilder {
             .promotionNotificaficationsAllowed(false)
             .registeredAt(OffsetDateTime.now())
             .loyaltyPoints(1)
-            .version(1l)
-        .build();
+            .version(1l);
 
-        return customerPE;
     }
 
 }

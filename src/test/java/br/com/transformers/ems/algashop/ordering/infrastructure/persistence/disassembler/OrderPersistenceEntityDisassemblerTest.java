@@ -8,7 +8,6 @@ import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderStatus
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.PaymentMethod;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Money;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Quantity;
-import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.OrderId;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.databuilder.OrderPersistenceEntityTestDataBuilder;
@@ -27,7 +26,7 @@ class OrderPersistenceEntityDisassemblerTest {
         // Assert
         Assertions.assertThat(order).isNotNull();
         Assertions.assertThat(order.id()).isEqualTo(new OrderId(entity.getId()));
-        Assertions.assertThat(order.customerId()).isEqualTo(new CustomerId(entity.getCustomerId()));
+        Assertions.assertThat(order.customer().id().value()).isEqualTo(entity.getCustomer().getId());
         Assertions.assertThat(order.totalAmount()).isEqualTo(new Money(entity.getTotalAmount()));
         Assertions.assertThat(order.totalItems()).isEqualTo(new Quantity(entity.getTotalItems()));
         Assertions.assertThat(order.createdAt()).isEqualTo(entity.getCreatedAt());

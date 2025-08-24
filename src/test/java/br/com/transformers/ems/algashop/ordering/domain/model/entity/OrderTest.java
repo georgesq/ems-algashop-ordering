@@ -7,6 +7,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.BillingTestDataBuilder;
+import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.CustomerTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.OrderTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.ProductTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.ShippingTestDataBuilder;
@@ -19,7 +20,6 @@ import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Money;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Phone;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.ProductName;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Quantity;
-import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.OrderItemId;
 
 public class OrderTest {
@@ -27,7 +27,7 @@ public class OrderTest {
     @Test
     void testCreateDraft() {
 
-        Order.draft(new CustomerId());
+        Order.draft(CustomerTestDataBuilder.aCustomerBuilder().build());
 
     }
 
@@ -135,7 +135,7 @@ public class OrderTest {
     @Test
     void testGivenDraftOrderWhenChangePaymentMethodThenPaymentMethodChanged() {
 
-        var order = Order.draft(new CustomerId());
+        var order = Order.draft(CustomerTestDataBuilder.aCustomerBuilder().build());
 
         order.changePaymentMethod(PaymentMethod.GATEWAY_BALANCE);
 
@@ -148,7 +148,7 @@ public class OrderTest {
     @Test
     void testGivenDraftOrderWhenChangeBillingInfoThenBillingInfoChanged() {
 
-        var order = Order.draft(new CustomerId());
+        var order = Order.draft(CustomerTestDataBuilder.aCustomerBuilder().build());
 
         order.changeBilling(
             BillingTestDataBuilder.aBilling().build()
@@ -165,7 +165,7 @@ public class OrderTest {
     @Test
     void testGivenDraftOrderWhenChangeShippingThenShippingInfoChanged() {
 
-        var order = Order.draft(new CustomerId());
+        var order = Order.draft(CustomerTestDataBuilder.aCustomerBuilder().build());
 
         order.changeShipping(ShippingTestDataBuilder.aShipping().build());
 
@@ -179,7 +179,7 @@ public class OrderTest {
     @Test
     void testGivenDraftOrderInvalidExpectedDeliveryDateWhenChangeShippingThenException() {
 
-        var order = Order.draft(new CustomerId());
+        var order = Order.draft(CustomerTestDataBuilder.aCustomerBuilder().build());
 
         Assertions.assertThatExceptionOfType(InvalidShippingDateException.class).isThrownBy(() ->
             order.changeShipping(ShippingTestDataBuilder.aShipping()
@@ -210,7 +210,7 @@ public class OrderTest {
     @Test
     void testGivenUnavailableProductWhenAddItemThenUnavailableProductException() {
         
-        var order = Order.draft(new CustomerId());
+        var order = Order.draft(CustomerTestDataBuilder.aCustomerBuilder().build());
 
         Assertions.assertThatExceptionOfType(UnavailableProductException.class)
             .isThrownBy(() ->order.addItem(ProductTestDataBuilder.aUnavailableProduct().build(), new Quantity(1L)));

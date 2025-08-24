@@ -19,6 +19,7 @@ import br.com.transformers.ems.algashop.ordering.domain.model.utility.IdGenerato
 import br.com.transformers.ems.algashop.ordering.infrastructure.config.JpaConfig;
 import br.com.transformers.ems.algashop.ordering.infrastructure.config.SpringDataAuditingConfig;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.databuilder.CustomerPersistenceEntityTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.databuilder.OrderPersistenceEntityTestDataBuilder;
 
 @DataJpaTest
@@ -91,11 +92,12 @@ class OrderPersistenceEntityRepositoryIT {
         OrderPersistenceEntity anotherOrder = new OrderPersistenceEntity();
 
         anotherOrder.setId(IdGenerator.generateTSID().toLong());
-        anotherOrder.setCustomerId(IdGenerator.generateUUID());
+        anotherOrder.setCustomer(CustomerPersistenceEntityTestDataBuilder.aCustomerPersistenceEntity().build());
         anotherOrder.setTotalAmount(BigDecimal.valueOf(200.00));
         anotherOrder.setCreatedAt(OffsetDateTime.now());
         repository.save(anotherOrder);
 
         assertThat(repository.findAll()).hasSizeGreaterThanOrEqualTo(2);
+        
     }
 }

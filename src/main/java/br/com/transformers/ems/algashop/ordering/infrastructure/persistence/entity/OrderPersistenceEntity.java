@@ -19,6 +19,8 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
@@ -42,7 +44,9 @@ public class OrderPersistenceEntity {
     @Id
     private Long id;
 
-    private UUID customerId;
+    @JoinColumn
+    @ManyToOne(optional = false)
+    private CustomerPersistenceEntity customer;
 
     private BigDecimal totalAmount;
     private Long totalItems;
@@ -75,13 +79,13 @@ public class OrderPersistenceEntity {
     private Long version;
 
     @Builder
-    public OrderPersistenceEntity(Long id, UUID customerId, BigDecimal totalAmount, Long totalItems,
+    public OrderPersistenceEntity(Long id, CustomerPersistenceEntity customer, BigDecimal totalAmount, Long totalItems,
             OffsetDateTime createdAt, OffsetDateTime placedAt, OffsetDateTime paidAt, OffsetDateTime canceledAt,
             OffsetDateTime readAt, BillingEmbeddable billing, ShippingEmbeddable shipping, String status,
             String paymentMethod, Set<OrderItemPersistenceEntity> items, UUID createdByUser,
             OffsetDateTime lastModifiedAt, UUID lastModifiedByUser, Long version) {
         this.setId(id);
-        this.setCustomerId(customerId);
+        this.setCustomer(customer);
         this.setTotalAmount(totalAmount);
         this.setTotalItems(totalItems);
         this.setCreatedAt(createdAt);
@@ -135,6 +139,15 @@ public class OrderPersistenceEntity {
 
         this.getItems().add(item);
 
+    }
+
+    public UUID getCustomerId() {
+
+        if (!Objects.isNull(this.customer)) {
+            return this.customer.getId();
+        }
+
+        return null;
     }
 
 }

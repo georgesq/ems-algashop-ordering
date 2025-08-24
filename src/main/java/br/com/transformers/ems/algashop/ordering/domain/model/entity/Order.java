@@ -19,7 +19,6 @@ import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Money;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Product;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Quantity;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Shipping;
-import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.OrderId;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.OrderItemId;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.ProductId;
@@ -30,7 +29,7 @@ public class Order implements AggregateRoot<OrderId> {
     private static final NotNullNonEmptyValidator NNEV = NotNullNonEmptyValidator.getInstance();
 
     private OrderId id;
-    private CustomerId customerId;
+    private Customer customer;
 
     private Money totalAmount;
     private Quantity totalItems;
@@ -54,7 +53,7 @@ public class Order implements AggregateRoot<OrderId> {
     @Builder(builderClassName = "ExistingOrderBuilder", builderMethodName = "existing")    
     public Order(
         OrderId id, 
-        CustomerId customerId,
+        Customer customer,
         Money totalAmount, 
         Quantity totalItems, 
         OffsetDateTime createdAt,
@@ -70,7 +69,7 @@ public class Order implements AggregateRoot<OrderId> {
         Long version) {
 
         this.setId(id);
-        this.setCustomerId(customerId);
+        this.setCustomer(customer);
         this.setTotalAmount(totalAmount);
         this.setTotalItems(totalItems);
         this.setCreatedAt(createdAt);
@@ -89,11 +88,11 @@ public class Order implements AggregateRoot<OrderId> {
     }
 
     @Builder(builderClassName = "NewSimpleOrderBuild", builderMethodName = "draft")
-    public static Order draft(CustomerId customerId) {
+    public static Order draft(Customer customer) {
 
         return new Order(
             new OrderId(), 
-            customerId, 
+            customer, 
             Money.ZERO, 
             Quantity.ZERO, 
             null,
@@ -152,13 +151,13 @@ public class Order implements AggregateRoot<OrderId> {
         this.readAt = readAt;
     }
 
-    private void setCustomerId(CustomerId customerId) {
+    private void setCustomer(Customer customer) {
 
-        if (!NNEV.isValid(customerId, null)) {
+        if (!NNEV.isValid(customer, null)) {
             throw new IllegalArgumentException();
         }
 
-        this.customerId = customerId;
+        this.customer = customer;
     }
 
     private void setBilling(Billing billingInfo) {
@@ -411,8 +410,8 @@ public class Order implements AggregateRoot<OrderId> {
         return id;
     }
 
-    public CustomerId customerId() {
-        return customerId;
+    public Customer customer() {
+        return customer;
     }
 
     public Money totalAmount() {

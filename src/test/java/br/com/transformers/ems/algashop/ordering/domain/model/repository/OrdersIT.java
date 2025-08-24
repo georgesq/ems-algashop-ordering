@@ -45,7 +45,7 @@ class OrdersIT {
 
         Assertions.assertThat(savedOrder).satisfies(
             s -> Assertions.assertThat(s.id()).isEqualTo(order.id()),
-            s -> Assertions.assertThat(s.customerId()).isEqualTo(s.customerId()),
+            s -> Assertions.assertThat(s.customer()).isEqualTo(s.customer()),
             s -> Assertions.assertThat(s.totalAmount()).isEqualTo(order.totalAmount()),
             s -> Assertions.assertThat(s.totalItems()).isEqualTo(order.totalItems()),
             s -> Assertions.assertThat(s.status()).isEqualTo(order.status()),

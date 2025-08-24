@@ -25,7 +25,7 @@ class CustomerPersistenceEntityDisassemblerTest {
     @Test
     void toDomainEntity_shouldMapAllFieldsCorrectly() {
         // Arrange
-        CustomerPersistenceEntity persistenceEntity = CustomerPersistenceEntityTestDataBuilder.aCustomerPersistenceEntity();
+        CustomerPersistenceEntity persistenceEntity = CustomerPersistenceEntityTestDataBuilder.aCustomerPersistenceEntity().build();
 
         var disassembled = disassembler.toDomainEntity(persistenceEntity);
 
