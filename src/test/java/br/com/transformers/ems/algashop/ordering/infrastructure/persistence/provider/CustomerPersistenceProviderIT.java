@@ -105,5 +105,25 @@ class CustomerPersistenceProviderIT {
             .build();        
 
         Assertions.assertThatException().isThrownBy(() -> this.provider.add(newCustomer));
+        
+    }
+
+    @Test
+    void givenValidEmailThenReturnACustomer() {
+
+        Customer customer = CustomerTestDataBuilder.aCustomerBuilder()
+            .build();
+
+         this.provider.add(customer);
+       
+        Assertions.assertThat(this.provider.ofEmail(customer.email()).isPresent()).isEqualTo(true);
+
+    }
+
+    @Test
+    void givenInvalidEmailThenNotReturnACustomer() {
+
+        Assertions.assertThat(this.provider.ofEmail(new Email("a@a.com")).isPresent()).isEqualTo(false);
+        
     }
 }

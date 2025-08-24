@@ -10,6 +10,7 @@ import org.springframework.util.ReflectionUtils;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Customer;
 import br.com.transformers.ems.algashop.ordering.domain.model.repository.Customers;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Email;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.assembler.CustomerPersistenceEntityAssembler;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.disassembler.CustomerPersistenceEntityDisassembler;
@@ -96,6 +97,12 @@ public class CustomerPersistenceProvider implements Customers {
     @Override
     public Long count() {
         return this.repository.count();
+    }
+
+    @Override
+    public Optional<Customer> ofEmail(Email email) {
+        return this.repository.findByEmail(email.toString())
+            .map(disassembler::toDomainEntity);
     }
 
 }
