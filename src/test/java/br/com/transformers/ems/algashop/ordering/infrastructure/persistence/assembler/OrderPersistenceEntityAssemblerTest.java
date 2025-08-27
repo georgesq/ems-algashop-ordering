@@ -2,7 +2,6 @@ package br.com.transformers.ems.algashop.ordering.infrastructure.persistence.ass
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.HashSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 

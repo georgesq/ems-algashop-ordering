@@ -2,7 +2,6 @@ package br.com.transformers.ems.algashop.ordering.infrastructure.persistence.pro
 
 import java.lang.reflect.Field;
 import java.time.Year;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -106,13 +105,9 @@ public class OrdersPersistenceProvider implements Orders {
     @Override
     public List<Order> placedByCustomerInYear(CustomerId customerId, Year year) {
         
-        var start = year.atDay(1).atStartOfDay().atOffset(ZoneOffset.UTC);
-        var end = start.plusYears(1).minusNanos(1);
-
-        List<OrderPersistenceEntity> findOrderPersistenceEntities = this.repository.findByCustomer_IdAndPlacedAtBetween(
+        List<OrderPersistenceEntity> findOrderPersistenceEntities = this.repository.placedByCustomerInYear(
                 customerId.value(),
-                start,
-                end);
+                year.getValue());
 
         return findOrderPersistenceEntities.stream()
                 .map(disassembler::toDomainEntity).collect(Collectors.toList());
