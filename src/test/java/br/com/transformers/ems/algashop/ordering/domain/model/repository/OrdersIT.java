@@ -1,6 +1,10 @@
 package br.com.transformers.ems.algashop.ordering.domain.model.repository;
 
+import java.time.Year;
+import java.util.List;
+
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +14,16 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderStatus;
+import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.CustomerTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.OrderTestDataBuilder;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.OrderId;
 import br.com.transformers.ems.algashop.ordering.infrastructure.config.JpaConfig;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.assembler.CustomerPersistenceEntityAssembler;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.assembler.OrderPersistenceEntityAssembler;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.disassembler.CustomerPersistenceEntityDisassembler;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.provider.CustomersPersistenceProvider;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.provider.OrdersPersistenceProvider;
 
 @DataJpaTest
@@ -22,15 +31,25 @@ import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.prov
     OrdersPersistenceProvider.class, 
     OrderPersistenceEntityAssembler.class, 
     OrderPersistenceEntityDisassembler.class,
+    CustomerPersistenceEntityAssembler.class,
+    CustomersPersistenceProvider.class,
+    CustomerPersistenceEntityDisassembler.class,
     JpaConfig.class
 })
 class OrdersIT {
 
-    private Orders orders;
-
     @Autowired
-    public OrdersIT(Orders orders) {
-        this.orders = orders;
+    private Orders orders;
+    @Autowired
+    private Customers customers;
+
+    @BeforeEach
+    public void setup() {
+        if (!customers.exists(CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID)) {
+            customers.add(
+                    CustomerTestDataBuilder.existingCustomer().build()
+            );
+        }
     }
 
     @Test
@@ -45,7 +64,7 @@ class OrdersIT {
 
         Assertions.assertThat(savedOrder).satisfies(
             s -> Assertions.assertThat(s.id()).isEqualTo(order.id()),
-            s -> Assertions.assertThat(s.customer()).isEqualTo(s.customer()),
+            s -> Assertions.assertThat(s.customerId()).isEqualTo(order.customerId()),
             s -> Assertions.assertThat(s.totalAmount()).isEqualTo(order.totalAmount()),
             s -> Assertions.assertThat(s.totalItems()).isEqualTo(order.totalItems()),
             s -> Assertions.assertThat(s.status()).isEqualTo(order.status()),
@@ -133,4 +152,33 @@ class OrdersIT {
         Assertions.assertThat(orders.exists(new OrderId())).isFalse();
         
     }
+
+    @Test
+    void givenYearThenListOrders() {
+
+        Order order = OrderTestDataBuilder.anOrder().withItems(true).status(OrderStatus.PLACED).build();
+        orders.add(order);
+        Order aggregateRoot2 = OrderTestDataBuilder.anOrder().withItems(true).status(OrderStatus.PLACED).build();
+        orders.add(aggregateRoot2);
+        orders.add(OrderTestDataBuilder.anOrder().withItems(true).status(OrderStatus.CANCELED).build());
+        orders.add(OrderTestDataBuilder.anOrder().withItems(true).status(OrderStatus.DRAFT).build());
+
+        CustomerId customerId = CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID;;
+
+        List<Order> ordersFinded = orders.placedByCustomerInYear(customerId, Year.now());
+
+        Assertions.assertThat(ordersFinded).isNotEmpty();
+        Assertions.assertThat(ordersFinded.size()).isEqualTo(2);
+
+        ordersFinded = orders.placedByCustomerInYear(customerId, Year.now().minusYears(1));
+
+        Assertions.assertThat(ordersFinded).isEmpty();
+
+        ordersFinded = orders.placedByCustomerInYear(new CustomerId(), Year.now());
+
+        Assertions.assertThat(ordersFinded).isEmpty();
+
+    }
+
+
 }

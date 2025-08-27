@@ -11,7 +11,7 @@ import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.BirthD
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Document;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Email;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.FullName;
-import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.LoyaltPoints;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.LoyaltyPoints;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Phone;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import lombok.Builder;
@@ -38,7 +38,7 @@ public class Customer implements AggregateRoot<CustomerId> {
 
     private OffsetDateTime archivedAt;
 
-    private LoyaltPoints loyaltyPoints;
+    private LoyaltyPoints loyaltyPoints;
 
     private Address address;
 
@@ -46,8 +46,8 @@ public class Customer implements AggregateRoot<CustomerId> {
 
     private static final NotNullNonEmptyValidator nnnev = NotNullNonEmptyValidator.getInstance();
 
-    @Builder(builderClassName = "NewSimpleCustomerBuild", builderMethodName = "draft")
-    private static Customer createNewInstance(FullName fullName, BirthDate birthDate, Email email, Phone phone,
+    @Builder(builderClassName = "CustomerBuild", builderMethodName = "draft")
+    private static Customer createNewInstance(CustomerId id, FullName fullName, BirthDate birthDate, Email email, Phone phone,
             Document document, Boolean promotionNotificaficationsAllowed,
             Address address) {
 
@@ -62,14 +62,14 @@ public class Customer implements AggregateRoot<CustomerId> {
                 false,
                 OffsetDateTime.now(),
                 null,
-                new LoyaltPoints(),
+                new LoyaltyPoints(),
                 address,
             null
         );
 
     }
 
-    @Builder(builderClassName = "NewFullCustomerBuild", builderMethodName = "existing")
+    @Builder(builderClassName = "ExistingCustomerBuild", builderMethodName = "existing")
     private Customer(
         CustomerId id, 
         FullName fullName, 
@@ -77,11 +77,11 @@ public class Customer implements AggregateRoot<CustomerId> {
         Email email, 
         Phone phone, 
         Document document,
-        Boolean promotionNotificaficationsAllowed, 
+        Boolean promotionNotificationsAllowed, 
         Boolean archived, 
         OffsetDateTime registeredAt,
         OffsetDateTime archivedAt, 
-        LoyaltPoints loyaltyPoints, 
+        LoyaltyPoints loyaltyPoints, 
         Address address,
         Long version) {
 
@@ -91,10 +91,10 @@ public class Customer implements AggregateRoot<CustomerId> {
         this.setEmail(email);
         this.setPhone(phone);
         this.setDocument(document);
-        this.setPromotionNotificaficationsAllowed(promotionNotificaficationsAllowed);
+        this.setPromotionNotificationsAllowed(promotionNotificationsAllowed);
         this.setRegisteredAt(registeredAt);
         this.setAddress(address);
-        this.setLoyaltyPoints(new LoyaltPoints());
+        this.setLoyaltyPoints(new LoyaltyPoints());
         this.setLoyaltyPoints(loyaltyPoints);
         this.setArchived(archived);
         this.setArchivedAt(archivedAt);
@@ -121,13 +121,13 @@ public class Customer implements AggregateRoot<CustomerId> {
     public void enablePromotionNotificafications() {
         verifyIsChangeble();
 
-        this.setPromotionNotificaficationsAllowed(true);
+        this.setPromotionNotificationsAllowed(true);
     }
 
     public void disablePromotionNotificafications() {
         verifyIsChangeble();
 
-        this.setPromotionNotificaficationsAllowed(false);
+        this.setPromotionNotificationsAllowed(false);
     }
 
     public void changeName(FullName value) {
@@ -206,7 +206,7 @@ public class Customer implements AggregateRoot<CustomerId> {
         this.address = value;
     }
 
-    private void setPromotionNotificaficationsAllowed(Boolean value) {
+    private void setPromotionNotificationsAllowed(Boolean value) {
         if (!nnnev.isValid(value, null)) {
             throw new IllegalArgumentException("PromotionNotificaficationsAllowed is invalid");
         }
@@ -282,7 +282,7 @@ public class Customer implements AggregateRoot<CustomerId> {
         this.archived = value;
     }
 
-    private void setLoyaltyPoints(LoyaltPoints value) {
+    private void setLoyaltyPoints(LoyaltyPoints value) {
         if (!nnnev.isValid(value, null)) {
             throw new IllegalArgumentException("LoyaltyPoints is invalid");
         }

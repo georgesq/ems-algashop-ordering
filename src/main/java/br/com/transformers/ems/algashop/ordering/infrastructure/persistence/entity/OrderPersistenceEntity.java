@@ -104,24 +104,15 @@ public class OrderPersistenceEntity {
         this.setVersion(version);
     }
 
-    private Boolean itemsIsNull() {
-
-        boolean result = Objects.isNull(this.items);
-        if (result) {
-            this.setItems(new HashSet<>());
-        }
-
-        return result;
-
-    }
-
     public void replaceItems(Set<OrderItemPersistenceEntity> items) {
 
-        if (itemsIsNull()) {
+        if (items == null || items.isEmpty()) {
+            this.setItems(new HashSet<>());
+
             return;
         }
 
-        this.items.forEach(i-> i.setOrder(this));
+        items.forEach(i-> i.setOrder(this));
 
         this.setItems(items);
 
@@ -133,8 +124,11 @@ public class OrderPersistenceEntity {
             return;
         }
 
-        itemsIsNull();
-
+        if (items == null || items.isEmpty()) {
+            this.setItems(new HashSet<>());
+            return;
+        }
+        
         item.setOrder(this);
 
         this.getItems().add(item);

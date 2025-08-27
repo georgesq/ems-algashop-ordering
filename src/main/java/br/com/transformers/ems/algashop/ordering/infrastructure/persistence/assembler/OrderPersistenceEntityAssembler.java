@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
@@ -12,12 +13,11 @@ import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderItem;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderItemPersistenceEntity;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.repository.CustomerPersistenceEntityRepository;
-import lombok.RequiredArgsConstructor;
 
 @Component
-@RequiredArgsConstructor
 public class OrderPersistenceEntityAssembler {
 
+    @Autowired
     private CustomerPersistenceEntityRepository customerPersistenceEntityRepository;
 
     public OrderPersistenceEntity fromDomain(Order order) {
@@ -28,7 +28,7 @@ public class OrderPersistenceEntityAssembler {
 
         orderPersistenceEntity.setId(order.id().value().toLong());
 
-        var customerPersistenceEntity = customerPersistenceEntityRepository.getReferenceById(order.customer().id().value());
+        var customerPersistenceEntity = customerPersistenceEntityRepository.getReferenceById(order.customerId().value());
         orderPersistenceEntity.setCustomer(customerPersistenceEntity);
 
         orderPersistenceEntity.setTotalAmount(order.totalAmount().value());
@@ -92,6 +92,7 @@ public class OrderPersistenceEntityAssembler {
         orderItemPersistenceEntity.setProductId(orderItem.productId().value());
         orderItemPersistenceEntity.setProductName(orderItem.productName().toString());
         orderItemPersistenceEntity.setQuantity(orderItem.quantity().value());
+        orderItemPersistenceEntity.setTotalAmmount(orderItem.totalAmmount().value());
 
         return orderItemPersistenceEntity;
 

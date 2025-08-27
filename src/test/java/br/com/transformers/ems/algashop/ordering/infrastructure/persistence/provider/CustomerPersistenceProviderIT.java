@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Import;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Customer;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.CustomerTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Email;
-import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.LoyaltPoints;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.LoyaltyPoints;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import br.com.transformers.ems.algashop.ordering.infrastructure.config.JpaConfig;
 import br.com.transformers.ems.algashop.ordering.infrastructure.config.SpringDataAuditingConfig;
@@ -21,7 +21,7 @@ import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.disa
 
 @DataJpaTest
 @Import({
-        CustomerPersistenceProvider.class,
+        CustomersPersistenceProvider.class,
         CustomerPersistenceEntityAssembler.class,
         CustomerPersistenceEntityDisassembler.class,
         SpringDataAuditingConfig.class,
@@ -30,7 +30,7 @@ import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.disa
 class CustomerPersistenceProviderIT {
 
     @Autowired
-    private CustomerPersistenceProvider provider;
+    private CustomersPersistenceProvider provider;
 
     @BeforeEach
     void setUp() {
@@ -38,7 +38,7 @@ class CustomerPersistenceProviderIT {
 
     @Test
     void givenCustomerWhenAddThenSaved() {
-        Customer customer = CustomerTestDataBuilder.aCustomerBuilder()
+        Customer customer = CustomerTestDataBuilder.aCustomer()
             .build();
 
         this.provider.add(customer);
@@ -60,7 +60,7 @@ class CustomerPersistenceProviderIT {
 
     @Test
     void givenSavedCustomerWhenChangedThenUpdated() {
-        Customer customer = CustomerTestDataBuilder.aCustomerBuilder()
+        Customer customer = CustomerTestDataBuilder.aCustomer()
             .build();
 
         this.provider.add(customer);
@@ -82,7 +82,7 @@ class CustomerPersistenceProviderIT {
 
     @Test
     void givenOlderCustomerWhenChangedThenObjectOptimisticLockingFailureException() {
-        Customer customer = CustomerTestDataBuilder.aCustomerBuilder()
+        Customer customer = CustomerTestDataBuilder.aCustomer()
             .build();
 
         CustomerId id = customer.id();
@@ -97,9 +97,9 @@ class CustomerPersistenceProviderIT {
             .archivedAt(customer.archivedAt())
             .birthDate(customer.birthDate())
             .document(customer.document())
-            .loyaltyPoints(new LoyaltPoints(customer.loyaltyPoints()))
+            .loyaltyPoints(new LoyaltyPoints(customer.loyaltyPoints()))
             .phone(customer.phone())
-            .promotionNotificaficationsAllowed(customer.isPromotionNotificaficationsAllowed())
+            .promotionNotificationsAllowed(customer.isPromotionNotificaficationsAllowed())
             .registeredAt(OffsetDateTime.now())
             .archived(false)
             .build();        
@@ -111,7 +111,7 @@ class CustomerPersistenceProviderIT {
     @Test
     void givenValidEmailThenReturnACustomer() {
 
-        Customer customer = CustomerTestDataBuilder.aCustomerBuilder()
+        Customer customer = CustomerTestDataBuilder.aCustomer()
             .build();
 
          this.provider.add(customer);

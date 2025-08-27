@@ -20,7 +20,7 @@ class CustomerPersistenceEntityAssemblerTest {
 
     @Test
     void fromDomain_shouldMapAllFields() {
-        Customer domain = CustomerTestDataBuilder.aCustomerBuilder().build();
+        Customer domain = CustomerTestDataBuilder.aCustomer().build();
 
         // Act
         CustomerPersistenceEntity entity = assembler.fromDomain(domain);

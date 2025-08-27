@@ -2,14 +2,17 @@ package br.com.transformers.ems.algashop.ordering.domain.model.valueobject;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.exception.LoyaltyPointException;
 
-public record LoyaltPoints(
+public record LoyaltyPoints(
         Integer value
-) implements Comparable<LoyaltPoints> {
-    public LoyaltPoints() {
+) implements Comparable<LoyaltyPoints> {
+
+    public static final LoyaltyPoints ZERO = new LoyaltyPoints(0);
+
+    public LoyaltyPoints() {
         this(0);
     }
 
-    public LoyaltPoints(Integer value) {
+    public LoyaltyPoints(Integer value) {
         if (value < 0) {
             throw new LoyaltyPointException(value);
         }
@@ -23,10 +26,10 @@ public record LoyaltPoints(
         }
     }
 
-    public LoyaltPoints add(Integer value) {
+    public LoyaltyPoints add(Integer value) {
         this.valid(value);
 
-        return new LoyaltPoints(this.value() + value);
+        return new LoyaltyPoints(this.value() + value);
     }
 
     @Override
@@ -35,7 +38,7 @@ public record LoyaltPoints(
     }
 
     @Override
-    public int compareTo(LoyaltPoints o) {
+    public int compareTo(LoyaltyPoints o) {
         return this.value().compareTo(o.value());
     }
 }

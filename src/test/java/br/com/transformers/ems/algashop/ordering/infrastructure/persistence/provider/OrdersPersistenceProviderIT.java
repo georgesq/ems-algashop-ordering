@@ -1,6 +1,7 @@
 package br.com.transformers.ems.algashop.ordering.infrastructure.persistence.provider;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderStatus;
+import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.CustomerTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.OrderTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.infrastructure.config.JpaConfig;
 import br.com.transformers.ems.algashop.ordering.infrastructure.config.SpringDataAuditingConfig;
@@ -32,7 +34,18 @@ public class OrdersPersistenceProviderIT {
     private OrdersPersistenceProvider persistenceProvider;
     @Autowired
     private OrderPersistenceEntityRepository repository;
+    @Autowired
+    private CustomersPersistenceProvider customersPersistenceProvider;
 
+    @BeforeEach
+    public void setup() {
+        if (!customersPersistenceProvider.exists(CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID)) {
+            customersPersistenceProvider.add(
+                    CustomerTestDataBuilder.existingCustomer().build()
+            );
+        }
+    }
+    
     @Test
     @DisplayName("should update an order and maintain auditing fields")
     void shouldUpdateOrder() {

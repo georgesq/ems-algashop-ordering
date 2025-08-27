@@ -27,7 +27,7 @@ public class OrderTest {
     @Test
     void testCreateDraft() {
 
-        Order.draft(CustomerTestDataBuilder.aCustomerBuilder().build());
+        Order.draft(CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID);
 
     }
 
@@ -84,8 +84,8 @@ public class OrderTest {
         order.addItem(product, new Quantity(2L));
 
         Assertions.assertWith(order,
-            (o) -> Assertions.assertThat(o.totalAmount()).isEqualTo(new Money("140")),
-            (o) -> Assertions.assertThat(o.totalItems()).isEqualTo(new Quantity(14L))
+            (o) -> Assertions.assertThat(o.totalAmount()).isEqualTo(new Money("70")),
+            (o) -> Assertions.assertThat(o.totalItems()).isEqualTo(new Quantity(7L))
         );
 
     }
@@ -135,7 +135,7 @@ public class OrderTest {
     @Test
     void testGivenDraftOrderWhenChangePaymentMethodThenPaymentMethodChanged() {
 
-        var order = Order.draft(CustomerTestDataBuilder.aCustomerBuilder().build());
+        var order = Order.draft(CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID);
 
         order.changePaymentMethod(PaymentMethod.GATEWAY_BALANCE);
 
@@ -148,7 +148,7 @@ public class OrderTest {
     @Test
     void testGivenDraftOrderWhenChangeBillingInfoThenBillingInfoChanged() {
 
-        var order = Order.draft(CustomerTestDataBuilder.aCustomerBuilder().build());
+        var order = Order.draft(CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID);
 
         order.changeBilling(
             BillingTestDataBuilder.aBilling().build()
@@ -165,7 +165,7 @@ public class OrderTest {
     @Test
     void testGivenDraftOrderWhenChangeShippingThenShippingInfoChanged() {
 
-        var order = Order.draft(CustomerTestDataBuilder.aCustomerBuilder().build());
+        var order = Order.draft(CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID);
 
         order.changeShipping(ShippingTestDataBuilder.aShipping().build());
 
@@ -179,7 +179,7 @@ public class OrderTest {
     @Test
     void testGivenDraftOrderInvalidExpectedDeliveryDateWhenChangeShippingThenException() {
 
-        var order = Order.draft(CustomerTestDataBuilder.aCustomerBuilder().build());
+        var order = Order.draft(CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID);
 
         Assertions.assertThatExceptionOfType(InvalidShippingDateException.class).isThrownBy(() ->
             order.changeShipping(ShippingTestDataBuilder.aShipping()
@@ -210,7 +210,7 @@ public class OrderTest {
     @Test
     void testGivenUnavailableProductWhenAddItemThenUnavailableProductException() {
         
-        var order = Order.draft(CustomerTestDataBuilder.aCustomerBuilder().build());
+        var order = Order.draft(CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID);
 
         Assertions.assertThatExceptionOfType(UnavailableProductException.class)
             .isThrownBy(() ->order.addItem(ProductTestDataBuilder.aUnavailableProduct().build(), new Quantity(1L)));

@@ -52,7 +52,7 @@ class OrderPersistenceEntityAssemblerTest {
         OrderPersistenceEntity entity = assembler.fromDomain(order);
 
         assertThat(entity.getId()).isEqualTo(order.id().value().toLong());
-        assertThat(entity.getCustomerId()).isEqualTo(order.customer().id().value());
+        assertThat(entity.getCustomerId()).isEqualTo(order.customerId().value());
         assertThat(entity.getTotalAmount()).isEqualTo(order.totalAmount().value());
         assertThat(entity.getTotalItems()).isEqualTo(order.totalItems().value());
         assertThat(entity.getCreatedAt()).isEqualTo(order.createdAt());
@@ -75,7 +75,7 @@ class OrderPersistenceEntityAssemblerTest {
     public void givenOrderWithNoItems_thenRemoveAllPersistenceEntityItems() {
 
         Order order = OrderTestDataBuilder.anOrder().withItems(false).build();
-        OrderPersistenceEntity ope = OrderPersistenceEntityTestDataBuilder.draft().build();
+        OrderPersistenceEntity ope = OrderPersistenceEntityTestDataBuilder.draft().withItems(true).build();
 
         ope.addItem(OrderItemPersistenceTestDataBuilder.anOrderItem(ope));
 
@@ -92,7 +92,7 @@ class OrderPersistenceEntityAssemblerTest {
     public void givenOrderWithItems_thenAddToPersistenceEntity() {
 
         Order order = OrderTestDataBuilder.anOrder().withItems(true).build();
-        OrderPersistenceEntity ope = OrderPersistenceEntityTestDataBuilder.draft().items(new HashSet<>()).build();
+        OrderPersistenceEntity ope = OrderPersistenceEntityTestDataBuilder.draft().withItems(true).build();
 
         ope.addItem(OrderItemPersistenceTestDataBuilder.anOrderItem(ope));
 

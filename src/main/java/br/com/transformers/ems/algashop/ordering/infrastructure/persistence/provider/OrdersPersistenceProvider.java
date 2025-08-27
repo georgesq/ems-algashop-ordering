@@ -1,8 +1,12 @@
 package br.com.transformers.ems.algashop.ordering.infrastructure.persistence.provider;
 
 import java.lang.reflect.Field;
+import java.time.Year;
+import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +14,7 @@ import org.springframework.util.ReflectionUtils;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
 import br.com.transformers.ems.algashop.ordering.domain.model.repository.Orders;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.OrderId;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.assembler.OrderPersistenceEntityAssembler;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
@@ -49,13 +54,12 @@ public class OrdersPersistenceProvider implements Orders {
         long orderId = aggregateRoot.id().value().toLong();
 
         this.repository.findById(orderId).ifPresentOrElse(
-            (pe) -> {
-                update(aggregateRoot, pe);
-            }, 
-            () -> {
-                insert(aggregateRoot);
-            }
-        );
+                (pe) -> {
+                    update(aggregateRoot, pe);
+                },
+                () -> {
+                    insert(aggregateRoot);
+                });
 
     }
 
@@ -83,20 +87,36 @@ public class OrdersPersistenceProvider implements Orders {
 
     private void updateVersion(Order aggregateRoot, OrderPersistenceEntity persistenceEntity) {
 
-        Field field = ReflectionUtils.findField(aggregateRoot.getClass(), "version");;
+        Field field = ReflectionUtils.findField(aggregateRoot.getClass(), "version");
+        ;
         Objects.requireNonNull(field);
         field.setAccessible(true);
 
         ReflectionUtils.setField(field, aggregateRoot, persistenceEntity.getVersion());
 
         field.setAccessible(false);
-        
-    }
 
+    }
 
     @Override
     public Long count() {
         return this.repository.count();
+    }
+
+    @Override
+    public List<Order> placedByCustomerInYear(CustomerId customerId, Year year) {
+        
+        var start = year.atDay(1).atStartOfDay().atOffset(ZoneOffset.UTC);
+        var end = start.plusYears(1).minusNanos(1);
+
+        List<OrderPersistenceEntity> findOrderPersistenceEntities = this.repository.findByCustomer_IdAndPlacedAtBetween(
+                customerId.value(),
+                start,
+                end);
+
+        return findOrderPersistenceEntities.stream()
+                .map(disassembler::toDomainEntity).collect(Collectors.toList());
+
     }
 
 }

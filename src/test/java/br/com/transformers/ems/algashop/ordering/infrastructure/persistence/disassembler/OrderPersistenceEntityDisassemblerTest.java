@@ -26,7 +26,7 @@ class OrderPersistenceEntityDisassemblerTest {
         // Assert
         Assertions.assertThat(order).isNotNull();
         Assertions.assertThat(order.id()).isEqualTo(new OrderId(entity.getId()));
-        Assertions.assertThat(order.customer().id().value()).isEqualTo(entity.getCustomer().getId());
+        Assertions.assertThat(order.customerId().value()).isEqualTo(entity.getCustomer().getId());
         Assertions.assertThat(order.totalAmount()).isEqualTo(new Money(entity.getTotalAmount()));
         Assertions.assertThat(order.totalItems()).isEqualTo(new Quantity(entity.getTotalItems()));
         Assertions.assertThat(order.createdAt()).isEqualTo(entity.getCreatedAt());

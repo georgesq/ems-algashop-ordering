@@ -3,7 +3,6 @@ package br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilde
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import br.com.transformers.ems.algashop.ordering.domain.model.entity.Customer;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderStatus;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.PaymentMethod;
@@ -17,10 +16,11 @@ import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Phone;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Quantity;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Shipping;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.ZipCode;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.CustomerId;
 
 public class OrderTestDataBuilder {
 
-    Customer customer = CustomerTestDataBuilder.aCustomerBuilder().build();
+    private CustomerId customerId = CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID;
 
     PaymentMethod paymentMethod = PaymentMethod.CREDIT_CARD;
 
@@ -33,6 +33,8 @@ public class OrderTestDataBuilder {
     boolean withItems = true;
 
     OrderStatus status = OrderStatus.DRAFT;
+
+    Email email = new Email("a@a.com");
 
     private OrderTestDataBuilder() {
 
@@ -88,7 +90,7 @@ public class OrderTestDataBuilder {
 
     public Order build() {
         
-        Order order = Order.draft(this.customer);
+        Order order = Order.draft(customerId);
 
         order.changeShipping(this.shipping);
         order.changeBilling(this.billing);
@@ -104,6 +106,8 @@ public class OrderTestDataBuilder {
                 .build(), 
                 new Quantity(2L));
         }
+
+        order.recalculateTotals();
 
         switch (this.status) {
             case DRAFT -> {
@@ -135,14 +139,6 @@ public class OrderTestDataBuilder {
         }
 
         return order;
-
-    }
-
-    public OrderTestDataBuilder customer(Customer customer) {
-
-        this.customer = customer;
-
-        return this;
 
     }
 
@@ -186,6 +182,14 @@ public class OrderTestDataBuilder {
     public OrderTestDataBuilder status(OrderStatus status) {
         this.status = status;
         return this;
+    }
+
+    public OrderTestDataBuilder email(Email email) {
+
+        this.email = email;
+
+        return this;
+
     }
 
 }
