@@ -13,6 +13,7 @@ import org.springframework.util.ReflectionUtils;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
 import br.com.transformers.ems.algashop.ordering.domain.model.repository.Orders;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Money;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.OrderId;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.assembler.OrderPersistenceEntityAssembler;
@@ -111,6 +112,20 @@ public class OrdersPersistenceProvider implements Orders {
 
         return findOrderPersistenceEntities.stream()
                 .map(disassembler::toDomainEntity).collect(Collectors.toList());
+
+    }
+
+    @Override
+    public Long salesQuantityByCustomerInYear(CustomerId customerId, Year year) {
+
+        return this.repository.salesQuantityByCustomerInYear(customerId.value(), year.getValue());
+
+    }
+
+    @Override
+    public Money totalSoldByCustomer(CustomerId customerId) {
+
+        return new Money(this.repository.totalSoldByCustomer(customerId.value()));
 
     }
 

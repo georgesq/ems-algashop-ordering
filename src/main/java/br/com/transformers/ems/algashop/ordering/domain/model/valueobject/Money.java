@@ -2,8 +2,7 @@ package br.com.transformers.ems.algashop.ordering.domain.model.valueobject;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
-import br.com.transformers.ems.algashop.ordering.domain.model.validator.NotNullNonEmptyValidator;
+import java.util.Objects;
 
 public record Money (
 
@@ -11,18 +10,20 @@ public record Money (
 
 ) implements Comparable<BigDecimal> {
     
-    private static final NotNullNonEmptyValidator NNNEV = NotNullNonEmptyValidator.getInstance();
-    
     public static final Money ZERO = new Money(BigDecimal.ZERO);
     public static final Money DEZ = new Money(BigDecimal.TEN);
 
 
     public Money(String value) {
+
         this(new BigDecimal(value));
+        
     }
 
     public Money(BigDecimal value) {
-        if (!NNNEV.isValid(value, null) || value.compareTo(BigDecimal.ZERO) < 0) {
+        Objects.requireNonNull(value); //todo mensagem
+
+        if (value.compareTo(BigDecimal.ZERO) < 0){
             throw new IllegalArgumentException();
         }
 

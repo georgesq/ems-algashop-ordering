@@ -1,5 +1,6 @@
 package br.com.transformers.ems.algashop.ordering.infrastructure.persistence.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +22,32 @@ public interface OrderPersistenceEntityRepository extends JpaRepository<OrderPer
     List<OrderPersistenceEntity> placedByCustomerInYear(
         @Param("customerId") UUID customerId, 
         @Param("year") Integer year
+    );
+
+    @Query(value = 
+        """
+            SELECT COUNT(o)
+            FROM OrderPersistenceEntity o
+            WHERE o.customer.id = :customerId AND
+                YEAR(o.placedAt) = :year AND
+                o.paidAt IS NOT NULL AND 
+                o.canceledAt IS NULL
+        """)
+    Long salesQuantityByCustomerInYear(
+        @Param("customerId") UUID customerId, 
+        @Param("year") Integer year
+    );
+
+    @Query(value = 
+        """
+            SELECT COALESCE(SUM(o.totalAmount), 0)
+            FROM OrderPersistenceEntity o
+            WHERE o.customer.id = :customerId AND
+                o.canceledAt IS NULL AND 
+                o.paidAt IS NOT NULL
+        """)
+    BigDecimal totalSoldByCustomer(
+        @Param("customerId") UUID customerId
     );
 
 }
