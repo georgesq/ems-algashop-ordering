@@ -114,8 +114,7 @@ public class Customer implements AggregateRoot<CustomerId> {
         this.setArchivedAt(OffsetDateTime.now());
         this.setAddress(this.address.toBuilder()
                 .number(null)
-                .complement(null)
-                .build());
+                .complement(null).build());
     }
 
     public void enablePromotionNotificafications() {

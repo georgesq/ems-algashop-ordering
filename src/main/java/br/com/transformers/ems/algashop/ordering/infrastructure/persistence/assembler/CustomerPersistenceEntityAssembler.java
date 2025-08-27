@@ -17,6 +17,7 @@ public class CustomerPersistenceEntityAssembler {
         entity.setId(domain.id().value());
         entity.setAddress(AddressEmbeddableAssembler.fromDomain(domain.address()));
         entity.setArchived(domain.isArchived());
+        entity.setArchivedAt(domain.archivedAt());
         entity.setBirthDate(domain.birthDate().value());
         entity.setDocument(domain.document().toString());
         entity.setEmail(domain.email().toString());

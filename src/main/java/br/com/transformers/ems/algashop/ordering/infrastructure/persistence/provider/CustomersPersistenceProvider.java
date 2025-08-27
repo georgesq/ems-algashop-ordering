@@ -105,4 +105,11 @@ public class CustomersPersistenceProvider implements Customers {
             .map(disassembler::toDomainEntity);
     }
 
+    @Override
+    public Boolean isEmailUnique(Email email, CustomerId customerId) {
+
+        return this.repository.isEmailUnique(email.value(), customerId.value());
+
+    }
+
 }

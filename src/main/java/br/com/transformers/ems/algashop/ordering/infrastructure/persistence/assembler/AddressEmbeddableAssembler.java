@@ -13,12 +13,12 @@ public class AddressEmbeddableAssembler {
 
     private static AddressEmbeddable merge(AddressEmbeddable addressEmbeddable, Address address) {
 
-        addressEmbeddable.setStreet(address.street().toString());
+        addressEmbeddable.setStreet(address.street());
         addressEmbeddable.setNumber(address.number());
-        addressEmbeddable.setComplement(address.complement().toString());
-        addressEmbeddable.setNeighborhood(address.neighborhood().toString());
-        addressEmbeddable.setCity(address.city().toString());
-        addressEmbeddable.setState(address.state().toString());
+        addressEmbeddable.setComplement(address.complement());
+        addressEmbeddable.setNeighborhood(address.neighborhood());
+        addressEmbeddable.setCity(address.city());
+        addressEmbeddable.setState(address.state());
         addressEmbeddable.setZipCode(address.zipCode().toString());
 
         return addressEmbeddable;
