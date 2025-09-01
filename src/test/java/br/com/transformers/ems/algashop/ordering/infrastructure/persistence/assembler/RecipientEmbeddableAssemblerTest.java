@@ -18,8 +18,8 @@ class RecipientEmbeddableAssemblerTest {
         Assertions.assertThat(RecipientEmbeddableAssembler.fromDomain(domain)).satisfies(embeddable -> {
             assertThat(embeddable.getDocument()).isEqualTo(domain.document().toString());
             assertThat(embeddable.getPhone()).isEqualTo(domain.phone().toString());
-            assertThat(embeddable.getFullName()).isEqualTo(domain.fullName().toString());
-            assertThat(embeddable.getAddress()).isNotNull();
+            assertThat(embeddable.getFirstName()).isEqualTo(domain.fullName().firstName());
+            assertThat(embeddable.getLastName()).isEqualTo(domain.fullName().lastName());
         });
 
     }

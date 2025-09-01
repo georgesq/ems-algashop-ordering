@@ -21,10 +21,11 @@ public class CustomerPersistenceEntityAssembler {
         entity.setBirthDate(domain.birthDate().value());
         entity.setDocument(domain.document().toString());
         entity.setEmail(domain.email().toString());
-        entity.setFullName(domain.fullName().toString());
-        entity.setLoyaltyPoints(domain.loyaltyPoints());
+        entity.setFirstName(domain.fullName().firstName());
+        entity.setLastName(domain.fullName().lastName());
+        entity.setLoyaltyPoints(domain.loyaltyPoints().value());
         entity.setPhone(domain.phone().toString());
-        entity.setPromotionNotificaficationsAllowed(domain.isPromotionNotificaficationsAllowed());
+        entity.setPromotionNotificationsAllowed(domain.isPromotionNotificationsAllowed());
         entity.setRegisteredAt(domain.registeredAt());
 
         entity.setVersion(domain.version());

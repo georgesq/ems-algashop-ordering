@@ -7,8 +7,7 @@ public record Recipient(
     
         FullName fullName,
         Document document,
-        Phone phone,
-        Address address
+        Phone phone
 
 ) {
 
@@ -18,22 +17,20 @@ public record Recipient(
     public Recipient(
             FullName fullName,
             Document document,
-            Phone phone,
-            Address address) {
+            Phone phone) {
 
-        if (!NNNEV.isValid(fullName, null) || !NNNEV.isValid(document, null) || !NNNEV.isValid(phone, null) || !NNNEV.isValid(address, null)) {
+        if (!NNNEV.isValid(fullName, null) || !NNNEV.isValid(document, null) || !NNNEV.isValid(phone, null)) {
             throw new IllegalArgumentException();
         }
 
         this.fullName = fullName;
         this.document = document;
         this.phone = phone;
-        this.address = address;
     }
 
     @Override
     public final String toString() {
-        return this.fullName + " " + this.document + " " + this.phone + " "+ this.address;
+        return this.fullName + " " + this.document + " " + this.phone;
     }
 
 }

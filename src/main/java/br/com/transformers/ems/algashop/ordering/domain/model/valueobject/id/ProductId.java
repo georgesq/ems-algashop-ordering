@@ -19,6 +19,10 @@ public record ProductId(
         this(IdGenerator.generateUUID());
     }
 
+    public ProductId(String value) {
+        this(UUID.fromString(value));
+    }
+
     @Override
     public final String toString() {
         return this.value().toString();

@@ -327,8 +327,8 @@ public class Order implements AggregateRoot<OrderId> {
 
     public void recalculateTotals() {
 
-        BigDecimal totalItemsAmmount = this.items.stream()
-            .map(i -> i.totalAmmount().value())
+        BigDecimal totalItemsAmount = this.items.stream()
+            .map(i -> i.totalAmount().value())
             .reduce(BigDecimal.ZERO, BigDecimal::add);
         Long totalItemsQuantity = this.items.stream()
             .map(i -> i.quantity().value())
@@ -336,7 +336,7 @@ public class Order implements AggregateRoot<OrderId> {
 
         BigDecimal shippingCost  = this.shipping().cost().value();
 
-        var totalAmmount = totalItemsAmmount.add(shippingCost);
+        var totalAmmount = totalItemsAmount.add(shippingCost);
 
         this.setTotalAmount(new Money(totalAmmount));
         this.setTotalItems(new Quantity(totalItemsQuantity));
@@ -438,7 +438,7 @@ public class Order implements AggregateRoot<OrderId> {
         return canceledAt;
     }
 
-    public OffsetDateTime readAt() {
+    public OffsetDateTime readyAt() {
         return readAt;
     }
 

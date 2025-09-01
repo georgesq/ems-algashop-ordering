@@ -31,7 +31,7 @@ public class OrderItemPersistenceEntityDisassembler {
             .productId(new ProductId(oip.getProductId()))
             .productName(new ProductName(oip.getProductName()))
             .quantity(new Quantity(oip.getQuantity()))
-            .totalAmmount(new Money(oip.getTotalAmmount()))
+            .totalAmount(new Money(oip.getTotalAmount()))
             .build();
     }
 

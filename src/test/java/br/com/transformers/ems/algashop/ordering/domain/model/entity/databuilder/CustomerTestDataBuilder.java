@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Customer;
-import br.com.transformers.ems.algashop.ordering.domain.model.utility.IdGenerator;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Address;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.BirthDate;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Document;
@@ -17,28 +16,27 @@ import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.Cus
 
 public class CustomerTestDataBuilder {
 
-    public static CustomerId DEFAULT_CUSTOMER_ID = new CustomerId(IdGenerator.generateUUID());
+    public static final CustomerId DEFAULT_CUSTOMER_ID = new CustomerId();
 
     private CustomerTestDataBuilder() {
     }
 
-    public static Customer.CustomerBuild aCustomer() {
-
-        return Customer.draft()
-                .fullName(new FullName("fn", "ln"))
-                .birthDate(new BirthDate(LocalDate.ofYearDay(LocalDate.now().getYear() - 1, 1)))
-                .email(new Email("email@email.com"))
-                .phone(new Phone("11993044469"))
-                .document(new Document("57044961568"))
-                .promotionNotificaficationsAllowed(Boolean.FALSE)
+    public static Customer.BrandNewCustomerBuild brandNewCustomer() {
+        return Customer.brandNew()
+                .fullName(new FullName("John","Doe"))
+                .birthDate(new BirthDate(LocalDate.of(1991, 7,5)))
+                .email(new Email("johndoe@email.com"))
+                .phone(new Phone("478-256-2604"))
+                .document(new Document("255-08-0578"))
+                .promotionNotificationsAllowed(true)
                 .address(Address.builder()
-                        .street("st")
-                        .number(1)
-                        .complement("cp")
-                        .neighborhood("nb")
-                        .city("ct")
-                        .state("st")
-                        .zipCode(new ZipCode("41710"))
+                        .street("Bourbon Street")
+                        .number(1134)
+                        .neighborhood("North Ville")
+                        .city("York")
+                        .state("South California")
+                        .zipCode(new ZipCode("12345"))
+                        .complement("Apt. 114")
                         .build());
     }
 
@@ -49,8 +47,8 @@ public class CustomerTestDataBuilder {
                 .promotionNotificationsAllowed(true)
                 .archived(false)
                 .archivedAt(null)
-                .fullName(new FullName("John", "Doe"))
-                .birthDate(new BirthDate(LocalDate.of(1991, 7, 5)))
+                .fullName(new FullName("John","Doe"))
+                .birthDate(new BirthDate(LocalDate.of(1991, 7,5)))
                 .email(new Email("johndoe@email.com"))
                 .phone(new Phone("478-256-2604"))
                 .document(new Document("255-08-0578"))
@@ -64,7 +62,8 @@ public class CustomerTestDataBuilder {
                         .state("South California")
                         .zipCode(new ZipCode("12345"))
                         .complement("Apt. 114")
-                        .build());
+                        .build())
+                ;
     }
 
     public static Customer.ExistingCustomerBuild existingAnonymizedCustomer() {

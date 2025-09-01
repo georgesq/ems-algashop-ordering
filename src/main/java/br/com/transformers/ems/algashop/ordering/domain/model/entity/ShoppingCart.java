@@ -12,6 +12,7 @@ import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Quanti
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.ShoppingCartId;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.ShoppingCartItemId;
+import lombok.Builder;
 
 public class ShoppingCart implements AggregateRoot<ShoppingCartId> {
 
@@ -49,7 +50,7 @@ public class ShoppingCart implements AggregateRoot<ShoppingCartId> {
     private void recalculateTotals() {
 
         BigDecimal totalAmmount = this.items.stream()
-            .map(i -> i.totalAmmount().value())
+            .map(i -> i.totalAmount().value())
             .reduce(BigDecimal.ZERO, BigDecimal::add);
         Long totalItemsQuantity = this.items.stream()
             .map(i -> i.quantity().value())
@@ -60,19 +61,31 @@ public class ShoppingCart implements AggregateRoot<ShoppingCartId> {
 
     }
 
-    public static ShoppingCart startShopping(CustomerId customerId) {
 
-        ShoppingCart shoppingCart = new ShoppingCart();
- 
-        shoppingCart.setId(new ShoppingCartId());
-        shoppingCart.setCustomerId(customerId);
-        shoppingCart.setTotalAmount(Money.ZERO);
-        shoppingCart.setTotalItems(Quantity.ZERO);
-        shoppingCart.setCreatedAt(OffsetDateTime.now());
-        shoppingCart.setItems(new HashSet<>());
+    @Builder(builderClassName = "ExistingShoppingCartBuilder", builderMethodName = "existing")    
+    public ShoppingCart(ShoppingCartId id, CustomerId customerId, Money totalAmount, Quantity totalItems,
+            OffsetDateTime createdAt, Set<ShoppingCartItem> items) {
 
-        return shoppingCart;
+        this.setId(id);
+        this.setCustomerId(customerId);
+        this.setTotalAmount(totalAmount);
+        this.setTotalItems(totalItems);
+        this.setCreatedAt(createdAt);
+        this.setItems(items);
         
+    }
+
+    @Builder(builderClassName = "NewSimpleShoppingCartBuilder", builderMethodName = "draft")
+    public static ShoppingCart draft(CustomerId customerId) {
+
+        return ShoppingCart.existing()
+            .id(new ShoppingCartId())
+            .customerId(customerId)
+            .totalAmount(Money.ZERO)
+            .totalItems(Quantity.ZERO)
+            .createdAt(OffsetDateTime.now())
+            .items(new HashSet<>()).build();
+
     }
 
     public void empty() {

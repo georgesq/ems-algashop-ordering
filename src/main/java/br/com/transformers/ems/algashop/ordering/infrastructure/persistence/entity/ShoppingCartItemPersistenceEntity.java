@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -17,16 +18,18 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "order_item")
+@Table(name = "shoppingcart_item")
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"})
-public class OrderItemPersistenceEntity {
+public class ShoppingCartItemPersistenceEntity {
 
     @Id
-    private Long id;
+    private UUID id;
 
     private UUID productId;
     private String productName;
@@ -36,29 +39,19 @@ public class OrderItemPersistenceEntity {
 
     private BigDecimal totalAmount;
 
-    @JoinColumn(name = "order_id")
+    private Boolean available;
+
+    @JoinColumn(name = "shoppingcart_id")
     @ManyToOne(optional = false)
-    private OrderPersistenceEntity order;
-
-    @Builder    
-    public OrderItemPersistenceEntity(Long id, UUID productId, String productName, BigDecimal price, Long quantity,
-            BigDecimal totalAmount, OrderPersistenceEntity order) {
-        this.setId(id);
-        this.setProductId(productId);
-        this.setProductName(productName);
-        this.setPrice(price);
-        this.setQuantity(quantity);
-        this.setTotalAmount(totalAmount);
-        this.setOrder(order);
-    }
-
-
-    public Long getOrderId() {
-        if (Objects.isNull(this.getOrder())) {
+    private ShoppingCartPersistenceEntity shoppingCart;
+    
+    public UUID getShoppingCartId() {
+        
+        if (Objects.isNull(this.getShoppingCart())) {
             return null;
         }
 
-        return this.getOrder().getId(); 
-    }
+        return this.getShoppingCart().getId(); 
 
+    }
 }

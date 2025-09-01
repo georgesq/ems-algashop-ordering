@@ -5,55 +5,58 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.OrderItem;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Address;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Billing;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Recipient;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Shipping;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.embeddeble.AddressEmbeddable;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.embeddeble.BillingEmbeddable;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.embeddeble.RecipientEmbeddable;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.embeddeble.ShippingEmbeddable;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderItemPersistenceEntity;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.repository.CustomerPersistenceEntityRepository;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class OrderPersistenceEntityAssembler {
 
-    @Autowired
-    private CustomerPersistenceEntityRepository customerPersistenceEntityRepository;
+    private final CustomerPersistenceEntityRepository customerPersistenceEntityRepository;
 
     public OrderPersistenceEntity fromDomain(Order order) {
         return merge(new OrderPersistenceEntity(), order);
     }
 
     public OrderPersistenceEntity merge(OrderPersistenceEntity orderPersistenceEntity, Order order) {
-
         orderPersistenceEntity.setId(order.id().value().toLong());
-
-        var customerPersistenceEntity = customerPersistenceEntityRepository.getReferenceById(order.customerId().value());
-        orderPersistenceEntity.setCustomer(customerPersistenceEntity);
-
         orderPersistenceEntity.setTotalAmount(order.totalAmount().value());
         orderPersistenceEntity.setTotalItems(order.totalItems().value());
-        orderPersistenceEntity.setCreatedAt(order.createdAt());
+        orderPersistenceEntity.setStatus(order.status().name());
+        orderPersistenceEntity.setPaymentMethod(order.paymentMethod().name());
         orderPersistenceEntity.setPlacedAt(order.placedAt());
         orderPersistenceEntity.setPaidAt(order.paidAt());
         orderPersistenceEntity.setCanceledAt(order.canceledAt());
-        orderPersistenceEntity.setReadAt(order.readAt());
-        orderPersistenceEntity.setStatus(order.status().toString());
-        orderPersistenceEntity.setPaymentMethod(order.paymentMethod().toString());
-
-        orderPersistenceEntity.setBilling(BillingEmbeddableAssembler.fromDomain(order.billing()));
-        orderPersistenceEntity.setShipping(ShippingEmbeddableAssembler.fromDomain(order.shipping()));
+        orderPersistenceEntity.setReadyAt(order.readyAt());
+        orderPersistenceEntity.setVersion(order.version());
+        orderPersistenceEntity.setBilling(toBillingEmbeddable(order.billing()));
+        orderPersistenceEntity.setShipping(toShippingEmbeddable(order.shipping()));
 
         Set<OrderItemPersistenceEntity> mergedItems = mergeItems(order, orderPersistenceEntity);
         orderPersistenceEntity.replaceItems(mergedItems);
-        
-        orderPersistenceEntity.setVersion(order.version());
+
+        var customerPersistenceEntity = customerPersistenceEntityRepository
+                .getReferenceById(order.customerId().value());
+        orderPersistenceEntity.setCustomer(customerPersistenceEntity);
 
         return orderPersistenceEntity;
-
     }
 
-  private Set<OrderItemPersistenceEntity> mergeItems(Order order, OrderPersistenceEntity orderPersistenceEntity) {
+    private Set<OrderItemPersistenceEntity> mergeItems(Order order, OrderPersistenceEntity orderPersistenceEntity) {
         Set<OrderItem> newOrUpdatedItems = order.items();
 
         if (newOrUpdatedItems == null || newOrUpdatedItems.isEmpty()) {
@@ -78,23 +81,71 @@ public class OrderPersistenceEntityAssembler {
                     return merge(itemPersistence, orderItem);
                 })
                 .collect(Collectors.toSet());
-    }    
+    }
 
     public OrderItemPersistenceEntity fromDomain(OrderItem orderItem) {
         return merge(new OrderItemPersistenceEntity(), orderItem);
     }
 
     private OrderItemPersistenceEntity merge(OrderItemPersistenceEntity orderItemPersistenceEntity,
-            OrderItem orderItem) {
-
+                                             OrderItem orderItem) {
         orderItemPersistenceEntity.setId(orderItem.id().value().toLong());
-        orderItemPersistenceEntity.setPrice(orderItem.price().value());
         orderItemPersistenceEntity.setProductId(orderItem.productId().value());
-        orderItemPersistenceEntity.setProductName(orderItem.productName().toString());
+        orderItemPersistenceEntity.setProductName(orderItem.productName().value());
+        orderItemPersistenceEntity.setPrice(orderItem.price().value());
         orderItemPersistenceEntity.setQuantity(orderItem.quantity().value());
-        orderItemPersistenceEntity.setTotalAmmount(orderItem.totalAmmount().value());
-
+        orderItemPersistenceEntity.setTotalAmount(orderItem.totalAmount().value());
         return orderItemPersistenceEntity;
-
     }
+
+    private BillingEmbeddable toBillingEmbeddable(Billing billing) {
+        if (billing == null) {
+            return null;
+        }
+        return BillingEmbeddable.builder()
+                .firstName(billing.fullName().firstName())
+                .lastName(billing.fullName().lastName())
+                .document(billing.document().value())
+                .phone(billing.phone().value())
+                .address(toAddressEmbeddable(billing.address()))
+                .build();
+    }
+
+    private AddressEmbeddable toAddressEmbeddable(Address address) {
+        if (address == null) {
+            return null;
+        }
+        return AddressEmbeddable.builder()
+                .city(address.city())
+                .state(address.state())
+                .number(address.number())
+                .street(address.street())
+                .complement(address.complement())
+                .neighborhood(address.neighborhood())
+                .zipCode(address.zipCode().value())
+                .build();
+    }
+
+    private ShippingEmbeddable toShippingEmbeddable(Shipping shipping) {
+        if (shipping == null) {
+            return null;
+        }
+        var builder = ShippingEmbeddable.builder()
+                .expectedDate(shipping.expectedDate())
+                .cost(shipping.cost().value())
+                .address(toAddressEmbeddable(shipping.address()));
+        Recipient recipient = shipping.recipient();
+        if (recipient != null) {
+            builder.recipient(
+                    RecipientEmbeddable.builder()
+                            .firstName(recipient.fullName().firstName())
+                            .lastName(recipient.fullName().lastName())
+                            .document(recipient.document().value())
+                            .phone(recipient.phone().value())
+                            .build()
+            );
+        }
+        return builder.build();
+    }
+
 }

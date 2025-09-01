@@ -13,9 +13,11 @@ class BillingEmbeddableTestDataBuilderTest {
         BillingEmbeddable billing = BillingEmbeddableTestDataBuilder.aBilling();
 
         assertThat(billing).isNotNull();
-        assertThat(billing.getFullName()).isEqualTo("John Doe");
+        assertThat(billing.getFirstName()).isEqualTo("John");
+        assertThat(billing.getLastName()).isEqualTo("Doe");
         assertThat(billing.getEmail()).isEqualTo("a@a.com");
         assertThat(billing.getDocument()).isEqualTo("12345678901");
         assertThat(billing.getAddress()).isNotNull();
+        
     }
 }

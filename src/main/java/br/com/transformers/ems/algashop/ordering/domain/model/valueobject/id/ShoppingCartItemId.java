@@ -1,13 +1,13 @@
 package br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.utility.IdGenerator;
-import io.hypersistence.tsid.TSID;
 
 public record ShoppingCartItemId(
 
-    TSID value
+    UUID value
 
 ) {
 
@@ -16,15 +16,11 @@ public record ShoppingCartItemId(
     }
 
     public ShoppingCartItemId() {
-        this(IdGenerator.generateTSID());
+        this(IdGenerator.generateUUID());
     }
     
-    public ShoppingCartItemId(Long value) {
-        this(TSID.from(value));
-    }
-
     public ShoppingCartItemId(String value) {
-        this(TSID.from(value));
+        this(UUID.fromString(value));
     }
 
 

@@ -25,13 +25,13 @@ public class ShoppingCartItem {
     private Money price;
     private Quantity quantity;
 
-    private Money totalAmmount;
+    private Money totalAmount;
 
     private Boolean available;
 
     @Builder(builderClassName = "ExistingShoppingCartBuilder", builderMethodName = "existing")
     public ShoppingCartItem(ShoppingCartItemId id, ShoppingCartId shoppingCartId,
-            ProductId productId, ProductName productName, Money price, Quantity quantity, Money totalAmmount, Boolean available) {
+            ProductId productId, ProductName productName, Money price, Quantity quantity, Money totalAmount, Boolean available) {
 
         this.setId(id);
         this.setShoppingCartId(shoppingCartId);
@@ -40,7 +40,7 @@ public class ShoppingCartItem {
         this.setPrice(price);
         this.setQuantity(quantity);
         this.setAvailable(true);
-        this.setTotalAmmount(totalAmmount);
+        this.setTotalAmount(totalAmount);
         this.setAvailable(available);
 
     }
@@ -85,7 +85,7 @@ public class ShoppingCartItem {
         
         this.quantity = quantity;
 
-        this.setTotalAmmount(recalculate(this.price, this.quantity()));
+        this.setTotalAmount(recalculate(this.price, this.quantity()));
 
     }
 
@@ -113,8 +113,8 @@ public class ShoppingCartItem {
         return quantity;
     }
 
-    public Money totalAmmount() {
-        return totalAmmount;
+    public Money totalAmount() {
+        return totalAmount;
     }
 
     public boolean available() {
@@ -176,9 +176,11 @@ public class ShoppingCartItem {
         return this;
     }
 
-    private ShoppingCartItem setTotalAmmount(Money totalAmmount) {
-        this.totalAmmount = totalAmmount;
+    private ShoppingCartItem setTotalAmount(Money totalAmount) {
+
+        this.totalAmount = totalAmount;
         return this;
+        
     }
 
     private ShoppingCartItem setAvailable(Boolean available) {

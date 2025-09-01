@@ -20,7 +20,7 @@ public class OrderItemPersistenceTestDataBuilder {
                     .productId(IdGenerator.generateUUID())
                     .productName("pn")
                     .quantity(Long.MAX_VALUE)
-                    .totalAmmount(BigDecimal.TWO)
+                    .totalAmount(BigDecimal.TWO)
                     .order(order)
                 .build();
 

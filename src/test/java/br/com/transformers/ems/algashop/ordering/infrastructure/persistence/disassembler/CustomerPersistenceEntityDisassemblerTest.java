@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.BirthDate;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Document;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Email;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.FullName;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntity;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.databuilder.CustomerPersistenceEntityTestDataBuilder;
@@ -25,7 +26,7 @@ class CustomerPersistenceEntityDisassemblerTest {
     @Test
     void toDomainEntity_shouldMapAllFieldsCorrectly() {
         // Arrange
-        CustomerPersistenceEntity persistenceEntity = CustomerPersistenceEntityTestDataBuilder.aCustomerPersistenceEntity().build();
+        CustomerPersistenceEntity persistenceEntity = CustomerPersistenceEntityTestDataBuilder.aCustomer().build();
 
         var disassembled = disassembler.toDomainEntity(persistenceEntity);
 
@@ -37,8 +38,8 @@ class CustomerPersistenceEntityDisassemblerTest {
             assertThat(d.birthDate()).isEqualTo(new BirthDate(persistenceEntity.getBirthDate()));
             assertThat(d.document()).isEqualTo(new Document(persistenceEntity.getDocument()));
             assertThat(d.email()).isEqualTo(new Email(persistenceEntity.getEmail()));
-            assertThat(d.fullName()).isEqualTo(FullNameEmbeddablePersistenceEntityDisassembler.toDomainEntity(persistenceEntity.getFullName()));
-            assertThat(d.isPromotionNotificaficationsAllowed()).isEqualTo(persistenceEntity.getPromotionNotificaficationsAllowed());
+            assertThat(d.fullName()).isEqualTo(new FullName(persistenceEntity.getFirstName(), persistenceEntity.getLastName()));
+            assertThat(d.isPromotionNotificationsAllowed()).isEqualTo(persistenceEntity.getPromotionNotificationsAllowed());
         });
 
     }

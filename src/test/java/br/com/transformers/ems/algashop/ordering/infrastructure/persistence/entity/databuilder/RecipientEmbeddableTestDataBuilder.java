@@ -6,9 +6,9 @@ public class RecipientEmbeddableTestDataBuilder {
 
     public static RecipientEmbeddable aRecipient() {
         return RecipientEmbeddable.builder()
-                .address(AddressEmbeddableTestDataBuilder.anAddress())
                 .document("123-456-7890")
-                .fullName("Jane Doe")
+                .firstName("Jane")
+                .lastName("Doe")
                 .phone("123-456-7890")
             .build();
     }

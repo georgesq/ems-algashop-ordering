@@ -4,11 +4,15 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import br.com.transformers.ems.algashop.ordering.domain.model.utility.IdGenerator;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntity;
 
 public class CustomerPersistenceEntityTestDataBuilder {
 
-    public static CustomerPersistenceEntity.CustomerPersistenceEntityBuilder aCustomerPersistenceEntity() {
+    public static UUID DEFAULT_CUSTOMER_ID = new CustomerId(IdGenerator.generateUUID()).value();
+
+    public static CustomerPersistenceEntity.CustomerPersistenceEntityBuilder aCustomer() {
         return CustomerPersistenceEntity.builder()
             .address(AddressEmbeddableTestDataBuilder.anAddress())
             .archived(false)
@@ -17,12 +21,13 @@ public class CustomerPersistenceEntityTestDataBuilder {
             .createdByUserId(UUID.randomUUID())
             .document("document")
             .email("a@ac.com")
-            .fullName("george queiroz")
-            .id(UUID.randomUUID())
+            .firstName("george")
+            .lastName("queiroz")
+            .id(DEFAULT_CUSTOMER_ID)
             .lastModifiedAt(OffsetDateTime.now())
             .lastModifiedByUserId(UUID.randomUUID())
             .phone("11993044469")
-            .promotionNotificaficationsAllowed(false)
+            .promotionNotificationsAllowed(false)
             .registeredAt(OffsetDateTime.now())
             .loyaltyPoints(1)
             .version(1l);

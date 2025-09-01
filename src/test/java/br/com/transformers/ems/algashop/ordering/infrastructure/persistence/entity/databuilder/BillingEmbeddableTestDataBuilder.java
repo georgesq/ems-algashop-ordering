@@ -6,7 +6,8 @@ public class BillingEmbeddableTestDataBuilder {
 
     public static BillingEmbeddable aBilling() {
         return BillingEmbeddable.builder()
-                .fullName("John Doe")
+                .firstName("John")
+                .lastName("Doe")
                 .email("a@a.com")
                 .address(AddressEmbeddableTestDataBuilder.anAddress())
                 .document("12345678901")

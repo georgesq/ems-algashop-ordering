@@ -19,7 +19,8 @@ class BillingEmbeddableAssemblerTest {
             assertThat(embeddable.getAddress()).isNotNull();
             assertThat(embeddable.getDocument()).isEqualTo(domain.document().toString());
             assertThat(embeddable.getEmail()).isEqualTo(domain.email().toString());
-            assertThat(embeddable.getFullName()).isEqualTo(domain.fullName().toString());
+            assertThat(embeddable.getFirstName()).isEqualTo(domain.fullName().firstName());
+            assertThat(embeddable.getLastName()).isEqualTo(domain.fullName().lastName());
             assertThat(embeddable.getPhone()).isEqualTo(domain.phone().toString());
         });
 

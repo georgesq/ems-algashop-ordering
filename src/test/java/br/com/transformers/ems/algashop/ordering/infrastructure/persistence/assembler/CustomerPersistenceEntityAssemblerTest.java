@@ -20,7 +20,7 @@ class CustomerPersistenceEntityAssemblerTest {
 
     @Test
     void fromDomain_shouldMapAllFields() {
-        Customer domain = CustomerTestDataBuilder.aCustomer().build();
+        Customer domain = CustomerTestDataBuilder.brandNewCustomer().build();
 
         // Act
         CustomerPersistenceEntity entity = assembler.fromDomain(domain);
@@ -32,10 +32,11 @@ class CustomerPersistenceEntityAssemblerTest {
         assertThat(entity.getBirthDate()).isEqualTo(domain.birthDate().toString());
         assertThat(entity.getDocument()).isEqualTo(domain.document().toString());
         assertThat(entity.getEmail()).isEqualTo(domain.email().toString());
-        assertThat(entity.getFullName()).isEqualTo(domain.fullName().toString());
+        assertThat(entity.getFirstName()).isEqualTo(domain.fullName().firstName());
+        assertThat(entity.getLastName()).isEqualTo(domain.fullName().lastName());
         assertThat(entity.getLoyaltyPoints()).isNotNull();
         assertThat(entity.getPhone()).isEqualTo(domain.phone().toString());
-        assertThat(entity.getPromotionNotificaficationsAllowed()).isFalse();
+        assertThat(entity.getPromotionNotificationsAllowed()).isTrue();
         assertThat(entity.getVersion()).isNull();
 
     }

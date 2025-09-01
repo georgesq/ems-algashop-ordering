@@ -16,6 +16,7 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,75 +25,43 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "customer")
 @Getter
 @Setter
+@ToString(of = "id")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
-@ToString(of = {"id"})
-@EqualsAndHashCode(of = {"id"})
+@Table(name = "\"customer\"")
+@AllArgsConstructor
+@Builder
 @EntityListeners(AuditingEntityListener.class)
 public class CustomerPersistenceEntity {
 
     @Id
-    private UUID id;
+	@EqualsAndHashCode.Include
+	private UUID id;
+	private String firstName;
+	private String lastName;
+	private LocalDate birthDate;
+	private String email;
+	private String phone;
+	private String document;
+	private Boolean promotionNotificationsAllowed;
+	private Boolean archived;
+	private OffsetDateTime registeredAt;
+	private OffsetDateTime archivedAt;
+	@Embedded
+	private AddressEmbeddable address;
+	private Integer loyaltyPoints;
+	
+  	@Version
+	private Long version;
 
-    private String fullName;
+	@CreatedBy
+	private UUID createdByUserId;
 
-    private LocalDate birthDate;
+	@LastModifiedDate
+	private OffsetDateTime lastModifiedAt;
 
-    private String email;
-
-    private String phone;
-
-    private String document;
-
-    private Boolean promotionNotificaficationsAllowed;
-
-    private Boolean archived;
-
-    private Integer loyaltyPoints;
-
-    private OffsetDateTime registeredAt;
-
-    private OffsetDateTime archivedAt;
-
-    @Embedded
-    private AddressEmbeddable address;
-
-    @CreatedBy
-    private UUID createdByUserId;
-
-    @LastModifiedBy
-    private UUID lastModifiedByUserId;
-
-    @LastModifiedDate
-    private OffsetDateTime lastModifiedAt;
-
-    @Version
-    private Long version;
-
-    @Builder
-    public CustomerPersistenceEntity(UUID id, String fullName, LocalDate birthDate, String email, String phone,
-            String document, Boolean promotionNotificaficationsAllowed, Boolean archived, Integer loyaltyPoints,
-            OffsetDateTime registeredAt, OffsetDateTime archivedAt, AddressEmbeddable address, UUID createdByUserId,
-            UUID lastModifiedByUserId, OffsetDateTime lastModifiedAt, Long version) {
-        this.id = id;
-        this.fullName = fullName;
-        this.birthDate = birthDate;
-        this.email = email;
-        this.phone = phone;
-        this.document = document;
-        this.promotionNotificaficationsAllowed = promotionNotificaficationsAllowed;
-        this.archived = archived;
-        this.loyaltyPoints = loyaltyPoints;
-        this.registeredAt = registeredAt;
-        this.archivedAt = archivedAt;
-        this.address = address;
-        this.createdByUserId = createdByUserId;
-        this.lastModifiedByUserId = lastModifiedByUserId;
-        this.lastModifiedAt = lastModifiedAt;
-        this.version = version;
-    }
-
-
+	@LastModifiedBy
+	private UUID lastModifiedByUserId;
 }

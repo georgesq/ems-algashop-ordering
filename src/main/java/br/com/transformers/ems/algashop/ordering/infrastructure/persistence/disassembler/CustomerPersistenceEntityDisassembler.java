@@ -6,6 +6,7 @@ import br.com.transformers.ems.algashop.ordering.domain.model.entity.Customer;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.BirthDate;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Document;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Email;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.FullName;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.LoyaltyPoints;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Phone;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.CustomerId;
@@ -24,10 +25,10 @@ public class CustomerPersistenceEntityDisassembler {
             .birthDate(new BirthDate(persistenceEntity.getBirthDate()))
             .document(new Document(persistenceEntity.getDocument()))
             .email(new Email(persistenceEntity.getEmail()))
-            .fullName(FullNameEmbeddablePersistenceEntityDisassembler.toDomainEntity(persistenceEntity.getFullName()))
+            .fullName(new FullName(persistenceEntity.getFirstName(), persistenceEntity.getLastName()))
             .loyaltyPoints(new LoyaltyPoints(persistenceEntity.getLoyaltyPoints()))
             .phone(new Phone(persistenceEntity.getPhone()))
-            .promotionNotificationsAllowed(persistenceEntity.getPromotionNotificaficationsAllowed())
+            .promotionNotificationsAllowed(persistenceEntity.getPromotionNotificationsAllowed())
             .registeredAt(persistenceEntity.getRegisteredAt())
 
             .version(persistenceEntity.getVersion())

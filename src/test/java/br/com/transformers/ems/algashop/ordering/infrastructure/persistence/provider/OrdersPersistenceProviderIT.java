@@ -57,18 +57,18 @@ public class OrdersPersistenceProviderIT {
 
         var persistenceEntity = this.repository.findById(order.id().value().toLong()).orElseThrow();
 
-        Assertions.assertThat(persistenceEntity.getCreatedByUser()).isNotNull();
+        Assertions.assertThat(persistenceEntity.getCreatedByUserId()).isNotNull();
         Assertions.assertThat(persistenceEntity.getLastModifiedAt()).isNotNull();
-        Assertions.assertThat(persistenceEntity.getLastModifiedByUser()).isNotNull();
+        Assertions.assertThat(persistenceEntity.getLastModifiedByUserId()).isNotNull();
 
         order.markAsPaid();
         persistenceProvider.add(order);
 
         persistenceEntity = this.repository.findById(order.id().value().toLong()).orElseThrow();
 
-        Assertions.assertThat(persistenceEntity.getCreatedByUser()).isNotNull();
+        Assertions.assertThat(persistenceEntity.getCreatedByUserId()).isNotNull();
         Assertions.assertThat(persistenceEntity.getLastModifiedAt()).isNotNull();
-        Assertions.assertThat(persistenceEntity.getLastModifiedByUser()).isNotNull();        
+        Assertions.assertThat(persistenceEntity.getLastModifiedByUserId()).isNotNull();        
 
     }
 

@@ -3,7 +3,6 @@ package br.com.transformers.ems.algashop.ordering.infrastructure.persistence.ent
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -40,7 +39,6 @@ import lombok.ToString;
 @EqualsAndHashCode(of = {"id"})
 @EntityListeners(AuditingEntityListener.class)
 public class OrderPersistenceEntity {
-
     @Id
     private Long id;
 
@@ -50,98 +48,83 @@ public class OrderPersistenceEntity {
 
     private BigDecimal totalAmount;
     private Long totalItems;
-    
-    private OffsetDateTime createdAt;
+    private String status;
+    private String paymentMethod;
+
     private OffsetDateTime placedAt;
     private OffsetDateTime paidAt;
     private OffsetDateTime canceledAt;
-    private OffsetDateTime readAt;
-    
-    @Embedded
-    private BillingEmbeddable billing;
-    @Embedded
-    private ShippingEmbeddable shipping;
-    
-    private String status;
-    private String paymentMethod;
-    
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private Set<OrderItemPersistenceEntity> items = new HashSet<>();
+    private OffsetDateTime readyAt;
 
     @CreatedBy
-    private UUID createdByUser;
+    private UUID createdByUserId;
+
     @LastModifiedDate
     private OffsetDateTime lastModifiedAt;
+
     @LastModifiedBy
-    private UUID lastModifiedByUser;
+    private UUID lastModifiedByUserId;
 
     @Version
     private Long version;
 
+    @Embedded
+    private BillingEmbeddable billing;
+
+    @Embedded
+    private ShippingEmbeddable shipping;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private Set<OrderItemPersistenceEntity> items = new HashSet<>();
+
     @Builder
-    public OrderPersistenceEntity(Long id, CustomerPersistenceEntity customer, BigDecimal totalAmount, Long totalItems,
-            OffsetDateTime createdAt, OffsetDateTime placedAt, OffsetDateTime paidAt, OffsetDateTime canceledAt,
-            OffsetDateTime readAt, BillingEmbeddable billing, ShippingEmbeddable shipping, String status,
-            String paymentMethod, Set<OrderItemPersistenceEntity> items, UUID createdByUser,
-            OffsetDateTime lastModifiedAt, UUID lastModifiedByUser, Long version) {
-        this.setId(id);
-        this.setCustomer(customer);
-        this.setTotalAmount(totalAmount);
-        this.setTotalItems(totalItems);
-        this.setCreatedAt(createdAt);
-        this.setPlacedAt(placedAt);
-        this.setPaidAt(paidAt);
-        this.setCanceledAt(canceledAt);
-        this.setReadAt(readAt);
-        this.setBilling(billing);
-        this.setShipping(shipping);
-        this.setStatus(status);
-        this.setPaymentMethod(paymentMethod);
+    public OrderPersistenceEntity(Long id, CustomerPersistenceEntity customer, BigDecimal totalAmount, Long totalItems, String status, String paymentMethod, OffsetDateTime placedAt, OffsetDateTime paidAt, OffsetDateTime canceledAt, OffsetDateTime readyAt, UUID createdByUserId, OffsetDateTime lastModifiedAt, UUID lastModifiedByUserId, Long version, BillingEmbeddable billing, ShippingEmbeddable shipping, Set<OrderItemPersistenceEntity> items) {
+        this.id = id;
+        this.customer = customer;
+        this.totalAmount = totalAmount;
+        this.totalItems = totalItems;
+        this.status = status;
+        this.paymentMethod = paymentMethod;
+        this.placedAt = placedAt;
+        this.paidAt = paidAt;
+        this.canceledAt = canceledAt;
+        this.readyAt = readyAt;
+        this.createdByUserId = createdByUserId;
+        this.lastModifiedAt = lastModifiedAt;
+        this.lastModifiedByUserId = lastModifiedByUserId;
+        this.version = version;
+        this.billing = billing;
+        this.shipping = shipping;
         this.replaceItems(items);
-        this.setCreatedByUser(createdByUser);
-        this.setLastModifiedAt(lastModifiedAt);
-        this.setLastModifiedByUser(lastModifiedByUser);
-        this.setVersion(version);
     }
 
     public void replaceItems(Set<OrderItemPersistenceEntity> items) {
-
         if (items == null || items.isEmpty()) {
             this.setItems(new HashSet<>());
-
             return;
         }
 
-        items.forEach(i-> i.setOrder(this));
-
+        items.forEach(i -> i.setOrder(this));
         this.setItems(items);
-
     }
 
     public void addItem(OrderItemPersistenceEntity item) {
-
-        if (Objects.isNull(item)) {
+        if (item == null) {
             return;
         }
 
-        if (items == null || items.isEmpty()) {
+        if (this.getItems() == null) {
             this.setItems(new HashSet<>());
-            return;
         }
-        
+
         item.setOrder(this);
-
         this.getItems().add(item);
-
     }
 
     public UUID getCustomerId() {
-
-        if (!Objects.isNull(this.customer)) {
-            return this.customer.getId();
+        if (this.customer == null) {
+            return null;
         }
-
-        return null;
+        return this.customer.getId();
     }
-
 }

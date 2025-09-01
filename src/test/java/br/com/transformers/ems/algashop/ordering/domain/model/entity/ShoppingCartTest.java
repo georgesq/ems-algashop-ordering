@@ -33,7 +33,7 @@ class ShoppingCartTest {
 
     @Test
     void startShopping_shouldInitializeShoppingCartWithDefaults() {
-        ShoppingCart cart = ShoppingCart.startShopping(customerId);
+        ShoppingCart cart = ShoppingCart.draft(customerId);
 
         assertThat(cart).isNotNull();
         assertThat(cart.id()).isNotNull();
@@ -49,7 +49,7 @@ class ShoppingCartTest {
 
     @Test
     void addItem_shouldAddItemAndUpdateTotals() {
-        ShoppingCart cart = ShoppingCart.startShopping(customerId);
+        ShoppingCart cart = ShoppingCart.draft(customerId);
 
         cart.addItem(product, quantity);
 
@@ -60,7 +60,7 @@ class ShoppingCartTest {
 
     @Test
     void empty_shouldClearItemsAndResetTotals() {
-        ShoppingCart cart = ShoppingCart.startShopping(customerId);
+        ShoppingCart cart = ShoppingCart.draft(customerId);
         cart.addItem(product, quantity);
 
         cart.empty();
@@ -72,7 +72,7 @@ class ShoppingCartTest {
 
     @Test
     void removeItem_shouldRemoveItemAndUpdateTotals() {
-        ShoppingCart cart = ShoppingCart.startShopping(customerId);
+        ShoppingCart cart = ShoppingCart.draft(customerId);
         cart.addItem(product, quantity);
         ShoppingCartItem item = cart.items().iterator().next();
 
@@ -85,7 +85,7 @@ class ShoppingCartTest {
 
     @Test
     void findItemById_shouldReturnCorrectItem() {
-        ShoppingCart cart = ShoppingCart.startShopping(customerId);
+        ShoppingCart cart = ShoppingCart.draft(customerId);
         cart.addItem(product, quantity);
         ShoppingCartItem item = cart.items().iterator().next();
 
@@ -96,7 +96,7 @@ class ShoppingCartTest {
 
     @Test
     void findItemByProduct_shouldReturnCorrectItem() {
-        ShoppingCart cart = ShoppingCart.startShopping(customerId);
+        ShoppingCart cart = ShoppingCart.draft(customerId);
         cart.addItem(product, quantity);
         ShoppingCartItem item = cart.items().iterator().next();
 
@@ -107,7 +107,7 @@ class ShoppingCartTest {
 
     @Test
     void findItemById_shouldThrowIfNotFound() {
-        ShoppingCart cart = ShoppingCart.startShopping(customerId);
+        ShoppingCart cart = ShoppingCart.draft(customerId);
 
         assertThatThrownBy(() -> cart.findItem(new ShoppingCartItemId()))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -116,7 +116,7 @@ class ShoppingCartTest {
 
     @Test
     void changeItem_shouldUpdateQuantityAndTotals() {
-        ShoppingCart cart = ShoppingCart.startShopping(customerId);
+        ShoppingCart cart = ShoppingCart.draft(customerId);
         cart.addItem(product, quantity);
         ShoppingCartItem item = cart.items().iterator().next();
 
@@ -130,7 +130,7 @@ class ShoppingCartTest {
 
     @Test
     void containsUnavailableItems_shouldReturnTrueIfAnyItemUnavailable() {
-        ShoppingCart cart = ShoppingCart.startShopping(customerId);
+        ShoppingCart cart = ShoppingCart.draft(customerId);
         Product unavailableProduct = ProductTestDataBuilder.aProduct()
             .name(new ProductName("Unavailable"))
             .inStock(false)
@@ -142,7 +142,7 @@ class ShoppingCartTest {
 
     @Test
     void containsUnavailableItems_shouldReturnFalseIfAllItemsAvailable() {
-        ShoppingCart cart = ShoppingCart.startShopping(customerId);
+        ShoppingCart cart = ShoppingCart.draft(customerId);
         cart.addItem(product, quantity);
 
         assertThat(cart.containsUnavailableItems()).isFalse();
@@ -150,14 +150,14 @@ class ShoppingCartTest {
 
     @Test
     void isEmpty_shouldReturnTrueWhenNoItems() {
-        ShoppingCart cart = ShoppingCart.startShopping(customerId);
+        ShoppingCart cart = ShoppingCart.draft(customerId);
 
         assertThat(cart.isEmpty()).isTrue();
     }
 
     @Test
     void isEmpty_shouldReturnFalseWhenHasItems() {
-        ShoppingCart cart = ShoppingCart.startShopping(customerId);
+        ShoppingCart cart = ShoppingCart.draft(customerId);
         cart.addItem(product, quantity);
 
         assertThat(cart.isEmpty()).isFalse();
@@ -165,13 +165,13 @@ class ShoppingCartTest {
 
     @Test
     void equalsAndHashCode_shouldWorkBasedOnId() {
-        ShoppingCart cart1 = ShoppingCart.startShopping(customerId);
-        ShoppingCart cart2 = ShoppingCart.startShopping(customerId);
+        ShoppingCart cart1 = ShoppingCart.draft(customerId);
+        ShoppingCart cart2 = ShoppingCart.draft(customerId);
 
         // Set same id for testing equality
         // ShoppingCartId sameId = cart1.id();
         // Reflection or package-private setter would be needed in real test, here we simulate
-        cart2 = ShoppingCart.startShopping(customerId);
+        cart2 = ShoppingCart.draft(customerId);
         // Simulate same id
         // This is just for demonstration; in real code, use a builder or test utility
         // to set the id

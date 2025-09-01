@@ -13,10 +13,10 @@ public class RecipientEmbeddableAssembler {
 
     private static RecipientEmbeddable merge(RecipientEmbeddable recipientEmbeddable, Recipient recipient) {
 
-        recipientEmbeddable.setFullName(recipient.fullName().toString());
+        recipientEmbeddable.setFirstName(recipient.fullName().firstName());
+        recipientEmbeddable.setLastName(recipient.fullName().lastName());
         recipientEmbeddable.setDocument(recipient.document().toString());
         recipientEmbeddable.setPhone(recipient.phone().toString());
-        recipientEmbeddable.setAddress(AddressEmbeddableAssembler.fromDomain(recipient.address()));
         
         return recipientEmbeddable;
     }

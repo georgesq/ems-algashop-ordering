@@ -12,36 +12,39 @@ import br.com.transformers.ems.algashop.ordering.domain.model.exception.Customer
 import br.com.transformers.ems.algashop.ordering.domain.model.exception.LoyaltyPointException;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Email;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.FullName;
+import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.LoyaltyPoints;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Phone;
 
 public class CustomerTest {
 
-    Customer customer = CustomerTestDataBuilder.aCustomer().build();
+    Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
 
     @Test
     public void given_newpoints_then_loyaltyPoints_correct() {
 
-        customer.addLoyaltyPoints(10);
+        customer.addLoyaltyPoints(new LoyaltyPoints(10));
 
-        assertEquals(10, customer.loyaltyPoints());
+        assertEquals(10, customer.loyaltyPoints().value());
 
-        customer.addLoyaltyPoints(5);
+        customer.addLoyaltyPoints(new LoyaltyPoints(5));
 
-        assertEquals(15, customer.loyaltyPoints());
+        assertEquals(15, customer.loyaltyPoints().value());
     }
 
     @Test
     public void given_enable_promotion_notification_then_customer_enabled_promotion_notification() {
-        customer.enablePromotionNotificafications();
 
-        assertEquals(true, customer.isPromotionNotificaficationsAllowed());
+        customer.enablePromotionNotifications();
+
+        assertEquals(true, customer.isPromotionNotificationsAllowed());
+
     }
 
     @Test
     public void given_disable_promotion_notification_then_customer_disabled_promotion_notification() {
-        customer.disablePromotionNotificafications();
+        customer.disablePromotionNotifications();
 
-        assertEquals(false, customer.isPromotionNotificaficationsAllowed());
+        assertEquals(false, customer.isPromotionNotificationsAllowed());
     }
 
     @Test
@@ -81,10 +84,10 @@ public class CustomerTest {
     public void given_invalid_point_then_throws_LoyaltyPointException() {
 
         assertThatExceptionOfType(LoyaltyPointException.class)
-                .isThrownBy(() -> customer.addLoyaltyPoints(-1)
+                .isThrownBy(() -> customer.addLoyaltyPoints(new LoyaltyPoints(-1))
                 );
         assertThatExceptionOfType(LoyaltyPointException.class)
-                .isThrownBy(() -> customer.addLoyaltyPoints(0)
+                .isThrownBy(() -> customer.addLoyaltyPoints(new LoyaltyPoints(0))
                 );
 
     }

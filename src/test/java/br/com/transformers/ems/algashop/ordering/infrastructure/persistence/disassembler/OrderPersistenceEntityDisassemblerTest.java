@@ -18,7 +18,7 @@ class OrderPersistenceEntityDisassemblerTest {
 
     @Test
     void toDomainEntity_shouldMapAllFieldsCorrectly() {
-        OrderPersistenceEntity entity = OrderPersistenceEntityTestDataBuilder.draft().withItems(true).build();
+        OrderPersistenceEntity entity = OrderPersistenceEntityTestDataBuilder.existingOrder().build();
         
         // Act
         Order order = disassembler.toDomainEntity(entity);
@@ -29,12 +29,11 @@ class OrderPersistenceEntityDisassemblerTest {
         Assertions.assertThat(order.customerId().value()).isEqualTo(entity.getCustomer().getId());
         Assertions.assertThat(order.totalAmount()).isEqualTo(new Money(entity.getTotalAmount()));
         Assertions.assertThat(order.totalItems()).isEqualTo(new Quantity(entity.getTotalItems()));
-        Assertions.assertThat(order.createdAt()).isEqualTo(entity.getCreatedAt());
         Assertions.assertThat(order.placedAt()).isEqualTo(entity.getPlacedAt());
         Assertions.assertThat(order.paidAt()).isEqualTo(entity.getPaidAt());
         Assertions.assertThat(order.canceledAt()).isNull();
-        Assertions.assertThat(order.readAt()).isEqualTo(entity.getReadAt());
-        Assertions.assertThat(order.status()).isEqualTo(OrderStatus.PLACED);
+        Assertions.assertThat(order.readyAt()).isEqualTo(entity.getReadyAt());
+        Assertions.assertThat(order.status()).isEqualTo(OrderStatus.DRAFT);
         Assertions.assertThat(order.paymentMethod()).isEqualTo(PaymentMethod.CREDIT_CARD);
 
         Assertions.assertThat(order).satisfies(o ->

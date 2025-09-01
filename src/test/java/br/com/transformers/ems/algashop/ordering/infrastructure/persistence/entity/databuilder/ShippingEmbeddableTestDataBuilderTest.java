@@ -1,7 +1,6 @@
-package br.com.transformers.ems.algashop.ordering.infrastructure.persistence.disassembler;
+package br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.databuilder;
 
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.embeddeble.ShippingEmbeddable;
-import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.databuilder.ShippingEmbeddableTestDataBuilder;
 
 import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;

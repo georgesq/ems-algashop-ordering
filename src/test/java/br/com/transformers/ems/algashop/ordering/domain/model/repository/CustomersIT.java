@@ -37,7 +37,7 @@ class CustomersIT {
 
     @Test
     public void shouldPersistAndFind() {
-        Customer originalCustomer = CustomerTestDataBuilder.aCustomer().build();
+        Customer originalCustomer = CustomerTestDataBuilder.brandNewCustomer().build();
         CustomerId customerId = originalCustomer.id();
         customers.add(originalCustomer);
 
@@ -54,8 +54,7 @@ class CustomersIT {
 
     @Test
     public void shouldUpdateExistingCustomer() {
-
-        Customer customer = CustomerTestDataBuilder.aCustomer().build();
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
         customers.add(customer);
 
         customer = customers.ofId(customer.id()).orElseThrow();
@@ -72,7 +71,7 @@ class CustomersIT {
 
     @Test
     public void shouldNotAllowStaleUpdates() {
-        Customer customer = CustomerTestDataBuilder.aCustomer().build();
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
         customers.add(customer);
 
         Customer customerT1 = customers.ofId(customer.id()).orElseThrow();
@@ -95,23 +94,20 @@ class CustomersIT {
 
     @Test
     public void shouldCountExistingOrders() {
-
         Assertions.assertThat(customers.count()).isZero();
 
-        Customer customer1 = CustomerTestDataBuilder.aCustomer().build();
+        Customer customer1 = CustomerTestDataBuilder.brandNewCustomer().build();
         customers.add(customer1);
 
-        Customer customer2 = CustomerTestDataBuilder.aCustomer().build();
+        Customer customer2 = CustomerTestDataBuilder.brandNewCustomer().build();
         customers.add(customer2);
 
         Assertions.assertThat(customers.count()).isEqualTo(2L);
-
     }
 
     @Test
     public void shouldReturnValidateIfOrderExists() {
-
-        Customer customer = CustomerTestDataBuilder.aCustomer().build();
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
         customers.add(customer);
 
         Assertions.assertThat(customers.exists(customer.id())).isTrue();
@@ -120,7 +116,7 @@ class CustomersIT {
 
     @Test
     public void shouldFindByEmail() {
-        Customer customer = CustomerTestDataBuilder.aCustomer().build();
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
         customers.add(customer);
 
         Optional<Customer> customerOptional = customers.ofEmail(customer.email());
@@ -130,14 +126,12 @@ class CustomersIT {
 
     @Test
     public void shouldReturnIfEmailIsInUse() {
-
-        Customer customer = CustomerTestDataBuilder.aCustomer().build();
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
         customers.add(customer);
 
         Assertions.assertThat(customers.isEmailUnique(customer.email(), customer.id())).isTrue();
         Assertions.assertThat(customers.isEmailUnique(customer.email(), new CustomerId())).isFalse();
-        Assertions.assertThat(customers.isEmailUnique(new Email("alex@gmail.com"), new CustomerId())).isFalse();
-
+        Assertions.assertThat(customers.isEmailUnique(new Email("alex@gmail.com"), new CustomerId())).isTrue();
     }
 
  }

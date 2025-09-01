@@ -1,5 +1,7 @@
 package br.com.transformers.ems.algashop.ordering.domain.model.valueobject;
 
+import java.util.Objects;
+
 import br.com.transformers.ems.algashop.ordering.domain.model.exception.LoyaltyPointException;
 
 public record LoyaltyPoints(
@@ -13,28 +15,29 @@ public record LoyaltyPoints(
     }
 
     public LoyaltyPoints(Integer value) {
+        Objects.requireNonNull(value);
         if (value < 0) {
             throw new LoyaltyPointException(value);
         }
-
         this.value = value;
     }
 
-    private void valid(Integer value) {
-        if (value <= 0) {
-            throw new LoyaltyPointException(value);
-        }
+    public LoyaltyPoints add(Integer value) {
+        return add(new LoyaltyPoints(value));
     }
 
-    public LoyaltyPoints add(Integer value) {
-        this.valid(value);
+    public LoyaltyPoints add(LoyaltyPoints loyaltyPoints) {
+        Objects.requireNonNull(loyaltyPoints);
+        if (loyaltyPoints.value() <= 0) {
+            throw new LoyaltyPointException(value);
+        }
 
-        return new LoyaltyPoints(this.value() + value);
+        return new LoyaltyPoints(this.value() + loyaltyPoints.value());
     }
 
     @Override
     public String toString() {
-        return this.value().toString();
+        return value.toString();
     }
 
     @Override

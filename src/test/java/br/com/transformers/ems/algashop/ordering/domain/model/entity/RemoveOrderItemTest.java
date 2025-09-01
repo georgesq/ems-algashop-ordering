@@ -25,7 +25,7 @@ public class RemoveOrderItemTest {
 
         Assertions.assertThat(order.items().stream().anyMatch(i -> i.id().equals(orderItemId))).isFalse();
         Assertions.assertThat(order.totalItems()).isEqualTo(new Quantity(initialTotalItems.value() - orderItem.quantity().value()));
-        Assertions.assertThat(order.totalAmount()).isEqualTo(new Money(initialTotalAmount.value().subtract(orderItem.totalAmmount().value())));
+        Assertions.assertThat(order.totalAmount()).isEqualTo(new Money(initialTotalAmount.value().subtract(orderItem.totalAmount().value())));
     }
 
     @Test

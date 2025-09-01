@@ -16,7 +16,7 @@ public class OrderMarkAsReadyTest {
 
         Assertions.assertWith(order,
             (o) -> Assertions.assertThat(o.isReady()).isTrue(),
-            (o) -> Assertions.assertThat(o.readAt()).isNotNull()
+            (o) -> Assertions.assertThat(o.readyAt()).isNotNull()
         );
     }
 

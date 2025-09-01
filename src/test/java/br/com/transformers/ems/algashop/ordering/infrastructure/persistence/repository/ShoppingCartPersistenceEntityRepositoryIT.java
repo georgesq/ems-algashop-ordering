@@ -14,9 +14,9 @@ import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder
 import br.com.transformers.ems.algashop.ordering.infrastructure.config.JpaConfig;
 import br.com.transformers.ems.algashop.ordering.infrastructure.config.SpringDataAuditingConfig;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntity;
-import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.ShoppingCartPersistenceEntity;
 import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.databuilder.CustomerPersistenceEntityTestDataBuilder;
-import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.databuilder.OrderPersistenceEntityTestDataBuilder;
+import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.entity.databuilder.ShoppingCartPersistenceEntityTestDataBuilder;
 
 @DataJpaTest
 @Import({
@@ -24,17 +24,17 @@ import br.com.transformers.ems.algashop.ordering.infrastructure.persistence.enti
     JpaConfig.class
 })
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class OrderPersistenceEntityRepositoryIT {
+class ShoppingCartPersistenceEntityRepositoryIT {
 
-    private final OrderPersistenceEntityRepository orderPersistenceEntityRepository;
+    private final ShoppingCartPersistenceEntityRepository shoppingCartPersistenceEntityRepository;
     private final CustomerPersistenceEntityRepository customerPersistenceEntityRepository;
 
     private CustomerPersistenceEntity customerPersistenceEntity;
 
     @Autowired
-    public OrderPersistenceEntityRepositoryIT(OrderPersistenceEntityRepository orderPersistenceEntityRepository,
-                                              CustomerPersistenceEntityRepository customerPersistenceEntityRepository) {
-        this.orderPersistenceEntityRepository = orderPersistenceEntityRepository;
+    public ShoppingCartPersistenceEntityRepositoryIT(ShoppingCartPersistenceEntityRepository shoppingCartPersistenceEntityRepository,
+                                                     CustomerPersistenceEntityRepository customerPersistenceEntityRepository) {
+        this.shoppingCartPersistenceEntityRepository = shoppingCartPersistenceEntityRepository;
         this.customerPersistenceEntityRepository = customerPersistenceEntityRepository;
     }
 
@@ -50,35 +50,35 @@ class OrderPersistenceEntityRepositoryIT {
 
     @Test
     public void shouldPersist() {
-        OrderPersistenceEntity entity = OrderPersistenceEntityTestDataBuilder.existingOrder()
+        ShoppingCartPersistenceEntity entity = ShoppingCartPersistenceEntityTestDataBuilder.existingShoppingCart()
                 .customer(customerPersistenceEntity)
                 .build();
 
-        orderPersistenceEntityRepository.saveAndFlush(entity);
-        Assertions.assertThat(orderPersistenceEntityRepository.existsById(entity.getId())).isTrue();
+        shoppingCartPersistenceEntityRepository.saveAndFlush(entity);
+        Assertions.assertThat(shoppingCartPersistenceEntityRepository.existsById(entity.getId())).isTrue();
 
-        OrderPersistenceEntity savedEntity = orderPersistenceEntityRepository.findById(entity.getId()).orElseThrow();
+        ShoppingCartPersistenceEntity savedEntity = shoppingCartPersistenceEntityRepository.findById(entity.getId()).orElseThrow();
 
         Assertions.assertThat(savedEntity.getItems()).isNotEmpty();
     }
 
     @Test
     public void shouldCount() {
-        long ordersCount = orderPersistenceEntityRepository.count();
-        Assertions.assertThat(ordersCount).isZero();
+        long shoppingCartsCount = shoppingCartPersistenceEntityRepository.count();
+        Assertions.assertThat(shoppingCartsCount).isZero();
     }
 
     @Test
     public void shouldSetAuditingValues() {
-        OrderPersistenceEntity entity = OrderPersistenceEntityTestDataBuilder.existingOrder()
+        ShoppingCartPersistenceEntity entity = ShoppingCartPersistenceEntityTestDataBuilder.existingShoppingCart()
                 .customer(customerPersistenceEntity)
                 .build();
-        entity = orderPersistenceEntityRepository.saveAndFlush(entity);
+        entity = shoppingCartPersistenceEntityRepository.saveAndFlush(entity);
 
-        Assertions.assertThat(entity.getCreatedByUserId()).isNotNull();
+        Assertions.assertThat(entity.getCreatedByUser()).isNotNull();
 
         Assertions.assertThat(entity.getLastModifiedAt()).isNotNull();
-        Assertions.assertThat(entity.getLastModifiedByUserId()).isNotNull();
+        Assertions.assertThat(entity.getLastModifiedByUser()).isNotNull();
     }
 
 }

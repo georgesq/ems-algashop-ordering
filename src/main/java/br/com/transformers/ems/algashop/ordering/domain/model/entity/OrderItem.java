@@ -25,18 +25,18 @@ public class OrderItem {
     private Money price;
     private Quantity quantity;
 
-    private Money totalAmmount;
+    private Money totalAmount;
 
     @Builder(builderClassName = "ExistingOrderItemBuilder", builderMethodName = "existing")
     public OrderItem(OrderItemId id, OrderId orderId, ProductId productId, ProductName productName, Money price,
-            Quantity quantity, Money totalAmmount) {
+            Quantity quantity, Money totalAmount) {
         this.setId(id);
         this.setOrderId(orderId);
         this.setProductId(productId);
         this.setProductName(productName);
         this.setPrice(price);
         this.setQuantity(quantity);
-        this.setTotalAmmount(totalAmmount);
+        this.setTotalAmount(totalAmount);
     }
 
     @Builder(builderClassName = "BrandNewOrderItemBuilder", builderMethodName = "brandNew")
@@ -85,8 +85,8 @@ public class OrderItem {
         return quantity;
     }
 
-    public Money totalAmmount() {
-        return totalAmmount;
+    public Money totalAmount() {
+        return totalAmount;
     }
 
     private void setId(OrderItemId id) {
@@ -143,19 +143,19 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
-    private void setTotalAmmount(Money totalAmmount) {
+    private void setTotalAmount(Money totalAmount) {
 
-        if (!NNEV.isValid(totalAmmount, null)) {
+        if (!NNEV.isValid(totalAmount, null)) {
             throw new IllegalArgumentException();
         }
 
-        this.totalAmmount = totalAmmount;
+        this.totalAmount = totalAmount;
 
     }
 
     public void recalculateTotals() {
 
-        this.setTotalAmmount(this.price().multiply(this.quantity()));
+        this.setTotalAmount(this.price().multiply(this.quantity()));
 
     }
 

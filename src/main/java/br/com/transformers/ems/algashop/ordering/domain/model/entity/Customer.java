@@ -2,10 +2,9 @@ package br.com.transformers.ems.algashop.ordering.domain.model.entity;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.exception.CustomerArchivedException;
-import br.com.transformers.ems.algashop.ordering.domain.model.exception.RegisteredAtException;
-import br.com.transformers.ems.algashop.ordering.domain.model.validator.NotNullNonEmptyValidator;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Address;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.BirthDate;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Document;
@@ -19,132 +18,106 @@ import lombok.Builder;
 public class Customer implements AggregateRoot<CustomerId> {
 
     private CustomerId id;
-
     private FullName fullName;
-
     private BirthDate birthDate;
-
     private Email email;
-
     private Phone phone;
-
     private Document document;
-
-    private Boolean promotionNotificaficationsAllowed;
-
-    private Boolean archived = false;
-
+    private Boolean promotionNotificationsAllowed;
+    private Boolean archived;
     private OffsetDateTime registeredAt;
-
     private OffsetDateTime archivedAt;
-
     private LoyaltyPoints loyaltyPoints;
-
     private Address address;
 
     private Long version;
 
-    private static final NotNullNonEmptyValidator nnnev = NotNullNonEmptyValidator.getInstance();
-
-    @Builder(builderClassName = "CustomerBuild", builderMethodName = "draft")
-    private static Customer createNewInstance(CustomerId id, FullName fullName, BirthDate birthDate, Email email, Phone phone,
-            Document document, Boolean promotionNotificaficationsAllowed,
+    @Builder(builderClassName = "BrandNewCustomerBuild", builderMethodName = "brandNew")
+    private static Customer createBrandNew(FullName fullName, BirthDate birthDate, Email email,
+            Phone phone, Document document, Boolean promotionNotificationsAllowed,
             Address address) {
-
-        return new Customer(
-                new CustomerId(),
+        return new Customer(new CustomerId(),
+                null,
                 fullName,
                 birthDate,
                 email,
                 phone,
                 document,
-                promotionNotificaficationsAllowed,
+                promotionNotificationsAllowed,
                 false,
                 OffsetDateTime.now(),
                 null,
-                new LoyaltyPoints(),
-                address,
-            null
-        );
-
+                LoyaltyPoints.ZERO,
+                address);
     }
 
     @Builder(builderClassName = "ExistingCustomerBuild", builderMethodName = "existing")
-    private Customer(
-        CustomerId id, 
-        FullName fullName, 
-        BirthDate birthDate, 
-        Email email, 
-        Phone phone, 
-        Document document,
-        Boolean promotionNotificationsAllowed, 
-        Boolean archived, 
-        OffsetDateTime registeredAt,
-        OffsetDateTime archivedAt, 
-        LoyaltyPoints loyaltyPoints, 
-        Address address,
-        Long version) {
-
+    private Customer(CustomerId id, Long version, FullName fullName, BirthDate birthDate, Email email, Phone phone,
+            Document document, Boolean promotionNotificationsAllowed, Boolean archived,
+            OffsetDateTime registeredAt, OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints, Address address) {
         this.setId(id);
+        this.setVersion(version);
         this.setFullName(fullName);
         this.setBirthDate(birthDate);
         this.setEmail(email);
         this.setPhone(phone);
         this.setDocument(document);
         this.setPromotionNotificationsAllowed(promotionNotificationsAllowed);
-        this.setRegisteredAt(registeredAt);
-        this.setAddress(address);
-        this.setLoyaltyPoints(new LoyaltyPoints());
-        this.setLoyaltyPoints(loyaltyPoints);
         this.setArchived(archived);
+        this.setRegisteredAt(registeredAt);
         this.setArchivedAt(archivedAt);
-        this.setVersion(version);
+        this.setLoyaltyPoints(loyaltyPoints);
+        this.setAddress(address);
     }
 
-    public void addLoyaltyPoints(Integer value) {
-        this.verifyIsChangeble();
-
-        this.loyaltyPoints = this.loyaltyPoints.add(value);
+    public void addLoyaltyPoints(LoyaltyPoints loyaltyPointsAdded) {
+        verifyIfChangeable();
+        this.setLoyaltyPoints(this.loyaltyPoints().add(loyaltyPointsAdded));
     }
 
     public void archive() {
-        verifyIsChangeble();
-
+        verifyIfChangeable();
         this.setArchived(true);
         this.setArchivedAt(OffsetDateTime.now());
-        this.setAddress(this.address.toBuilder()
+        this.setFullName(new FullName("Anonymous", "Anonymous"));
+        this.setPhone(new Phone("000-000-0000"));
+        this.setDocument(new Document("000-00-0000"));
+        this.setEmail(new Email(UUID.randomUUID() + "@anonymous.com"));
+        this.setBirthDate(null);
+        this.setPromotionNotificationsAllowed(false);
+        this.setAddress(this.address().toBuilder()
                 .number(null)
                 .complement(null).build());
     }
 
-    public void enablePromotionNotificafications() {
-        verifyIsChangeble();
-
+    public void enablePromotionNotifications() {
+        verifyIfChangeable();
         this.setPromotionNotificationsAllowed(true);
     }
 
-    public void disablePromotionNotificafications() {
-        verifyIsChangeble();
-
+    public void disablePromotionNotifications() {
+        verifyIfChangeable();
         this.setPromotionNotificationsAllowed(false);
     }
 
-    public void changeName(FullName value) {
-        verifyIsChangeble();
-
-        this.fullName = value;
+    public void changeName(FullName fullName) {
+        verifyIfChangeable();
+        this.setFullName(fullName);
     }
 
-    public void changeEmail(Email value) {
-        verifyIsChangeble();
-
-        this.email = value;
+    public void changeEmail(Email email) {
+        verifyIfChangeable();
+        this.setEmail(email);
     }
 
-    public void changePhone(Phone value) {
-        verifyIsChangeble();
+    public void changePhone(Phone phone) {
+        verifyIfChangeable();
+        this.setPhone(phone);
+    }
 
-        this.phone = value;
+    public void changeAddress(Address address) {
+        verifyIfChangeable();
+        this.setAddress(address);
     }
 
     public CustomerId id() {
@@ -171,8 +144,8 @@ public class Customer implements AggregateRoot<CustomerId> {
         return document;
     }
 
-    public Boolean isPromotionNotificaficationsAllowed() {
-        return promotionNotificaficationsAllowed;
+    public Boolean isPromotionNotificationsAllowed() {
+        return promotionNotificationsAllowed;
     }
 
     public Boolean isArchived() {
@@ -187,128 +160,98 @@ public class Customer implements AggregateRoot<CustomerId> {
         return archivedAt;
     }
 
-    public Integer loyaltyPoints() {
-        return loyaltyPoints.value();
+    public LoyaltyPoints loyaltyPoints() {
+        return loyaltyPoints;
     }
 
     public Address address() {
-        return this.address;
+        return address;
     }
 
     public Long version() {
         return version;
     }
 
-    public void changeAddress(Address value) {
-        verifyIsChangeble();
-
-        this.address = value;
-    }
-
-    private void setPromotionNotificationsAllowed(Boolean value) {
-        if (!nnnev.isValid(value, null)) {
-            throw new IllegalArgumentException("PromotionNotificaficationsAllowed is invalid");
-        }
-
-        this.promotionNotificaficationsAllowed = value;
-    }
-
-    private void setRegisteredAt(OffsetDateTime value) {
-        if (!nnnev.isValid(value, null)) {
-            throw new RegisteredAtException();
-        }
-
-        this.registeredAt = value;
-    }
-
-    private void setArchivedAt(OffsetDateTime value) {
-        this.archivedAt = value;
-    }
-
-    private void setId(CustomerId value) {
-        if (!nnnev.isValid(value, null)) {
-            throw new IllegalArgumentException("Id is invalid");
-        }
-
-        this.id = value;
-    }
-
-    private void setFullName(FullName value) {
-        if (!nnnev.isValid(value, null)) {
-            throw new IllegalArgumentException("FullName is invalid");
-        }
-
-        this.fullName = value;
-    }
-
-    private void setBirthDate(BirthDate value) {
-        if (!nnnev.isValid(value, null)) {
-            throw new IllegalArgumentException("BirthDate is invalid");
-        }
-
-        this.birthDate = value;
-    }
-
-    private void setEmail(Email value) {
-        if (!nnnev.isValid(value, null)) {
-            throw new IllegalArgumentException("Email is invalid");
-        }
-
-        this.email = value;
-    }
-
-    private void setPhone(Phone value) {
-        if (!nnnev.isValid(value, null)) {
-            throw new IllegalArgumentException("Phone is invalid");
-        }
-
-        this.phone = value;
-    }
-
-    private void setDocument(Document value) {
-        if (!nnnev.isValid(value, null)) {
-            throw new IllegalArgumentException("Document is invalid");
-        }
-
-        this.document = value;
-    }
-
-    private void setArchived(Boolean value) {
-        if (!nnnev.isValid(value, null)) {
-            throw new IllegalArgumentException("Archived is invalid");
-        }
-
-        this.archived = value;
-    }
-
-    private void setLoyaltyPoints(LoyaltyPoints value) {
-        if (!nnnev.isValid(value, null)) {
-            throw new IllegalArgumentException("LoyaltyPoints is invalid");
-        }
-        this.loyaltyPoints = value;
-    }
-
-    private void setAddress(Address value) {
-        if (!nnnev.isValid(value, null)) {
-            throw new IllegalArgumentException("Address is invalid");
-        }
-
-        this.address = value;
-    }
-
-    private void setVersion(Long version) {
+    public void setVersion(Long version) {
         this.version = version;
     }
 
-    private void verifyIsChangeble() {
-        if (this.archived) {
+    private void setId(CustomerId id) {
+        Objects.requireNonNull(id);
+        this.id = id;
+    }
+
+    private void setFullName(FullName fullName) {
+        Objects.requireNonNull(fullName);
+        this.fullName = fullName;
+    }
+
+    private void setBirthDate(BirthDate birthDate) {
+        if (birthDate == null) {
+            this.birthDate = null;
+            return;
+        }
+        this.birthDate = birthDate;
+    }
+
+    private void setEmail(Email email) {
+        Objects.requireNonNull(email);
+        this.email = email;
+    }
+
+    private void setPhone(Phone phone) {
+        Objects.requireNonNull(phone);
+        this.phone = phone;
+    }
+
+    private void setDocument(Document document) {
+        Objects.requireNonNull(document);
+        this.document = document;
+    }
+
+    private void setPromotionNotificationsAllowed(Boolean promotionNotificationsAllowed) {
+        Objects.requireNonNull(promotionNotificationsAllowed);
+        this.promotionNotificationsAllowed = promotionNotificationsAllowed;
+    }
+
+    private void setArchived(Boolean archived) {
+        Objects.requireNonNull(archived);
+        this.archived = archived;
+    }
+
+    private void setRegisteredAt(OffsetDateTime registeredAt) {
+        Objects.requireNonNull(registeredAt);
+        this.registeredAt = registeredAt;
+    }
+
+    private void setArchivedAt(OffsetDateTime archivedAt) {
+        this.archivedAt = archivedAt;
+    }
+
+    private void setLoyaltyPoints(LoyaltyPoints loyaltyPoints) {
+        Objects.requireNonNull(loyaltyPoints);
+        this.loyaltyPoints = loyaltyPoints;
+    }
+
+    private void setAddress(Address address) {
+        Objects.requireNonNull(address);
+        this.address = address;
+    }
+
+    private void verifyIfChangeable() {
+        if (this.isArchived()) {
             throw new CustomerArchivedException();
         }
     }
 
+    public String getFirstName() {
+        return this.fullName().firstName();
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Customer customer = (Customer) o;
         return Objects.equals(id, customer.id);
     }
@@ -317,5 +260,4 @@ public class Customer implements AggregateRoot<CustomerId> {
     public int hashCode() {
         return Objects.hashCode(id);
     }
-
 }

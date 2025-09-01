@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Import;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Customer;
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder.CustomerTestDataBuilder;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.Email;
-import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.LoyaltyPoints;
 import br.com.transformers.ems.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import br.com.transformers.ems.algashop.ordering.infrastructure.config.JpaConfig;
 import br.com.transformers.ems.algashop.ordering.infrastructure.config.SpringDataAuditingConfig;
@@ -38,8 +37,7 @@ class CustomerPersistenceProviderIT {
 
     @Test
     void givenCustomerWhenAddThenSaved() {
-        Customer customer = CustomerTestDataBuilder.aCustomer()
-            .build();
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
 
         this.provider.add(customer);
 
@@ -48,7 +46,7 @@ class CustomerPersistenceProviderIT {
         Assertions.assertThat(saved).satisfies(c -> {
             Assertions.assertThat(c.isArchived()).isEqualTo(customer.isArchived());
             Assertions.assertThat(c.address()).isEqualTo(customer.address());
-            Assertions.assertThat(c.isPromotionNotificaficationsAllowed()).isEqualTo(customer.isPromotionNotificaficationsAllowed());
+            Assertions.assertThat(c.isPromotionNotificationsAllowed()).isEqualTo(customer.isPromotionNotificationsAllowed());
             Assertions.assertThat(c.loyaltyPoints()).isEqualTo(customer.loyaltyPoints());
             Assertions.assertThat(c.registeredAt()).isEqualTo(customer.registeredAt());
             Assertions.assertThat(c.version()).isEqualTo(customer.version());
@@ -60,8 +58,7 @@ class CustomerPersistenceProviderIT {
 
     @Test
     void givenSavedCustomerWhenChangedThenUpdated() {
-        Customer customer = CustomerTestDataBuilder.aCustomer()
-            .build();
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
 
         this.provider.add(customer);
 
@@ -82,8 +79,7 @@ class CustomerPersistenceProviderIT {
 
     @Test
     void givenOlderCustomerWhenChangedThenObjectOptimisticLockingFailureException() {
-        Customer customer = CustomerTestDataBuilder.aCustomer()
-            .build();
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
 
         CustomerId id = customer.id();
 
@@ -97,9 +93,9 @@ class CustomerPersistenceProviderIT {
             .archivedAt(customer.archivedAt())
             .birthDate(customer.birthDate())
             .document(customer.document())
-            .loyaltyPoints(new LoyaltyPoints(customer.loyaltyPoints()))
+            .loyaltyPoints(customer.loyaltyPoints())
             .phone(customer.phone())
-            .promotionNotificationsAllowed(customer.isPromotionNotificaficationsAllowed())
+            .promotionNotificationsAllowed(customer.isPromotionNotificationsAllowed())
             .registeredAt(OffsetDateTime.now())
             .archived(false)
             .build();        
@@ -111,8 +107,7 @@ class CustomerPersistenceProviderIT {
     @Test
     void givenValidEmailThenReturnACustomer() {
 
-        Customer customer = CustomerTestDataBuilder.aCustomer()
-            .build();
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
 
          this.provider.add(customer);
        

@@ -25,6 +25,14 @@ public record FullName(
         this.lastName = lastName.trim();
     }
 
+    public String firstName() {
+        return firstName;
+    }
+
+    public String lastName() {
+        return lastName;
+    }
+
     @Override
     public String toString() {
         return firstName + " " +lastName;

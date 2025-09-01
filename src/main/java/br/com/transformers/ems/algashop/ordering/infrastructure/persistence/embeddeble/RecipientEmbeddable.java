@@ -1,7 +1,6 @@
 package br.com.transformers.ems.algashop.ordering.infrastructure.persistence.embeddeble;
 
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Embedded;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,11 +13,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class RecipientEmbeddable {
     
-        private String fullName;
-        private String document;
-        private String phone;
-        @Embedded
-        private AddressEmbeddable address;
-
+    private String firstName;
+    private String lastName;
+    private String document;
+    private String phone;
+    
 
 }

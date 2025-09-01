@@ -22,9 +22,10 @@ public class BillingEmbeddableAssembler {
 
         embeddable.setAddress(AddressEmbeddableAssembler.fromDomain(domain.address()));
         embeddable.setDocument(domain.document().toString());
-        embeddable.setEmail(domain.email().toString());
-        embeddable.setFullName(domain.fullName().toString());
+        embeddable.setFirstName(domain.fullName().firstName());
+        embeddable.setLastName(domain.fullName().lastName());
         embeddable.setPhone(domain.phone().toString());
+        embeddable.setEmail(domain.email().toString());
         
         return embeddable;
 

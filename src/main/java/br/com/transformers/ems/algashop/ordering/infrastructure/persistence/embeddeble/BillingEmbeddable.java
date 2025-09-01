@@ -14,11 +14,12 @@ import lombok.NoArgsConstructor;
 @Data
 public class BillingEmbeddable {
 
-        private String fullName;
-        private String document;
-        private String phone;
-        @Embedded
-        private AddressEmbeddable address;
-        private String email;
-    
+    private String firstName;
+    private String lastName;
+    private String document;
+    private String phone;
+    private String email;
+    @Embedded
+    private AddressEmbeddable address;
+        
 }
