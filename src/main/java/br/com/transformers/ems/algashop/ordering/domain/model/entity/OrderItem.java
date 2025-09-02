@@ -51,7 +51,7 @@ public class OrderItem {
                 orderId,
                 product.id(),
                 product.name(),
-                product.value(),
+                product.price(),
                 quantity,
                 Money.DEZ);
 

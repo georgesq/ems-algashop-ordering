@@ -48,7 +48,7 @@ public class OrderTest {
                 (i) -> Assertions.assertThat(i.id()).isNotNull(),
                 (i) -> Assertions.assertThat(i.productId()).isEqualTo(product.id()),
                 (i) -> Assertions.assertThat(i.productName()).isEqualTo(product.name()),
-                (i) -> Assertions.assertThat(i.price()).isEqualTo(product.value()),
+                (i) -> Assertions.assertThat(i.price()).isEqualTo(product.price()),
                 (i) -> Assertions.assertThat(i.quantity()).isEqualTo(quantity));
     }
 
@@ -78,7 +78,7 @@ public class OrderTest {
 
         product = ProductTestDataBuilder.aProduct()
                 .name(new ProductName("pn2"))
-                .value(new Money(BigDecimal.TEN))
+                .price(new Money(BigDecimal.TEN))
             .build();
 
         order.addItem(product, new Quantity(2L));
@@ -213,7 +213,7 @@ public class OrderTest {
         var order = Order.draft(CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID);
 
         Assertions.assertThatExceptionOfType(UnavailableProductException.class)
-            .isThrownBy(() ->order.addItem(ProductTestDataBuilder.aUnavailableProduct().build(), new Quantity(1L)));
+            .isThrownBy(() ->order.addItem(ProductTestDataBuilder.aProductUnavailable().build(), new Quantity(1L)));
     }
 
     @Test

@@ -57,9 +57,9 @@ public class ShoppingCartItem {
             shoppingCartId,
             product.id(),
             product.name(),
-            product.value(),
+            product.price(),
             quantity,
-            recalculate(product.value(), quantity),
+            recalculate(product.price(), quantity),
             product.inStock()
         );
 
@@ -72,7 +72,7 @@ public class ShoppingCartItem {
         }
 
         this.setProductName(product.name());
-        this.setPrice(product.value());
+        this.setPrice(product.price());
         this.setAvailable(product.inStock());
 
         recalculate(this.price, this.quantity());

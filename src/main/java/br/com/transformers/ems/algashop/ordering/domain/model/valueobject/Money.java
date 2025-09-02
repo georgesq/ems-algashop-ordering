@@ -8,7 +8,7 @@ public record Money (
 
     BigDecimal value
 
-) implements Comparable<BigDecimal> {
+) implements Comparable<Money> {
     
     public static final Money ZERO = new Money(BigDecimal.ZERO);
     public static final Money DEZ = new Money(BigDecimal.TEN);
@@ -51,8 +51,10 @@ public record Money (
     }    
 
     @Override
-    public int compareTo(BigDecimal o) {
-        return o.compareTo(this.value);
+    public int compareTo(Money o) {
+
+        return this.value.compareTo(o.value);
+        
     }
 
     @Override

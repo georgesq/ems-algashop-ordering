@@ -1,6 +1,5 @@
 package br.com.transformers.ems.algashop.ordering.domain.model.entity.databuilder;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import br.com.transformers.ems.algashop.ordering.domain.model.entity.Order;
@@ -91,20 +90,18 @@ public class OrderTestDataBuilder {
     public Order build() {
         
         Order order = Order.draft(customerId);
-
+        
         order.changeShipping(this.shipping);
         order.changeBilling(this.billing);
         order.changePaymentMethod(this.paymentMethod);
 
         if (withItems) {
             order.addItem(ProductTestDataBuilder.aProduct()
-                .value(new Money(BigDecimal.TEN))
-                .build(), 
-                new Quantity(5L));
-            order.addItem(ProductTestDataBuilder.aProduct()
-                .value(new Money(BigDecimal.TEN))
                 .build(), 
                 new Quantity(2L));
+            order.addItem(ProductTestDataBuilder.aProduct()
+                .build(), 
+                new Quantity(1L));
         }
 
         order.recalculateTotals();
@@ -115,7 +112,11 @@ public class OrderTestDataBuilder {
             }
         
             case READY -> {
-                
+
+                order.place();
+                order.markAsPaid();
+                order.markAsReady();                
+
             }
 
             case PLACED -> {
@@ -180,8 +181,11 @@ public class OrderTestDataBuilder {
     }
 
     public OrderTestDataBuilder status(OrderStatus status) {
+
         this.status = status;
+
         return this;
+
     }
 
     public OrderTestDataBuilder email(Email email) {

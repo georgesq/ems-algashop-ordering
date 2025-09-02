@@ -26,7 +26,7 @@ class ShoppingCartTest {
     void setUp() {
         customerId = new CustomerId();
         product = ProductTestDataBuilder.aProduct()
-                .value(new Money(BigDecimal.valueOf(10)))
+                .price(new Money(BigDecimal.valueOf(10)))
             .build(); 
         quantity = new Quantity(2L);
     }
@@ -55,7 +55,7 @@ class ShoppingCartTest {
 
         assertThat(cart.items()).hasSize(1);
         assertThat(cart.totalItems().value()).isEqualTo(quantity.value());
-        assertThat(cart.totalAmount().value()).isEqualTo(product.value().value().multiply(BigDecimal.valueOf(quantity.value())));
+        assertThat(cart.totalAmount().value()).isEqualTo(product.price().value().multiply(BigDecimal.valueOf(quantity.value())));
     }
 
     @Test
@@ -125,7 +125,7 @@ class ShoppingCartTest {
 
         assertThat(item.quantity()).isEqualTo(newQuantity);
         assertThat(cart.totalItems()).isEqualTo(newQuantity);
-        assertThat(cart.totalAmount().value()).isEqualTo(product.value().value().multiply(BigDecimal.valueOf(newQuantity.value())));
+        assertThat(cart.totalAmount().value()).isEqualTo(product.price().value().multiply(BigDecimal.valueOf(newQuantity.value())));
     }
 
     @Test

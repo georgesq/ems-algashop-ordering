@@ -9,24 +9,24 @@ import lombok.Builder;
 public record Product(
         ProductId id,
         ProductName name,
-        Money value,
+        Money price,
         Boolean inStock
 ) {
 
     public Product(
         ProductId id,
         ProductName name,
-        Money value,
+        Money price,
         Boolean inStock
     ) {
     
         Objects.requireNonNull(id);
         Objects.requireNonNull(name);
-        Objects.requireNonNull(value);
+        Objects.requireNonNull(price);
 
         this.id = id;
         this.name = name;
-        this.value = value;
+        this.price = price;
 
         this.inStock = Objects.isNull(inStock) ? false : inStock;
         
@@ -39,7 +39,7 @@ public record Product(
     @Override
     public final String toString() {
 
-        return this.id() + " " + this.name() + " " + this.value().toString() + " " + this.inStock();
+        return this.id() + " " + this.name() + " " + this.price().toString() + " " + this.inStock();
 
     }
 }

@@ -32,7 +32,7 @@ public class AddressTestDataBuilder {
         return Product.builder()
             .id(new ProductId())
             .name(new ProductName("pnUn"))
-            .value(Money.ZERO)
+            .price(Money.ZERO)
             .inStock(false)
             ;
 
