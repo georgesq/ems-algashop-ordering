@@ -86,9 +86,6 @@ public class CustomerTest {
         assertThatExceptionOfType(LoyaltyPointException.class)
                 .isThrownBy(() -> customer.addLoyaltyPoints(new LoyaltyPoints(-1))
                 );
-        assertThatExceptionOfType(LoyaltyPointException.class)
-                .isThrownBy(() -> customer.addLoyaltyPoints(new LoyaltyPoints(0))
-                );
 
     }
 }

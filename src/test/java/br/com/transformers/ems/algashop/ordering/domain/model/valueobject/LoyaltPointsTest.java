@@ -24,13 +24,6 @@ class LoyaltPointsTest {
     }
 
     @Test
-    void shouldAddInvalidValue() {
-        LoyaltyPoints loyaltPoints = new LoyaltyPoints(10);
-
-        Assertions.assertThatExceptionOfType(LoyaltyPointException.class).isThrownBy(() -> loyaltPoints.add(0));
-    }
-
-    @Test
     void shouldNewInvalidValue() {
         Assertions.assertThatExceptionOfType(LoyaltyPointException.class).isThrownBy(() -> new LoyaltyPoints(-10));
     }

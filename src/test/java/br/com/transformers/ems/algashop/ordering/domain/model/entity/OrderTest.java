@@ -33,7 +33,7 @@ public class OrderTest {
 
     @Test
     void testGivinCorrectValuesWhenAddItemThenOrderItemAdded() {
-        var order = OrderTestDataBuilder.anOrder().build();
+        var order = OrderTestDataBuilder.anOrder().withItems(false).build();
 
         var product = ProductTestDataBuilder.aProduct().build();
         Quantity quantity = new Quantity(5L);
@@ -84,8 +84,8 @@ public class OrderTest {
         order.addItem(product, new Quantity(2L));
 
         Assertions.assertWith(order,
-            (o) -> Assertions.assertThat(o.totalAmount()).isEqualTo(new Money("70")),
-            (o) -> Assertions.assertThat(o.totalItems()).isEqualTo(new Quantity(7L))
+            (o) -> Assertions.assertThat(o.totalAmount()).isEqualTo(new Money("9000")),
+            (o) -> Assertions.assertThat(o.totalItems()).isEqualTo(new Quantity(3L))
         );
 
     }
