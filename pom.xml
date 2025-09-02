@@ -100,6 +100,9 @@
 					<excludes>
 						<exclude>**/*IT</exclude> <!-- Exclude all classes ending with Test.java -->
 					</excludes>
+					<argLine>
+						-javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
+					</argLine>					
 				</configuration>
 				<executions>
 					<execution>
@@ -144,6 +147,17 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
+			<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-failsafe-plugin</artifactId>
+			<configuration>
+				<argLine>
+					-javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
+				</argLine>
+			</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 
