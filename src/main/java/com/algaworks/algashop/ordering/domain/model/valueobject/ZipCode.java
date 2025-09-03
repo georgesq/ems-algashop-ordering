@@ -9,7 +9,7 @@ public record ZipCode(String value) {
         if (value.isBlank()) {
             throw new IllegalArgumentException();
         }
-        if (value.length() != 5) {
+        if (value.length() != 5 && value.length() != 8) {
             throw new IllegalArgumentException();
         }
     }
