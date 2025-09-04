@@ -7,39 +7,25 @@ import com.algaworks.algashop.ordering.domain.model.repository.Customers;
 import com.algaworks.algashop.ordering.domain.model.repository.ShoppingCarts;
 import com.algaworks.algashop.ordering.domain.model.utility.DomainService;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.CustomerId;
-
 import lombok.RequiredArgsConstructor;
 
 @DomainService
 @RequiredArgsConstructor
 public class ShoppingService {
+	
+	private final ShoppingCarts shoppingCarts;
+	private final Customers customers;
 
-    private final Customers customers;
+	public ShoppingCart startShopping(CustomerId customerId) {
+		if (!customers.exists(customerId)) {
+			throw new CustomerNotFoundException();
+		}
 
-    private final ShoppingCarts shoppingCarts;
+		if (shoppingCarts.ofCustomer(customerId).isPresent()) {
+			throw new CustomerAlreadyHaveShoppingCartException();
+		}
 
-    public ShoppingCart startShopping(CustomerId customerId) {
-
-        this.validateCustomer(customerId);
-        
-        ShoppingCart shoppingCart = ShoppingCart.startShopping(customerId);
-
-        return shoppingCart;
-
-    }
-
-    private void validateCustomer(CustomerId customerId) {
-        
-        if (!this.customers.exists(customerId)) {
-            throw new CustomerNotFoundException(customerId);
-        }
-
-        this.shoppingCarts.ofCustomer(customerId)
-            .ifPresent(c -> { 
-                throw new CustomerAlreadyHaveShoppingCartException(customerId);
-            }
-        );
-    }
+		return ShoppingCart.startShopping(customerId);
+	}
 
 }
-

@@ -1,14 +1,14 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.repository;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.UUID;
-
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.UUID;
 
 public interface OrderPersistenceEntityRepository extends JpaRepository<OrderPersistenceEntity, Long> {
 

@@ -12,33 +12,23 @@ import com.algaworks.algashop.ordering.domain.model.valueobject.id.CustomerId;
 @DomainService
 public class BuyNowService {
 
-    public Order buyNow(Product product,
-            CustomerId customerId,
-            Billing billing,
-            Shipping shipping,
-            Quantity quantity,
-            PaymentMethod paymentMethod) {
+	public Order buyNow(Product product,
+						CustomerId customerId,
+						Billing billing,
+						Shipping shipping,
+						Quantity quantity,
+						PaymentMethod paymentMethod) {
+		
+		product.checkOutOfStock();
 
-        this.validateProduct(product);
+		Order order = Order.draft(customerId);
+		order.changeBilling(billing);
+		order.changeShipping(shipping);
+		order.changePaymentMethod(paymentMethod);
+		order.addItem(product, quantity);
+		order.place();
 
-        var order = Order.draft(customerId);
-
-        order.changeBilling(billing);
-        order.changeShipping(shipping);
-        order.changePaymentMethod(paymentMethod);
-
-        order.addItem(product, quantity);
-
-        order.place();
-
-        return order;
-
-    }
-
-    private void validateProduct(Product product) {
-
-        product.checkOutOfStock();
-
-    }
+		return order;
+	}
 
 }

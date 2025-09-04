@@ -13,7 +13,6 @@ public record Address(
         String city,
         String state,
         ZipCode zipCode) {
-
     @Builder(toBuilder = true)
     public Address(String street, String complement, String neighborhood, String number, String city, String state,
             ZipCode zipCode) {
@@ -40,5 +39,4 @@ public record Address(
         this.zipCode = zipCode;
 
     }
-
 }

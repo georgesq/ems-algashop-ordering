@@ -35,8 +35,6 @@ public class ShoppingCart implements AggregateRoot<ShoppingCartId> {
         this.setTotalItems(totalItems);
         this.setCreatedAt(createdAt);
         this.setItems(items);
-        this.setVersion(version);
-        
     }
 
     public static ShoppingCart startShopping(CustomerId customerId) {
