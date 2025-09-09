@@ -19,14 +19,12 @@ import com.algaworks.algashop.ordering.domain.model.product.valueobject.ProductI
 import com.algaworks.algashop.ordering.domain.model.shoppingcart.entity.ShoppingCart;
 import com.algaworks.algashop.ordering.domain.model.shoppingcart.entity.ShoppingCartItem;
 import com.algaworks.algashop.ordering.domain.model.shoppingcart.entity.ShoppingCartTestDataBuilder;
-import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.CustomerPersistenceEntityAssembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.ShoppingCartPersistenceEntityAssembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfig;
-import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.CustomerPersistenceEntityDisassembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.ShoppingCartPersistenceEntityDisassembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.provider.CustomersPersistenceProvider;
-import com.algaworks.algashop.ordering.infrastructure.persistence.provider.ShoppingCartUpdateProvider;
-import com.algaworks.algashop.ordering.infrastructure.persistence.provider.ShoppingCartsPersistenceProvider;
+import com.algaworks.algashop.ordering.infrastructure.commons.persistence.config.SpringDataAuditingConfig;
+import com.algaworks.algashop.ordering.infrastructure.customer.persistence.assembler.CustomerPersistenceEntityAssembler;
+import com.algaworks.algashop.ordering.infrastructure.customer.persistence.disassembler.CustomerPersistenceEntityDisassembler;
+import com.algaworks.algashop.ordering.infrastructure.customer.persistence.provider.CustomersPersistenceProvider;
+import com.algaworks.algashop.ordering.infrastructure.shoppingcart.persistence.assembler.ShoppingCartPersistenceEntityAssembler;
+import com.algaworks.algashop.ordering.infrastructure.shoppingcart.persistence.disassembler.ShoppingCartPersistenceEntityDisassembler;
 
 @DataJpaTest
 @Import({

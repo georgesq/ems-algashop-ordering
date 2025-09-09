@@ -11,13 +11,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import com.algaworks.algashop.ordering.domain.model.customer.entity.CustomerTestDataBuilder;
+import com.algaworks.algashop.ordering.infrastructure.commons.persistence.config.SpringDataAuditingConfig;
+import com.algaworks.algashop.ordering.infrastructure.customer.persistence.entity.CustomerPersistenceEntity;
 import com.algaworks.algashop.ordering.infrastructure.customer.persistence.entity.CustomerPersistenceEntityTestDataBuilder;
+import com.algaworks.algashop.ordering.infrastructure.customer.persistence.repository.CustomerPersistenceEntityRepository;
 import com.algaworks.algashop.ordering.infrastructure.order.entity.OrderPersistenceEntityTestDataBuilder;
-import com.algaworks.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfig;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.repository.CustomerPersistenceEntityRepository;
-import com.algaworks.algashop.ordering.infrastructure.persistence.repository.OrderPersistenceEntityRepository;
+import com.algaworks.algashop.ordering.infrastructure.order.persistence.entity.OrderPersistenceEntity;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

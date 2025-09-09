@@ -11,12 +11,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import com.algaworks.algashop.ordering.domain.model.customer.entity.CustomerTestDataBuilder;
+import com.algaworks.algashop.ordering.infrastructure.commons.persistence.config.SpringDataAuditingConfig;
+import com.algaworks.algashop.ordering.infrastructure.customer.persistence.entity.CustomerPersistenceEntity;
 import com.algaworks.algashop.ordering.infrastructure.customer.persistence.entity.CustomerPersistenceEntityTestDataBuilder;
-import com.algaworks.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfig;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.ShoppingCartPersistenceEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.repository.CustomerPersistenceEntityRepository;
-import com.algaworks.algashop.ordering.infrastructure.persistence.repository.ShoppingCartPersistenceEntityRepository;
+import com.algaworks.algashop.ordering.infrastructure.customer.persistence.repository.CustomerPersistenceEntityRepository;
+import com.algaworks.algashop.ordering.infrastructure.shoppingcart.persistence.entity.ShoppingCartPersistenceEntity;
 import com.algaworks.algashop.ordering.infrastructure.shoppingcart.persistence.entity.ShoppingCartPersistenceEntityTestDataBuilder;
 
 @DataJpaTest

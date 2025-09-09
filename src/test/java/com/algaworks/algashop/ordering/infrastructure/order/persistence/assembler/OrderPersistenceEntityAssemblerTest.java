@@ -20,11 +20,10 @@ import com.algaworks.algashop.ordering.domain.model.order.entity.Order;
 import com.algaworks.algashop.ordering.domain.model.order.entity.OrderItem;
 import com.algaworks.algashop.ordering.domain.model.order.entity.OrderTestDataBuilder;
 import com.algaworks.algashop.ordering.infrastructure.customer.persistence.entity.CustomerPersistenceEntityTestDataBuilder;
+import com.algaworks.algashop.ordering.infrastructure.customer.persistence.repository.CustomerPersistenceEntityRepository;
 import com.algaworks.algashop.ordering.infrastructure.order.entity.OrderPersistenceEntityTestDataBuilder;
-import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.OrderPersistenceEntityAssembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderItemPersistenceEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.repository.CustomerPersistenceEntityRepository;
+import com.algaworks.algashop.ordering.infrastructure.order.persistence.entity.OrderItemPersistenceEntity;
+import com.algaworks.algashop.ordering.infrastructure.order.persistence.entity.OrderPersistenceEntity;
 
 @ExtendWith(MockitoExtension.class)
 class OrderPersistenceEntityAssemblerTest {

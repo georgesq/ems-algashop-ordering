@@ -12,8 +12,8 @@ import com.algaworks.algashop.ordering.domain.model.order.entity.OrderStatus;
 import com.algaworks.algashop.ordering.domain.model.order.entity.PaymentMethod;
 import com.algaworks.algashop.ordering.domain.model.order.valueobject.OrderId;
 import com.algaworks.algashop.ordering.infrastructure.order.entity.OrderPersistenceEntityTestDataBuilder;
-import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
+import com.algaworks.algashop.ordering.infrastructure.order.persistence.disassembler.OrderPersistenceEntityDisassembler;
+import com.algaworks.algashop.ordering.infrastructure.order.persistence.entity.OrderPersistenceEntity;
 
 class OrderPersistenceEntityDisassemblerTest {
 

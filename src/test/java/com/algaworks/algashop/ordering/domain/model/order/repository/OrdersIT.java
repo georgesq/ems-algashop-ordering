@@ -22,12 +22,12 @@ import com.algaworks.algashop.ordering.domain.model.order.entity.Order;
 import com.algaworks.algashop.ordering.domain.model.order.entity.OrderStatus;
 import com.algaworks.algashop.ordering.domain.model.order.entity.OrderTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.order.valueobject.OrderId;
-import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.CustomerPersistenceEntityAssembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.OrderPersistenceEntityAssembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.CustomerPersistenceEntityDisassembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.provider.CustomersPersistenceProvider;
-import com.algaworks.algashop.ordering.infrastructure.persistence.provider.OrdersPersistenceProvider;
+import com.algaworks.algashop.ordering.infrastructure.customer.persistence.assembler.CustomerPersistenceEntityAssembler;
+import com.algaworks.algashop.ordering.infrastructure.customer.persistence.disassembler.CustomerPersistenceEntityDisassembler;
+import com.algaworks.algashop.ordering.infrastructure.customer.persistence.provider.CustomersPersistenceProvider;
+import com.algaworks.algashop.ordering.infrastructure.order.persistence.assembler.OrderPersistenceEntityAssembler;
+import com.algaworks.algashop.ordering.infrastructure.order.persistence.disassembler.OrderPersistenceEntityDisassembler;
+import com.algaworks.algashop.ordering.infrastructure.order.persistence.provider.OrdersPersistenceProvider;
 
 @DataJpaTest
 @Import({

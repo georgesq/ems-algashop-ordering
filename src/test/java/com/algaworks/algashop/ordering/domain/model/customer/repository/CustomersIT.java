@@ -16,9 +16,9 @@ import com.algaworks.algashop.ordering.domain.model.commons.valueobject.FullName
 import com.algaworks.algashop.ordering.domain.model.customer.entity.Customer;
 import com.algaworks.algashop.ordering.domain.model.customer.entity.CustomerTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.customer.valueobject.CustomerId;
-import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.CustomerPersistenceEntityAssembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.CustomerPersistenceEntityDisassembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.provider.CustomersPersistenceProvider;
+import com.algaworks.algashop.ordering.infrastructure.customer.persistence.assembler.CustomerPersistenceEntityAssembler;
+import com.algaworks.algashop.ordering.infrastructure.customer.persistence.disassembler.CustomerPersistenceEntityDisassembler;
+import com.algaworks.algashop.ordering.infrastructure.customer.persistence.provider.CustomersPersistenceProvider;
 
 @DataJpaTest
 @Import({CustomersPersistenceProvider.class,

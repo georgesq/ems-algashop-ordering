@@ -6,9 +6,7 @@ import java.util.Set;
 
 import com.algaworks.algashop.ordering.domain.model.utility.IdGenerator;
 import com.algaworks.algashop.ordering.infrastructure.customer.persistence.entity.CustomerPersistenceEntityTestDataBuilder;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.ShoppingCartItemPersistenceEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.ShoppingCartPersistenceEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.ShoppingCartPersistenceEntity.ShoppingCartPersistenceEntityBuilder;
+import com.algaworks.algashop.ordering.infrastructure.shoppingcart.persistence.entity.ShoppingCartPersistenceEntity.ShoppingCartPersistenceEntityBuilder;
 
 public class ShoppingCartPersistenceEntityTestDataBuilder {
 

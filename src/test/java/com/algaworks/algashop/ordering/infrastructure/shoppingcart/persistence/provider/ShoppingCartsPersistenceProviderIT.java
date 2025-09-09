@@ -16,14 +16,13 @@ import com.algaworks.algashop.ordering.domain.model.customer.entity.CustomerTest
 import com.algaworks.algashop.ordering.domain.model.customer.valueobject.CustomerId;
 import com.algaworks.algashop.ordering.domain.model.shoppingcart.entity.ShoppingCart;
 import com.algaworks.algashop.ordering.domain.model.shoppingcart.entity.ShoppingCartTestDataBuilder;
-import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.CustomerPersistenceEntityAssembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.ShoppingCartPersistenceEntityAssembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfig;
-import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.CustomerPersistenceEntityDisassembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.ShoppingCartPersistenceEntityDisassembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.provider.CustomersPersistenceProvider;
-import com.algaworks.algashop.ordering.infrastructure.persistence.provider.ShoppingCartsPersistenceProvider;
-import com.algaworks.algashop.ordering.infrastructure.persistence.repository.ShoppingCartPersistenceEntityRepository;
+import com.algaworks.algashop.ordering.infrastructure.commons.persistence.config.SpringDataAuditingConfig;
+import com.algaworks.algashop.ordering.infrastructure.customer.persistence.assembler.CustomerPersistenceEntityAssembler;
+import com.algaworks.algashop.ordering.infrastructure.customer.persistence.disassembler.CustomerPersistenceEntityDisassembler;
+import com.algaworks.algashop.ordering.infrastructure.customer.persistence.provider.CustomersPersistenceProvider;
+import com.algaworks.algashop.ordering.infrastructure.shoppingcart.persistence.assembler.ShoppingCartPersistenceEntityAssembler;
+import com.algaworks.algashop.ordering.infrastructure.shoppingcart.persistence.disassembler.ShoppingCartPersistenceEntityDisassembler;
+import com.algaworks.algashop.ordering.infrastructure.shoppingcart.persistence.repository.ShoppingCartPersistenceEntityRepository;
 
 @DataJpaTest
 @Import({
