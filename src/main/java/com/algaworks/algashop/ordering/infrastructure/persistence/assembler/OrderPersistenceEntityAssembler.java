@@ -1,26 +1,27 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.assembler;
 
-import com.algaworks.algashop.ordering.domain.model.entity.Order;
-import com.algaworks.algashop.ordering.domain.model.entity.OrderItem;
-import com.algaworks.algashop.ordering.domain.model.valueobject.Address;
-import com.algaworks.algashop.ordering.domain.model.valueobject.Billing;
-import com.algaworks.algashop.ordering.domain.model.valueobject.Recipient;
-import com.algaworks.algashop.ordering.domain.model.valueobject.Shipping;
-import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.AddressEmbeddable;
-import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.BillingEmbeddable;
-import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.RecipientEmbeddable;
-import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.ShippingEmbeddable;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderItemPersistenceEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.repository.CustomerPersistenceEntityRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
+import com.algaworks.algashop.ordering.domain.model.commons.valueobject.Address;
+import com.algaworks.algashop.ordering.domain.model.order.entity.Order;
+import com.algaworks.algashop.ordering.domain.model.order.entity.OrderItem;
+import com.algaworks.algashop.ordering.domain.model.order.shipping.valueobject.Billing;
+import com.algaworks.algashop.ordering.domain.model.order.shipping.valueobject.Recipient;
+import com.algaworks.algashop.ordering.domain.model.order.shipping.valueobject.Shipping;
+import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.AddressEmbeddable;
+import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.BillingEmbeddable;
+import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.RecipientEmbeddable;
+import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.ShippingEmbeddable;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderItemPersistenceEntity;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
+import com.algaworks.algashop.ordering.infrastructure.persistence.repository.CustomerPersistenceEntityRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor

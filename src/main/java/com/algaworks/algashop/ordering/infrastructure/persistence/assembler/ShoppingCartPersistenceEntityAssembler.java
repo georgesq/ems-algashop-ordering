@@ -1,15 +1,17 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.assembler;
 
-import com.algaworks.algashop.ordering.domain.model.entity.ShoppingCart;
-import com.algaworks.algashop.ordering.domain.model.entity.ShoppingCartItem;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
+import com.algaworks.algashop.ordering.domain.model.shoppingcart.entity.ShoppingCart;
+import com.algaworks.algashop.ordering.domain.model.shoppingcart.entity.ShoppingCartItem;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.ShoppingCartItemPersistenceEntity;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.ShoppingCartPersistenceEntity;
 import com.algaworks.algashop.ordering.infrastructure.persistence.repository.CustomerPersistenceEntityRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -22,9 +24,10 @@ public class ShoppingCartPersistenceEntityAssembler {
     }
 
     public ShoppingCartPersistenceEntity merge(ShoppingCartPersistenceEntity persistenceEntity,
-                                               ShoppingCart shoppingCart) {
+            ShoppingCart shoppingCart) {
         persistenceEntity.setId(shoppingCart.id().value());
-        persistenceEntity.setCustomer(customerPersistenceEntityRepository.getReferenceById(shoppingCart.customerId().value()));
+        persistenceEntity
+                .setCustomer(customerPersistenceEntityRepository.getReferenceById(shoppingCart.customerId().value()));
         persistenceEntity.setTotalAmount(shoppingCart.totalAmount().value());
         persistenceEntity.setTotalItems(shoppingCart.totalItems().value());
         persistenceEntity.setCreatedAt(shoppingCart.createdAt());
@@ -33,11 +36,12 @@ public class ShoppingCartPersistenceEntityAssembler {
     }
 
     private Set<ShoppingCartItemPersistenceEntity> toOrderItemsEntities(Set<ShoppingCartItem> source) {
-        return source.stream().map(i -> this.mergeItem(new ShoppingCartItemPersistenceEntity(), i)).collect(Collectors.toSet());
+        return source.stream().map(i -> this.mergeItem(new ShoppingCartItemPersistenceEntity(), i))
+                .collect(Collectors.toSet());
     }
 
-    private ShoppingCartItemPersistenceEntity mergeItem(ShoppingCartItemPersistenceEntity persistenceEntity, ShoppingCartItem shoppingCartItem
-    ) {
+    private ShoppingCartItemPersistenceEntity mergeItem(ShoppingCartItemPersistenceEntity persistenceEntity,
+            ShoppingCartItem shoppingCartItem) {
         persistenceEntity.setId(shoppingCartItem.id().value());
         persistenceEntity.setProductId(shoppingCartItem.productId().value());
         persistenceEntity.setName(shoppingCartItem.name().value());
@@ -48,16 +52,4 @@ public class ShoppingCartPersistenceEntityAssembler {
         return persistenceEntity;
     }
 
-    private ShoppingCartItemPersistenceEntity toOrderItemsEntities(ShoppingCartItem source) {
-        return ShoppingCartItemPersistenceEntity.builder()
-                .id(source.id().value())
-                .shoppingCart(ShoppingCartPersistenceEntity.builder().id(source.shoppingCartId().value()).build())
-                .productId(source.productId().value())
-                .name(source.name().value())
-                .price(source.price().value())
-                .quantity(source.quantity().value())
-                .available(source.isAvailable())
-                .totalAmount(source.totalAmount().value())
-                .build();
-    }
 }

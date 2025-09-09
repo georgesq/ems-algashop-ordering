@@ -1,11 +1,19 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.disassembler;
 
-import com.algaworks.algashop.ordering.domain.model.entity.Customer;
-import com.algaworks.algashop.ordering.domain.model.valueobject.*;
-import com.algaworks.algashop.ordering.domain.model.valueobject.id.CustomerId;
+import org.springframework.stereotype.Component;
+
+import com.algaworks.algashop.ordering.domain.model.commons.valueobject.Address;
+import com.algaworks.algashop.ordering.domain.model.commons.valueobject.Document;
+import com.algaworks.algashop.ordering.domain.model.commons.valueobject.Email;
+import com.algaworks.algashop.ordering.domain.model.commons.valueobject.FullName;
+import com.algaworks.algashop.ordering.domain.model.commons.valueobject.Phone;
+import com.algaworks.algashop.ordering.domain.model.commons.valueobject.ZipCode;
+import com.algaworks.algashop.ordering.domain.model.customer.entity.Customer;
+import com.algaworks.algashop.ordering.domain.model.customer.valueobject.BirthDate;
+import com.algaworks.algashop.ordering.domain.model.customer.valueobject.CustomerId;
+import com.algaworks.algashop.ordering.domain.model.customer.valueobject.LoyaltyPoints;
 import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.AddressEmbeddable;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntity;
-import org.springframework.stereotype.Component;
 
 @Component
 public class CustomerPersistenceEntityDisassembler {

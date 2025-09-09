@@ -1,9 +1,9 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.provider;
 
-import com.algaworks.algashop.ordering.domain.model.entity.Customer;
-import com.algaworks.algashop.ordering.domain.model.repository.Customers;
-import com.algaworks.algashop.ordering.domain.model.valueobject.Email;
-import com.algaworks.algashop.ordering.domain.model.valueobject.id.CustomerId;
+import com.algaworks.algashop.ordering.domain.model.commons.valueobject.Email;
+import com.algaworks.algashop.ordering.domain.model.customer.entity.Customer;
+import com.algaworks.algashop.ordering.domain.model.customer.repository.Customers;
+import com.algaworks.algashop.ordering.domain.model.customer.valueobject.CustomerId;
 import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.CustomerPersistenceEntityAssembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.CustomerPersistenceEntityDisassembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntity;

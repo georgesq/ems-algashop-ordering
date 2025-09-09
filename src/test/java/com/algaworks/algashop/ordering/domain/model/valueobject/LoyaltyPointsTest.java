@@ -3,6 +3,8 @@ package com.algaworks.algashop.ordering.domain.model.valueobject;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.algaworks.algashop.ordering.domain.model.customer.valueobject.LoyaltyPoints;
+
 class LoyaltyPointsTest {
 
     @Test

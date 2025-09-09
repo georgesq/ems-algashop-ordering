@@ -2,9 +2,9 @@ package com.algaworks.algashop.ordering.infrastructure.fake;
 
 import org.springframework.stereotype.Component;
 
-import com.algaworks.algashop.ordering.domain.model.service.OriginAddressService;
-import com.algaworks.algashop.ordering.domain.model.valueobject.Address;
-import com.algaworks.algashop.ordering.domain.model.valueobject.ZipCode;
+import com.algaworks.algashop.ordering.domain.model.commons.valueobject.Address;
+import com.algaworks.algashop.ordering.domain.model.commons.valueobject.ZipCode;
+import com.algaworks.algashop.ordering.domain.model.shoppingcart.service.OriginAddressService;
 
 @Component
 public class FixedOriginAddressServiceFakeImpl implements OriginAddressService {
