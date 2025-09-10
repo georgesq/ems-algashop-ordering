@@ -47,4 +47,36 @@ public class CustomerManagementApplicationServiceIT {
 
     }
 
+    @Test
+    void givenValidCustomer_whenFindById_thenFindedCustomer() {
+
+        // arrange
+        var input = CustomerInput.builder()
+            .firstName("John")
+            .lastName("Doe")
+            .birthDate(LocalDate.now().minusYears(10))
+            .email("a@a.com")
+            .phone("123456789")
+            .document("doc123")
+            .promotionNotificationsAllowed(true)
+            .address(AddressData.builder()
+                .street("Street")
+                .number("123")
+                .complement("Apt 1")
+                .neighborhood("Neighborhood")
+                .city("City")
+                .state("State")
+                .zipCode("12345")
+                .build())
+            .build();
+
+        // act
+        var customerId = this.customerManagementApplicationService.create(input);
+
+        var customerFinded = this.customerManagementApplicationService.findById(customerId);
+        
+        // assert
+        Assertions.assertThat(customerFinded).isNotNull();
+
+    }
 }
