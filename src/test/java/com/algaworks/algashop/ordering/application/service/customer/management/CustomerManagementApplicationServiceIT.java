@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.algaworks.algashop.ordering.application.commons.AddressData;
 import com.algaworks.algashop.ordering.application.management.CustomerInput;
 import com.algaworks.algashop.ordering.application.management.CustomerManagementApplicationService;
+import com.algaworks.algashop.ordering.application.management.CustomerUpdateInput;
 
 @SpringBootTest
 public class CustomerManagementApplicationServiceIT {
@@ -96,4 +97,70 @@ public class CustomerManagementApplicationServiceIT {
         Assertions.assertThat(customerFinded.getAddress().getZipCode()).isEqualTo(input.getAddress().getZipCode());
 
     }
+
+    @Test
+    void givenValidCustomerAndUpdateInput_whenUpdate_thenUpdatedCustomer() {
+
+        // arrange
+        var input = CustomerInput.builder()
+            .firstName("John")
+            .lastName("Doe")
+            .birthDate(LocalDate.now().minusYears(10))
+            .email("a@a.com")
+            .phone("123456789")
+            .document("doc123")
+            .promotionNotificationsAllowed(true)
+            .address(AddressData.builder()
+                .street("Street")
+                .number("123")
+                .complement("Apt 1")
+                .neighborhood("Neighborhood")
+                .city("City")
+                .state("State")
+                .zipCode("12345")
+                .build())
+            .build();
+
+        var update = CustomerUpdateInput.builder()
+            .firstName("Johnn")
+            .lastName("Doer")
+            .email("b@a.com")
+            .phone("223456789")
+            .promotionNotificationsAllowed(true)
+            .address(AddressData.builder()
+                .street("Streets")
+                .number("1234")
+                .complement("Apt 12")
+                .neighborhood("Neighborhoods")
+                .city("Citys")
+                .state("States")
+                .zipCode("22345")
+                .build())
+            .build();
+
+        // act
+        var customerId = this.customerManagementApplicationService.create(input);
+
+        this.customerManagementApplicationService.update(customerId, update);
+
+        var customerUpdated = this.customerManagementApplicationService.findById(customerId);
+
+        // assert
+        Assertions.assertThat(customerUpdated).isNotNull();
+        Assertions.assertThat(customerUpdated.getFirstName()).isEqualTo(update.getFirstName());
+        Assertions.assertThat(customerUpdated.getLastName()).isEqualTo(update.getLastName());
+        Assertions.assertThat(customerUpdated.getEmail()).isEqualTo(update.getEmail());
+        Assertions.assertThat(customerUpdated.getPhone()).isEqualTo(update.getPhone());
+        Assertions.assertThat(customerUpdated.getPromotionNotificationsAllowed()).isEqualTo(update.getPromotionNotificationsAllowed());
+        Assertions.assertThat(customerUpdated.getAddress()).isNotNull();
+        Assertions.assertThat(customerUpdated.getAddress().getStreet()).isEqualTo(update.getAddress().getStreet());
+        Assertions.assertThat(customerUpdated.getAddress().getNumber()).isEqualTo(update.getAddress().getNumber());
+        Assertions.assertThat(customerUpdated.getAddress().getComplement()).isEqualTo(update.getAddress().getComplement());
+        Assertions.assertThat(customerUpdated.getAddress().getNeighborhood()).isEqualTo(update.getAddress().getNeighborhood());
+        Assertions.assertThat(customerUpdated.getAddress().getCity()).isEqualTo(update.getAddress().getCity());
+        Assertions.assertThat(customerUpdated.getAddress().getState()).isEqualTo(update.getAddress().getState());
+        Assertions.assertThat(customerUpdated.getAddress().getZipCode()).isEqualTo(update.getAddress().getZipCode());
+        
+    }
+
 }

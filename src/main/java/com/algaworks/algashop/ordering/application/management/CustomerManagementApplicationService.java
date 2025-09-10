@@ -64,28 +64,54 @@ public class CustomerManagementApplicationService {
             .orElseThrow(() -> new IllegalArgumentException("Customer not found with id: " + customerId));
 
         return this.mapper.convert(customer, CustomerOutput.class);
-        //  CustomerOutput.builder()
-        //     .firstName(customer.fullName().firstName())
-        //     .lastName(customer.fullName().lastName())
-        //     .email(customer.email().value())
-        //     .phone(customer.phone().value())
-        //     .document(customer.document().value())
-        //     .birthDate(customer.birthDate().value())
-        //     .promotionNotificationsAllowed(customer.isPromotionNotificationsAllowed())
-        //     .loyaltyPoints(customer.loyaltyPoints().value())
-        //     .registeredAt(customer.registeredAt())
-        //     .archivedAt(customer.archivedAt())
-        //     .address(AddressData.builder()
-        //         .street(customer.address().street())
-        //         .number(customer.address().number())
-        //         .complement(customer.address().complement())
-        //         .neighborhood(customer.address().neighborhood())
-        //         .city(customer.address().city())
-        //         .state(customer.address().state())
-        //         .zipCode(customer.address().zipCode().value())
-        //         .build())
-        //     .build();
-
+        
     }   
 
+    @Transactional
+    public void update(UUID customerId, CustomerUpdateInput input) {
+
+        Objects.requireNonNull(customerId);
+        Objects.requireNonNull(input);
+
+        var customer = this.customers.ofId(new CustomerId(customerId))
+            .orElseThrow(() -> new IllegalArgumentException("Customer not found with id: " + customerId));
+
+        if (input.getFirstName() != null && input.getLastName() != null) {
+            customer.changeName(new FullName(input.getFirstName(), input.getLastName()));
+        }
+
+        if (input.getEmail() != null) {
+            customer.changeEmail(new Email(input.getEmail()));
+        }
+
+        if (input.getPhone() != null) {
+            customer.changePhone(new Phone(input.getPhone()));
+        }
+
+        if (input.getPromotionNotificationsAllowed() != null) {
+
+            if (input.getPromotionNotificationsAllowed()) {
+                customer.enablePromotionNotifications();
+            } else {
+                customer.disablePromotionNotifications();   
+            }
+
+        }
+
+        if (input.getAddress() != null) {
+            var addressData = input.getAddress();
+            customer.changeAddress(new Address(
+                addressData.getStreet(), 
+                addressData.getComplement(), 
+                addressData.getNeighborhood(), 
+                addressData.getNumber(), 
+                addressData.getCity(), 
+                addressData.getState(), 
+                new ZipCode(addressData.getZipCode()))
+            );
+        }
+
+        this.customers.add(customer);
+
+    }
 }
