@@ -79,5 +79,21 @@ public class CustomerManagementApplicationServiceIT {
         // assert
         Assertions.assertThat(customerFinded).isNotNull();
 
+        Assertions.assertThat(customerFinded.getFirstName()).isEqualTo(input.getFirstName());
+        Assertions.assertThat(customerFinded.getLastName()).isEqualTo(input.getLastName());
+        Assertions.assertThat(customerFinded.getBirthDate()).isEqualTo(input.getBirthDate());
+        Assertions.assertThat(customerFinded.getEmail()).isEqualTo(input.getEmail());
+        Assertions.assertThat(customerFinded.getPhone()).isEqualTo(input.getPhone());
+        Assertions.assertThat(customerFinded.getDocument()).isEqualTo(input.getDocument()); 
+        Assertions.assertThat(customerFinded.getPromotionNotificationsAllowed()).isEqualTo(input.getPromotionNotificationsAllowed());
+        Assertions.assertThat(customerFinded.getAddress()).isNotNull();
+        Assertions.assertThat(customerFinded.getAddress().getStreet()).isEqualTo(input.getAddress().getStreet());
+        Assertions.assertThat(customerFinded.getAddress().getNumber()).isEqualTo(input.getAddress().getNumber());
+        Assertions.assertThat(customerFinded.getAddress().getComplement()).isEqualTo(input.getAddress().getComplement());
+        Assertions.assertThat(customerFinded.getAddress().getNeighborhood()).isEqualTo(input.getAddress().getNeighborhood());
+        Assertions.assertThat(customerFinded.getAddress().getCity()).isEqualTo(input.getAddress().getCity());
+        Assertions.assertThat(customerFinded.getAddress().getState()).isEqualTo(input.getAddress().getState());
+        Assertions.assertThat(customerFinded.getAddress().getZipCode()).isEqualTo(input.getAddress().getZipCode());
+
     }
 }

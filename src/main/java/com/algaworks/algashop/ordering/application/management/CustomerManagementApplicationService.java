@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.algaworks.algashop.ordering.application.commons.AddressData;
+import com.algaworks.algashop.ordering.application.utility.Mapper;
 import com.algaworks.algashop.ordering.domain.model.commons.valueobject.Address;
 import com.algaworks.algashop.ordering.domain.model.commons.valueobject.Document;
 import com.algaworks.algashop.ordering.domain.model.commons.valueobject.Email;
@@ -26,6 +26,8 @@ public class CustomerManagementApplicationService {
 
     private final CustomerRegistrationService customerRegistrationService;
     private final Customers customers;
+
+    private final Mapper mapper;
     
     @Transactional
     public UUID create(CustomerInput input) {
@@ -61,27 +63,28 @@ public class CustomerManagementApplicationService {
         var customer = this.customers.ofId(new CustomerId(customerId))
             .orElseThrow(() -> new IllegalArgumentException("Customer not found with id: " + customerId));
 
-        return CustomerOutput.builder()
-            .firstName(customer.fullName().firstName())
-            .lastName(customer.fullName().lastName())
-            .email(customer.email().value())
-            .phone(customer.phone().value())
-            .document(customer.document().value())
-            .birthDate(customer.birthDate().value())
-            .promotionNotificationsAllowed(customer.isPromotionNotificationsAllowed())
-            .loyaltyPoints(customer.loyaltyPoints().value())
-            .registeredAt(customer.registeredAt())
-            .archivedAt(customer.archivedAt())
-            .address(AddressData.builder()
-                .street(customer.address().street())
-                .number(customer.address().number())
-                .complement(customer.address().complement())
-                .neighborhood(customer.address().neighborhood())
-                .city(customer.address().city())
-                .state(customer.address().state())
-                .zipCode(customer.address().zipCode().value())
-                .build())
-            .build();
+        return this.mapper.convert(customer, CustomerOutput.class);
+        //  CustomerOutput.builder()
+        //     .firstName(customer.fullName().firstName())
+        //     .lastName(customer.fullName().lastName())
+        //     .email(customer.email().value())
+        //     .phone(customer.phone().value())
+        //     .document(customer.document().value())
+        //     .birthDate(customer.birthDate().value())
+        //     .promotionNotificationsAllowed(customer.isPromotionNotificationsAllowed())
+        //     .loyaltyPoints(customer.loyaltyPoints().value())
+        //     .registeredAt(customer.registeredAt())
+        //     .archivedAt(customer.archivedAt())
+        //     .address(AddressData.builder()
+        //         .street(customer.address().street())
+        //         .number(customer.address().number())
+        //         .complement(customer.address().complement())
+        //         .neighborhood(customer.address().neighborhood())
+        //         .city(customer.address().city())
+        //         .state(customer.address().state())
+        //         .zipCode(customer.address().zipCode().value())
+        //         .build())
+        //     .build();
 
     }   
 
