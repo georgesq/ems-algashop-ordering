@@ -1,4 +1,4 @@
-package com.algaworks.algashop.ordering.application.service.customer;
+package com.algaworks.algashop.ordering.application.management;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -6,9 +6,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.algaworks.algashop.ordering.application.model.customer.AddressData;
-import com.algaworks.algashop.ordering.application.model.customer.CustomerInput;
-import com.algaworks.algashop.ordering.application.model.customer.CustomerOutput;
+import com.algaworks.algashop.ordering.application.commons.AddressData;
 import com.algaworks.algashop.ordering.domain.model.commons.valueobject.Address;
 import com.algaworks.algashop.ordering.domain.model.commons.valueobject.Document;
 import com.algaworks.algashop.ordering.domain.model.commons.valueobject.Email;

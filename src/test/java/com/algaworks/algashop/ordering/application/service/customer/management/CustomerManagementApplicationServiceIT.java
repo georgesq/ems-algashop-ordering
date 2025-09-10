@@ -1,4 +1,4 @@
-package com.algaworks.algashop.ordering.application.service.customer;
+package com.algaworks.algashop.ordering.application.service.customer.management;
 
 import java.time.LocalDate;
 
@@ -7,8 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.algaworks.algashop.ordering.application.model.customer.AddressData;
-import com.algaworks.algashop.ordering.application.model.customer.CustomerInput;
+import com.algaworks.algashop.ordering.application.commons.AddressData;
+import com.algaworks.algashop.ordering.application.management.CustomerInput;
+import com.algaworks.algashop.ordering.application.management.CustomerManagementApplicationService;
 
 @SpringBootTest
 public class CustomerManagementApplicationServiceIT {
@@ -74,7 +75,7 @@ public class CustomerManagementApplicationServiceIT {
         var customerId = this.customerManagementApplicationService.create(input);
 
         var customerFinded = this.customerManagementApplicationService.findById(customerId);
-        
+
         // assert
         Assertions.assertThat(customerFinded).isNotNull();
 
