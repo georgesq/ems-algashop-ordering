@@ -58,7 +58,7 @@ class BuyNowServiceTest {
         Quantity quantity = new Quantity(1);
         PaymentMethod paymentMethod = PaymentMethod.CREDIT_CARD;
 
-        assertThatExceptionOfType(com.algaworks.algashop.ordering.domain.model.exception.ProductOutOfStockException.class)
+        assertThatExceptionOfType(com.algaworks.algashop.ordering.domain.model.product.exception.ProductOutOfStockException.class)
                 .isThrownBy(() -> buyNowService.buyNow(product, customerId, billingInfo, shippingInfo, quantity, paymentMethod));
     }
 

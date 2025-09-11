@@ -1,4 +1,4 @@
-package com.algaworks.algashop.ordering.application.management;
+package com.algaworks.algashop.ordering.application.customer.management;
 
 import java.util.Objects;
 import java.util.UUID;

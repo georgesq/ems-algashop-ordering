@@ -1,6 +1,7 @@
-package com.algaworks.algashop.ordering.domain.model.exception;
+package com.algaworks.algashop.ordering.domain.model.product.exception;
 
 import com.algaworks.algashop.ordering.domain.model.DomainException;
+import com.algaworks.algashop.ordering.domain.model.exception.ErrorMessages;
 import com.algaworks.algashop.ordering.domain.model.product.valueobject.ProductId;
 
 public class ProductOutOfStockException extends DomainException {

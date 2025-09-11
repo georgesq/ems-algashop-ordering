@@ -6,13 +6,15 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.algaworks.algashop.ordering.application.commons.AddressData;
-import com.algaworks.algashop.ordering.application.management.CustomerInput;
-import com.algaworks.algashop.ordering.application.management.CustomerManagementApplicationService;
-import com.algaworks.algashop.ordering.application.management.CustomerUpdateInput;
+import com.algaworks.algashop.ordering.application.customer.management.CustomerInput;
+import com.algaworks.algashop.ordering.application.customer.management.CustomerManagementApplicationService;
+import com.algaworks.algashop.ordering.application.customer.management.CustomerUpdateInput;
 
 @SpringBootTest
+@Transactional
 public class CustomerManagementApplicationServiceIT {
 
     @Autowired
@@ -160,7 +162,7 @@ public class CustomerManagementApplicationServiceIT {
         Assertions.assertThat(customerUpdated.getAddress().getCity()).isEqualTo(update.getAddress().getCity());
         Assertions.assertThat(customerUpdated.getAddress().getState()).isEqualTo(update.getAddress().getState());
         Assertions.assertThat(customerUpdated.getAddress().getZipCode()).isEqualTo(update.getAddress().getZipCode());
-        
+
     }
 
 }

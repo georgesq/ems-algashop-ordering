@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.algaworks.algashop.ordering.domain.model.commons.valueobject.Money;
 import com.algaworks.algashop.ordering.domain.model.commons.valueobject.Quantity;
 import com.algaworks.algashop.ordering.domain.model.customer.entity.CustomerTestDataBuilder;
-import com.algaworks.algashop.ordering.domain.model.exception.ProductOutOfStockException;
 import com.algaworks.algashop.ordering.domain.model.order.entity.BillingTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.order.entity.OrderStatus;
 import com.algaworks.algashop.ordering.domain.model.order.entity.PaymentMethod;
@@ -18,6 +17,7 @@ import com.algaworks.algashop.ordering.domain.model.order.entity.ShippingTestDat
 import com.algaworks.algashop.ordering.domain.model.order.shipping.valueobject.Billing;
 import com.algaworks.algashop.ordering.domain.model.order.shipping.valueobject.Shipping;
 import com.algaworks.algashop.ordering.domain.model.product.entity.ProductTestDataBuilder;
+import com.algaworks.algashop.ordering.domain.model.product.exception.ProductOutOfStockException;
 
 @SpringBootTest
 public class BuyNowServiceIT {
