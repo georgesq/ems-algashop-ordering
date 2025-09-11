@@ -124,6 +124,20 @@ public class CustomerManagementApplicationService {
         customer.archive();
 
         this.customers.add(customer);
-        
+
+    }
+
+    @Transactional
+    public void changeEmail(UUID customerId, String email) {
+
+        Objects.requireNonNull(customerId);
+        Objects.requireNonNull(email);
+
+        var customer = this.customers.ofId(new CustomerId(customerId)).orElseThrow(() -> new CustomerNotFoundException());
+
+        customerRegistrationService.changeEmail(customer, new Email(email));
+
+        this.customers.add(customer);
+
     }
 }

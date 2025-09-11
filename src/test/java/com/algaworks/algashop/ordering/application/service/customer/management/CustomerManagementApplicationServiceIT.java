@@ -18,7 +18,9 @@ import com.algaworks.algashop.ordering.application.commons.AddressData;
 import com.algaworks.algashop.ordering.application.customer.management.CustomerInput;
 import com.algaworks.algashop.ordering.application.customer.management.CustomerManagementApplicationService;
 import com.algaworks.algashop.ordering.application.customer.management.CustomerUpdateInput;
+import com.algaworks.algashop.ordering.application.service.customer.databuilder.CustomerInputTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.customer.exception.CustomerArchivedException;
+import com.algaworks.algashop.ordering.domain.model.customer.exception.CustomerEmailIsInUseException;
 import com.algaworks.algashop.ordering.domain.model.customer.exception.CustomerNotFoundException;
 import com.algaworks.algashop.ordering.domain.model.customer.valueobject.CustomerId;
 import com.algaworks.algashop.ordering.domain.model.product.entity.ProductTestDataBuilder;
@@ -126,24 +128,7 @@ public class CustomerManagementApplicationServiceIT {
     void givenValidCustomerAndUpdateInput_whenUpdate_thenUpdatedCustomer() {
 
         // arrange
-        var input = CustomerInput.builder()
-            .firstName("John")
-            .lastName("Doe")
-            .birthDate(LocalDate.now().minusYears(10))
-            .email("a@a.com")
-            .phone("123456789")
-            .document("doc123")
-            .promotionNotificationsAllowed(true)
-            .address(AddressData.builder()
-                .street("Street")
-                .number("123")
-                .complement("Apt 1")
-                .neighborhood("Neighborhood")
-                .city("City")
-                .state("State")
-                .zipCode("12345")
-                .build())
-            .build();
+        var input = CustomerInputTestDataBuilder.aCustomerInput().build();
 
         var update = CustomerUpdateInput.builder()
             .firstName("Johnn")
@@ -191,24 +176,7 @@ public class CustomerManagementApplicationServiceIT {
     void shouldArchive() {
 
         // arrange
-        var input = CustomerInput.builder()
-            .firstName("John")
-            .lastName("Doe")
-            .birthDate(LocalDate.now().minusYears(10))
-            .email("a@a.com")
-            .phone("123456789")
-            .document("doc123")
-            .promotionNotificationsAllowed(true)
-            .address(AddressData.builder()
-                .street("Street")
-                .number("123")
-                .complement("Apt 1")
-                .neighborhood("Neighborhood")
-                .city("City")
-                .state("State")
-                .zipCode("12345")
-                .build())
-            .build();
+        var input = CustomerInputTestDataBuilder.aCustomerInput().build();
 
         var customerId = this.customerManagementApplicationService.create(input);
 
@@ -245,24 +213,7 @@ public class CustomerManagementApplicationServiceIT {
     void givenArchivedCustomerWhenArchiveThenCustomerArchivedException() {
 
         // arrange
-        var input = CustomerInput.builder()
-            .firstName("John")
-            .lastName("Doe")
-            .birthDate(LocalDate.now().minusYears(10))
-            .email("a@a.com")
-            .phone("123456789")
-            .document("doc123")
-            .promotionNotificationsAllowed(true)
-            .address(AddressData.builder()
-                .street("Street")
-                .number("123")
-                .complement("Apt 1")
-                .neighborhood("Neighborhood")
-                .city("City")
-                .state("State")
-                .zipCode("12345")
-                .build())
-            .build();
+        var input = CustomerInputTestDataBuilder.aCustomerInput().build();
 
         var customerId = this.customerManagementApplicationService.create(input);
         this.customerManagementApplicationService.archive(customerId);
@@ -271,6 +222,90 @@ public class CustomerManagementApplicationServiceIT {
         
         // assert
         Assertions.assertThatExceptionOfType(CustomerArchivedException.class).isThrownBy(() -> this.customerManagementApplicationService.archive(customerId));
+
+    }
+
+    @Test
+    void shouldChangeEmail() {
+
+        // arrange
+        var input = CustomerInputTestDataBuilder.aCustomerInput().build();
+
+        var customerId = this.customerManagementApplicationService.create(input);
+
+        // act
+        this.customerManagementApplicationService.changeEmail(customerId, "ba@a.com");
+
+        // assert
+        var customer = this.customerManagementApplicationService.findById(customerId);
+
+        Assertions.assertThat(customer.getEmail()).isEqualTo("ba@a.com");
+
+    }
+
+    @Test
+    void givenInvalidCustomerIdWhenChangeEmailThenCustomerNotFoundException() {
+
+        // arrange
+        var customerId = new CustomerId(UUID.randomUUID());
+
+        // assert
+        Assertions.assertThatExceptionOfType(CustomerNotFoundException.class)
+            .isThrownBy(() -> this.customerManagementApplicationService.changeEmail(customerId.value(), "bb@a.com"));
+
+    }
+
+    @Test
+    void givenArchivedCustomerWhenChangeEmailThenCustomerArchivedException() {
+
+        // arrange
+        var input = CustomerInputTestDataBuilder.aCustomerInput().build();
+
+        var customerId = this.customerManagementApplicationService.create(input);
+        this.customerManagementApplicationService.archive(customerId);
+        
+        // act
+        
+        // assert
+        Assertions.assertThatExceptionOfType(CustomerArchivedException.class)
+            .isThrownBy(() -> this.customerManagementApplicationService.changeEmail(customerId, "bb@a.com"));
+
+    }
+
+    @Test
+    void givenInvalidEmailWhenChangeEmailThenIllegalArgumentException() {
+
+        // arrange
+        var input = CustomerInputTestDataBuilder.aCustomerInput().build();
+
+        var customerId = this.customerManagementApplicationService.create(input);
+        
+        // act
+        
+        // assert
+        Assertions.assertThatExceptionOfType(IllegalArgumentException .class)
+            .isThrownBy(() -> this.customerManagementApplicationService.changeEmail(customerId, "bb_a.com"));
+
+    }
+
+    @Test
+    void givenExistingEmailWhenChangeEmailThenCustomerEmailAlreadyExistsException() {
+
+        // arrange
+        var input = CustomerInputTestDataBuilder.aCustomerInput().build();
+        var customerId1 = this.customerManagementApplicationService.create(input);
+
+        input = CustomerInputTestDataBuilder.aCustomerInput()
+            .firstName("second")
+            .email("ccc@a.com")
+            .build();
+        this.customerManagementApplicationService.create(input);
+        
+        // act
+        
+        // assert
+        Assertions.assertThatExceptionOfType(CustomerEmailIsInUseException.class)
+            .isThrownBy(() -> this.customerManagementApplicationService.changeEmail(customerId1, "ccc@a.com"));
 
     }
 
