@@ -1,4 +1,4 @@
-package com.algaworks.algashop.ordering.application.service.customer.databuilder;
+package com.algaworks.algashop.ordering.application.customer.databuilder;
 
 import java.time.LocalDate;
 

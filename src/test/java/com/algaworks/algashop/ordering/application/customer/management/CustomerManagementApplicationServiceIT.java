@@ -1,6 +1,5 @@
-package com.algaworks.algashop.ordering.application.service.customer.management;
+package com.algaworks.algashop.ordering.application.customer.management;
 
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,10 +14,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.algaworks.algashop.ordering.application.commons.AddressData;
-import com.algaworks.algashop.ordering.application.customer.management.CustomerInput;
-import com.algaworks.algashop.ordering.application.customer.management.CustomerManagementApplicationService;
-import com.algaworks.algashop.ordering.application.customer.management.CustomerUpdateInput;
-import com.algaworks.algashop.ordering.application.service.customer.databuilder.CustomerInputTestDataBuilder;
+import com.algaworks.algashop.ordering.application.customer.databuilder.CustomerInputTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.customer.exception.CustomerArchivedException;
 import com.algaworks.algashop.ordering.domain.model.customer.exception.CustomerEmailIsInUseException;
 import com.algaworks.algashop.ordering.domain.model.customer.exception.CustomerNotFoundException;
@@ -31,7 +27,7 @@ import com.algaworks.algashop.ordering.domain.model.product.service.ProductCatal
 public class CustomerManagementApplicationServiceIT {
 
     @Autowired
-    private CustomerManagementApplicationService customerManagementApplicationService;
+    private CustomerApplicationService customerManagementApplicationService;
 
     @MockitoBean
     private ProductCatalogService productCatalogService;
@@ -48,24 +44,7 @@ public class CustomerManagementApplicationServiceIT {
     void givenValidCustomerInput_whenCreate_thenPersisted() {
 
         // arrange
-        var input = CustomerInput.builder()
-            .firstName("John")
-            .lastName("Doe")
-            .birthDate(LocalDate.now().minusYears(10))
-            .email("a@a.com")
-            .phone("123456789")
-            .document("doc123")
-            .promotionNotificationsAllowed(true)
-            .address(AddressData.builder()
-                .street("Street")
-                .number("123")
-                .complement("Apt 1")
-                .neighborhood("Neighborhood")
-                .city("City")
-                .state("State")
-                .zipCode("12345")
-                .build())
-            .build();
+        var input = CustomerInputTestDataBuilder.aCustomerInput().build();
 
         // act
         var customerId = this.customerManagementApplicationService.create(input);
@@ -79,24 +58,7 @@ public class CustomerManagementApplicationServiceIT {
     void givenValidCustomer_whenFindById_thenFindedCustomer() {
 
         // arrange
-        var input = CustomerInput.builder()
-            .firstName("John")
-            .lastName("Doe")
-            .birthDate(LocalDate.now().minusYears(10))
-            .email("a@a.com")
-            .phone("123456789")
-            .document("doc123")
-            .promotionNotificationsAllowed(true)
-            .address(AddressData.builder()
-                .street("Street")
-                .number("123")
-                .complement("Apt 1")
-                .neighborhood("Neighborhood")
-                .city("City")
-                .state("State")
-                .zipCode("12345")
-                .build())
-            .build();
+        var input = CustomerInputTestDataBuilder.aCustomerInput().build();
 
         // act
         var customerId = this.customerManagementApplicationService.create(input);

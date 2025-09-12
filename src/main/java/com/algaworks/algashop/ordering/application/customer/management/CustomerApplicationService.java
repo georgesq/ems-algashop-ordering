@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class CustomerManagementApplicationService {
+public class CustomerApplicationService {
 
     private final CustomerRegistrationService customerRegistrationService;
     private final Customers customers;

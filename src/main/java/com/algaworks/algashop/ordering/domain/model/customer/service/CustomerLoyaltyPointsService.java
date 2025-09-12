@@ -5,6 +5,7 @@ import java.util.Objects;
 import com.algaworks.algashop.ordering.domain.model.commons.valueobject.Money;
 import com.algaworks.algashop.ordering.domain.model.customer.entity.Customer;
 import com.algaworks.algashop.ordering.domain.model.customer.exception.CantAddLoyaltyPointsOrderIsNotReady;
+import com.algaworks.algashop.ordering.domain.model.customer.exception.CustomerArchivedException;
 import com.algaworks.algashop.ordering.domain.model.customer.valueobject.LoyaltyPoints;
 import com.algaworks.algashop.ordering.domain.model.order.entity.Order;
 import com.algaworks.algashop.ordering.domain.model.order.exception.OrderNotBelongsToCustomerException;
@@ -20,6 +21,10 @@ public class CustomerLoyaltyPointsService {
     public void addPoints(Customer customer, Order order) {
         Objects.requireNonNull(customer);
         Objects.requireNonNull(order);
+
+        if (customer.isArchived()) {
+            throw new CustomerArchivedException();
+        }
 
         if (!customer.id().equals(order.customerId())) {
             throw new OrderNotBelongsToCustomerException();
