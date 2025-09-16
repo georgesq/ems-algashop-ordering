@@ -10,11 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class RecipientData {
-
     private String firstName;
     private String lastName;
-    private String email;
     private String document;
     private String phone;
-
 }

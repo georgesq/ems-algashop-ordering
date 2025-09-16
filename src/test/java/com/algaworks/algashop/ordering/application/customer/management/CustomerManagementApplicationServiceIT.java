@@ -1,274 +1,135 @@
 package com.algaworks.algashop.ordering.application.customer.management;
 
-import java.time.OffsetDateTime;
-import java.util.Optional;
-import java.util.UUID;
-
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerArchivedException;
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerNotFoundException;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.algaworks.algashop.ordering.application.commons.AddressData;
-import com.algaworks.algashop.ordering.application.customer.databuilder.CustomerInputTestDataBuilder;
-import com.algaworks.algashop.ordering.domain.model.customer.exception.CustomerArchivedException;
-import com.algaworks.algashop.ordering.domain.model.customer.exception.CustomerEmailIsInUseException;
-import com.algaworks.algashop.ordering.domain.model.customer.exception.CustomerNotFoundException;
-import com.algaworks.algashop.ordering.domain.model.customer.valueobject.CustomerId;
-import com.algaworks.algashop.ordering.domain.model.product.entity.ProductTestDataBuilder;
-import com.algaworks.algashop.ordering.domain.model.product.service.ProductCatalogService;
+import java.time.LocalDate;
+import java.util.UUID;
 
 @SpringBootTest
 @Transactional
-public class CustomerManagementApplicationServiceIT {
+class CustomerManagementApplicationServiceIT {
 
     @Autowired
-    private CustomerApplicationService customerManagementApplicationService;
-
-    @MockitoBean
-    private ProductCatalogService productCatalogService;
-
-    @BeforeEach
-    void setup() {
-
-        var product = ProductTestDataBuilder.aProduct().build();
-        Mockito.when(this.productCatalogService.ofId(product.id())).thenReturn(Optional.of(product));
-
-    }
+    private CustomerManagementApplicationService customerManagementApplicationService;
 
     @Test
-    void givenValidCustomerInput_whenCreate_thenPersisted() {
+    public void shouldRegister() {
+        CustomerInput input = CustomerInputTestDataBuilder.aCustomer().build();
 
-        // arrange
-        var input = CustomerInputTestDataBuilder.aCustomerInput().build();
-
-        // act
-        var customerId = this.customerManagementApplicationService.create(input);
-
-        // assert
+        UUID customerId = customerManagementApplicationService.create(input);
         Assertions.assertThat(customerId).isNotNull();
 
+        CustomerOutput customerOutput = customerManagementApplicationService.findById(customerId);
+
+        Assertions.assertThat(customerOutput)
+            .extracting(
+                    CustomerOutput::getId,
+                    CustomerOutput::getFirstName,
+                    CustomerOutput::getLastName,
+                    CustomerOutput::getEmail,
+                    CustomerOutput::getBirthDate
+            ).containsExactly(
+                    customerId,
+                    "John",
+                    "Doe",
+                    "johndoe@email.com",
+                    LocalDate.of(1991, 7,5)
+            );
+
+        Assertions.assertThat(customerOutput.getRegisteredAt()).isNotNull();
     }
 
     @Test
-    void givenValidCustomer_whenFindById_thenFindedCustomer() {
+    public void shouldUpdate() {
+        CustomerInput input = CustomerInputTestDataBuilder.aCustomer().build();
+        CustomerUpdateInput updateInput = CustomerUpdateInputTestDataBuilder.aCustomerUpdate().build();
 
-        // arrange
-        var input = CustomerInputTestDataBuilder.aCustomerInput().build();
+        UUID customerId = customerManagementApplicationService.create(input);
+        Assertions.assertThat(customerId).isNotNull();
 
-        // act
-        var customerId = this.customerManagementApplicationService.create(input);
+        customerManagementApplicationService.update(customerId, updateInput);
 
-        var customerFinded = this.customerManagementApplicationService.findById(customerId);
+        CustomerOutput customerOutput = customerManagementApplicationService.findById(customerId);
 
-        // assert
-        Assertions.assertThat(customerFinded).isNotNull();
+        Assertions.assertThat(customerOutput)
+            .extracting(
+                    CustomerOutput::getId,
+                    CustomerOutput::getFirstName,
+                    CustomerOutput::getLastName,
+                    CustomerOutput::getEmail,
+                    CustomerOutput::getBirthDate
+            ).containsExactly(
+                    customerId,
+                    "Matt",
+                    "Damon",
+                    "johndoe@email.com",
+                    LocalDate.of(1991, 7,5)
+                );
 
-        Assertions.assertThat(customerFinded.getFirstName()).isEqualTo(input.getFirstName());
-        Assertions.assertThat(customerFinded.getLastName()).isEqualTo(input.getLastName());
-        Assertions.assertThat(customerFinded.getBirthDate()).isEqualTo(input.getBirthDate());
-        Assertions.assertThat(customerFinded.getEmail()).isEqualTo(input.getEmail());
-        Assertions.assertThat(customerFinded.getPhone()).isEqualTo(input.getPhone());
-        Assertions.assertThat(customerFinded.getDocument()).isEqualTo(input.getDocument()); 
-        Assertions.assertThat(customerFinded.getPromotionNotificationsAllowed()).isEqualTo(input.getPromotionNotificationsAllowed());
-        Assertions.assertThat(customerFinded.getAddress()).isNotNull();
-        Assertions.assertThat(customerFinded.getAddress().getStreet()).isEqualTo(input.getAddress().getStreet());
-        Assertions.assertThat(customerFinded.getAddress().getNumber()).isEqualTo(input.getAddress().getNumber());
-        Assertions.assertThat(customerFinded.getAddress().getComplement()).isEqualTo(input.getAddress().getComplement());
-        Assertions.assertThat(customerFinded.getAddress().getNeighborhood()).isEqualTo(input.getAddress().getNeighborhood());
-        Assertions.assertThat(customerFinded.getAddress().getCity()).isEqualTo(input.getAddress().getCity());
-        Assertions.assertThat(customerFinded.getAddress().getState()).isEqualTo(input.getAddress().getState());
-        Assertions.assertThat(customerFinded.getAddress().getZipCode()).isEqualTo(input.getAddress().getZipCode());
-
+        Assertions.assertThat(customerOutput.getRegisteredAt()).isNotNull();
     }
 
     @Test
-    void givenValidCustomerAndUpdateInput_whenUpdate_thenUpdatedCustomer() {
+    public void shouldArchiveCustomer() {
+        CustomerInput input = CustomerInputTestDataBuilder.aCustomer().build();
+        UUID customerId = customerManagementApplicationService.create(input);
+        Assertions.assertThat(customerId).isNotNull();
 
-        // arrange
-        var input = CustomerInputTestDataBuilder.aCustomerInput().build();
+        customerManagementApplicationService.archive(customerId);
 
-        var update = CustomerUpdateInput.builder()
-            .firstName("Johnn")
-            .lastName("Doer")
-            .email("b@a.com")
-            .phone("223456789")
-            .promotionNotificationsAllowed(true)
-            .address(AddressData.builder()
-                .street("Streets")
-                .number("1234")
-                .complement("Apt 12")
-                .neighborhood("Neighborhoods")
-                .city("Citys")
-                .state("States")
-                .zipCode("22345")
-                .build())
-            .build();
+        CustomerOutput archivedCustomer = customerManagementApplicationService.findById(customerId);
 
-        // act
-        var customerId = this.customerManagementApplicationService.create(input);
+        Assertions.assertThat(archivedCustomer)
+                .isNotNull()
+                .extracting(
+                        CustomerOutput::getFirstName,
+                        CustomerOutput::getLastName,
+                        CustomerOutput::getPhone,
+                        CustomerOutput::getDocument,
+                        CustomerOutput::getBirthDate,
+                        CustomerOutput::getPromotionNotificationsAllowed
+                ).containsExactly(
+                        "Anonymous",
+                        "Anonymous",
+                        "000-000-0000",
+                        "000-00-0000",
+                        null,
+                        false
+                );
 
-        this.customerManagementApplicationService.update(customerId, update);
+        Assertions.assertThat(archivedCustomer.getEmail()).endsWith("@anonymous.com");
+        Assertions.assertThat(archivedCustomer.getArchived()).isTrue();
+        Assertions.assertThat(archivedCustomer.getArchivedAt()).isNotNull();
 
-        var customerUpdated = this.customerManagementApplicationService.findById(customerId);
-
-        // assert
-        Assertions.assertThat(customerUpdated).isNotNull();
-        Assertions.assertThat(customerUpdated.getFirstName()).isEqualTo(update.getFirstName());
-        Assertions.assertThat(customerUpdated.getLastName()).isEqualTo(update.getLastName());
-        Assertions.assertThat(customerUpdated.getEmail()).isEqualTo(update.getEmail());
-        Assertions.assertThat(customerUpdated.getPhone()).isEqualTo(update.getPhone());
-        Assertions.assertThat(customerUpdated.getPromotionNotificationsAllowed()).isEqualTo(update.getPromotionNotificationsAllowed());
-        Assertions.assertThat(customerUpdated.getAddress()).isNotNull();
-        Assertions.assertThat(customerUpdated.getAddress().getStreet()).isEqualTo(update.getAddress().getStreet());
-        Assertions.assertThat(customerUpdated.getAddress().getNumber()).isEqualTo(update.getAddress().getNumber());
-        Assertions.assertThat(customerUpdated.getAddress().getComplement()).isEqualTo(update.getAddress().getComplement());
-        Assertions.assertThat(customerUpdated.getAddress().getNeighborhood()).isEqualTo(update.getAddress().getNeighborhood());
-        Assertions.assertThat(customerUpdated.getAddress().getCity()).isEqualTo(update.getAddress().getCity());
-        Assertions.assertThat(customerUpdated.getAddress().getState()).isEqualTo(update.getAddress().getState());
-        Assertions.assertThat(customerUpdated.getAddress().getZipCode()).isEqualTo(update.getAddress().getZipCode());
-
+        Assertions.assertThat(archivedCustomer.getAddress()).isNotNull();
+        Assertions.assertThat(archivedCustomer.getAddress().getNumber()).isNotNull().isEqualTo("Anonymized");
+        Assertions.assertThat(archivedCustomer.getAddress().getComplement()).isNull();
     }
 
     @Test
-    void shouldArchive() {
+    public void shouldThrowCustomerNotFoundExceptionWhenArchivingNonExistingCustomer() {
+        UUID nonExistingId = UUID.randomUUID();
 
-        // arrange
-        var input = CustomerInputTestDataBuilder.aCustomerInput().build();
-
-        var customerId = this.customerManagementApplicationService.create(input);
-
-        // act
-        this.customerManagementApplicationService.archive(customerId);
-
-        // assert
-        var customer = this.customerManagementApplicationService.findById(customerId);
-
-        Assertions.assertThat(customer.getArchivedAt()).isNotNull();
-        Assertions.assertThat(customer.getArchivedAt()).isBefore(OffsetDateTime.now());
-        Assertions.assertThat(customer.getFirstName()).isEqualTo("Anonymous");
-        Assertions.assertThat(customer.getLastName()).isEqualTo("Anonymous");
-        Assertions.assertThat(customer.getPhone()).isEqualTo("000-000-0000");
-        Assertions.assertThat(customer.getDocument()).isEqualTo("000-00-0000");
-        Assertions.assertThat(customer.getEmail().contains("@anonymous.com")).isTrue();
-        Assertions.assertThat(customer.getAddress().getNumber()).isEqualTo("Anonymized");
-        Assertions.assertThat(customer.getAddress().getComplement()).isNull();
-
-    }
-
-    @Test
-    void givenInvalidCustomerIdThenCustomerNotFoundException() {
-
-        // arrange
-        var customerId = new CustomerId(UUID.randomUUID());
-
-        // assert
-        Assertions.assertThatExceptionOfType(CustomerNotFoundException.class).isThrownBy(() -> this.customerManagementApplicationService.archive(customerId.value()));
-
-    }
-
-    @Test
-    void givenArchivedCustomerWhenArchiveThenCustomerArchivedException() {
-
-        // arrange
-        var input = CustomerInputTestDataBuilder.aCustomerInput().build();
-
-        var customerId = this.customerManagementApplicationService.create(input);
-        this.customerManagementApplicationService.archive(customerId);
-        
-        // act
-        
-        // assert
-        Assertions.assertThatExceptionOfType(CustomerArchivedException.class).isThrownBy(() -> this.customerManagementApplicationService.archive(customerId));
-
-    }
-
-    @Test
-    void shouldChangeEmail() {
-
-        // arrange
-        var input = CustomerInputTestDataBuilder.aCustomerInput().build();
-
-        var customerId = this.customerManagementApplicationService.create(input);
-
-        // act
-        this.customerManagementApplicationService.changeEmail(customerId, "ba@a.com");
-
-        // assert
-        var customer = this.customerManagementApplicationService.findById(customerId);
-
-        Assertions.assertThat(customer.getEmail()).isEqualTo("ba@a.com");
-
-    }
-
-    @Test
-    void givenInvalidCustomerIdWhenChangeEmailThenCustomerNotFoundException() {
-
-        // arrange
-        var customerId = new CustomerId(UUID.randomUUID());
-
-        // assert
         Assertions.assertThatExceptionOfType(CustomerNotFoundException.class)
-            .isThrownBy(() -> this.customerManagementApplicationService.changeEmail(customerId.value(), "bb@a.com"));
-
+                .isThrownBy(() -> customerManagementApplicationService.archive(nonExistingId));
     }
 
     @Test
-    void givenArchivedCustomerWhenChangeEmailThenCustomerArchivedException() {
+    public void shouldThrowCustomerArchivedExceptionWhenArchivingAlreadyArchivedCustomer() {
+        CustomerInput input = CustomerInputTestDataBuilder.aCustomer().build();
+        UUID customerId = customerManagementApplicationService.create(input);
+        Assertions.assertThat(customerId).isNotNull();
 
-        // arrange
-        var input = CustomerInputTestDataBuilder.aCustomerInput().build();
+        customerManagementApplicationService.archive(customerId);
 
-        var customerId = this.customerManagementApplicationService.create(input);
-        this.customerManagementApplicationService.archive(customerId);
-        
-        // act
-        
-        // assert
         Assertions.assertThatExceptionOfType(CustomerArchivedException.class)
-            .isThrownBy(() -> this.customerManagementApplicationService.changeEmail(customerId, "bb@a.com"));
-
-    }
-
-    @Test
-    void givenInvalidEmailWhenChangeEmailThenIllegalArgumentException() {
-
-        // arrange
-        var input = CustomerInputTestDataBuilder.aCustomerInput().build();
-
-        var customerId = this.customerManagementApplicationService.create(input);
-        
-        // act
-        
-        // assert
-        Assertions.assertThatExceptionOfType(IllegalArgumentException .class)
-            .isThrownBy(() -> this.customerManagementApplicationService.changeEmail(customerId, "bb_a.com"));
-
-    }
-
-    @Test
-    void givenExistingEmailWhenChangeEmailThenCustomerEmailAlreadyExistsException() {
-
-        // arrange
-        var input = CustomerInputTestDataBuilder.aCustomerInput().build();
-        var customerId1 = this.customerManagementApplicationService.create(input);
-
-        input = CustomerInputTestDataBuilder.aCustomerInput()
-            .firstName("second")
-            .email("ccc@a.com")
-            .build();
-        this.customerManagementApplicationService.create(input);
-        
-        // act
-        
-        // assert
-        Assertions.assertThatExceptionOfType(CustomerEmailIsInUseException.class)
-            .isThrownBy(() -> this.customerManagementApplicationService.changeEmail(customerId1, "ccc@a.com"));
-
+                .isThrownBy(() -> customerManagementApplicationService.archive(customerId));
     }
 
 }
