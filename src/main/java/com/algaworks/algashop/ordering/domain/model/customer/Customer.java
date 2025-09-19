@@ -1,16 +1,25 @@
 package com.algaworks.algashop.ordering.domain.model.customer;
 
-import com.algaworks.algashop.ordering.domain.model.AggregateRoot;
-import com.algaworks.algashop.ordering.domain.model.commons.*;
-import lombok.Builder;
+import static com.algaworks.algashop.ordering.domain.model.ErrorMessages.VALIDATION_ERROR_FULLNAME_IS_NULL;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.algaworks.algashop.ordering.domain.model.ErrorMessages.*;
+import com.algaworks.algashop.ordering.domain.model.AbstractEventSourceEntity;
+import com.algaworks.algashop.ordering.domain.model.AggregateRoot;
+import com.algaworks.algashop.ordering.domain.model.commons.Address;
+import com.algaworks.algashop.ordering.domain.model.commons.Document;
+import com.algaworks.algashop.ordering.domain.model.commons.Email;
+import com.algaworks.algashop.ordering.domain.model.commons.FullName;
+import com.algaworks.algashop.ordering.domain.model.commons.Phone;
 
-public class Customer implements AggregateRoot<CustomerId> {
+import lombok.Builder;
+
+public class Customer
+        extends AbstractEventSourceEntity
+        implements AggregateRoot<CustomerId> {
+
     private CustomerId id;
     private FullName fullName;
     private BirthDate birthDate;
@@ -28,9 +37,10 @@ public class Customer implements AggregateRoot<CustomerId> {
 
     @Builder(builderClassName = "BrandNewCustomerBuild", builderMethodName = "brandNew")
     private static Customer createBrandNew(FullName fullName, BirthDate birthDate, Email email,
-                                    Phone phone, Document document, Boolean promotionNotificationsAllowed,
-                                    Address address) {
-        return new Customer(new CustomerId(),
+            Phone phone, Document document, Boolean promotionNotificationsAllowed,
+            Address address) {
+
+        Customer customer = new Customer(new CustomerId(),
                 null,
                 fullName,
                 birthDate,
@@ -43,12 +53,17 @@ public class Customer implements AggregateRoot<CustomerId> {
                 null,
                 LoyaltyPoints.ZERO,
                 address);
+
+        customer.publicDomainEvent(new CustomerRegisteredEvent(customer.id(), customer.registeredAt(), 
+            customer.fullName(), customer.email()));
+        
+        return customer;
     }
 
     @Builder(builderClassName = "ExistingCustomerBuild", builderMethodName = "existing")
     private Customer(CustomerId id, Long version, FullName fullName, BirthDate birthDate, Email email, Phone phone,
-                    Document document, Boolean promotionNotificationsAllowed, Boolean archived,
-                    OffsetDateTime registeredAt, OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints, Address address) {
+            Document document, Boolean promotionNotificationsAllowed, Boolean archived,
+            OffsetDateTime registeredAt, OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints, Address address) {
         this.setId(id);
         this.setVersion(version);
         this.setFullName(fullName);
@@ -63,7 +78,7 @@ public class Customer implements AggregateRoot<CustomerId> {
         this.setLoyaltyPoints(loyaltyPoints);
         this.setAddress(address);
     }
-    
+
     public void addLoyaltyPoints(LoyaltyPoints loyaltyPointsAdded) {
         verifyIfChangeable();
         if (loyaltyPointsAdded.equals(LoyaltyPoints.ZERO)) {
@@ -71,9 +86,10 @@ public class Customer implements AggregateRoot<CustomerId> {
         }
         this.setLoyaltyPoints(this.loyaltyPoints().add(loyaltyPointsAdded));
     }
-    
+
     public void archive() {
         verifyIfChangeable();
+
         this.setArchived(true);
         this.setArchivedAt(OffsetDateTime.now());
         this.setFullName(new FullName("Anonymous", "Anonymous"));
@@ -85,28 +101,31 @@ public class Customer implements AggregateRoot<CustomerId> {
         this.setAddress(this.address().toBuilder()
                 .number("Anonymized")
                 .complement(null).build());
+
+        this.publicDomainEvent(new CustomerArchivedEvent(this.id(), this.archivedAt()));
+        
     }
 
     public void enablePromotionNotifications() {
         verifyIfChangeable();
         this.setPromotionNotificationsAllowed(true);
     }
-    
+
     public void disablePromotionNotifications() {
         verifyIfChangeable();
         this.setPromotionNotificationsAllowed(false);
     }
-    
+
     public void changeName(FullName fullName) {
         verifyIfChangeable();
         this.setFullName(fullName);
     }
-    
+
     public void changeEmail(Email email) {
         verifyIfChangeable();
         this.setEmail(email);
-    } 
-    
+    }
+
     public void changePhone(Phone phone) {
         verifyIfChangeable();
         this.setPhone(phone);
@@ -243,7 +262,8 @@ public class Customer implements AggregateRoot<CustomerId> {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Customer customer = (Customer) o;
         return Objects.equals(id, customer.id);
     }

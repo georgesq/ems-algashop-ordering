@@ -1,28 +1,48 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.customer;
 
-import com.algaworks.algashop.ordering.infrastructure.persistence.commons.AddressEmbeddable;
-import jakarta.persistence.*;
-import lombok.*;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.UUID;
+
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.UUID;
+import com.algaworks.algashop.ordering.infrastructure.persistence.commons.AddressEmbeddable;
+
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
 @ToString(of = "id")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @NoArgsConstructor
 @Table(name = "\"customer\"")
 @AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class CustomerPersistenceEntity {
+public class CustomerPersistenceEntity 
+		extends AbstractAggregateRoot<CustomerPersistenceEntity> {
 	@Id
 	@EqualsAndHashCode.Include
 	private UUID id;
@@ -60,4 +80,28 @@ public class CustomerPersistenceEntity {
 
 	@LastModifiedBy
 	private UUID lastModifiedByUserId;
+
+	public Collection<Object> getEvents() {
+
+		return super.domainEvents();
+
+	}
+
+	public void addEvents(Collection<Object> events) {
+
+		if (!Objects.isNull(events)) {
+
+			for (Object event : events) {
+				this.registerEvent(event);	
+			} 
+			
+		}
+
+	}
+
+	public void clearEvents() {
+
+		super.clearDomainEvents();
+
+	}
 }

@@ -92,4 +92,34 @@ class CustomerTest {
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(()-> customer.addLoyaltyPoints(new LoyaltyPoints(-10)));
     }
+
+    @Test
+    void givenValidData_whenCreateBrandNewCustomer_shouldGenerateCustomerRegisteredEvent() {
+
+        // arrange
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
+
+        // assert
+        Assertions.assertThat(customer.domainEvents()).isNotEmpty();
+        Assertions.assertThat(customer.domainEvents().size()).isEqualTo(1);
+        Assertions.assertThat(((CustomerRegisteredEvent) customer.domainEvents().get(0)).customerId()).isEqualTo(customer.id());
+
+    }
+
+    @Test
+    void givenUnArchivedCustomer_whenArchive_shouldGenerateCustomerRegisteredEvent() {
+
+        // arrange
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
+
+        // act
+        customer.archive();
+
+        // assert
+        Assertions.assertThat(customer.domainEvents()).isNotEmpty();
+        Assertions.assertThat(customer.domainEvents().size()).isEqualTo(2);
+        Assertions.assertThat(((CustomerRegisteredEvent) customer.domainEvents().get(0)).customerId()).isEqualTo(customer.id());
+
+    }
+
 }
