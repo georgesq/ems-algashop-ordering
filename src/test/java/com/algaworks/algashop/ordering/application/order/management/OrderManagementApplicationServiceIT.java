@@ -2,8 +2,10 @@ package com.algaworks.algashop.ordering.application.order.management;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.algaworks.algashop.ordering.domain.model.customer.Customer;
@@ -11,10 +13,13 @@ import com.algaworks.algashop.ordering.domain.model.customer.CustomerTestDataBui
 import com.algaworks.algashop.ordering.domain.model.customer.Customers;
 import com.algaworks.algashop.ordering.domain.model.order.OrderId;
 import com.algaworks.algashop.ordering.domain.model.order.OrderNotFoundException;
+import com.algaworks.algashop.ordering.domain.model.order.OrderPaidEvent;
+import com.algaworks.algashop.ordering.domain.model.order.OrderReadyEvent;
 import com.algaworks.algashop.ordering.domain.model.order.OrderStatus;
 import com.algaworks.algashop.ordering.domain.model.order.OrderStatusCannotBeChangedException;
 import com.algaworks.algashop.ordering.domain.model.order.OrderTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.order.Orders;
+import com.algaworks.algashop.ordering.infrastructure.listener.order.OrderEventListener;
 
 @SpringBootTest
 @Transactional
@@ -28,6 +33,9 @@ public class OrderManagementApplicationServiceIT {
 
     @Autowired
     private Customers customers;
+
+    @MockitoSpyBean
+    private OrderEventListener orderEventListener;
 
     @Test
     void shouldCancel() {
@@ -114,6 +122,7 @@ public class OrderManagementApplicationServiceIT {
         var canceled = this.orders.ofId(order.id()).orElseThrow();
 
         Assertions.assertThat(canceled.isPaid()).isTrue();
+        Mockito.verify(this.orderEventListener, Mockito.times(1)).listenPaidEvent((Mockito.any(OrderPaidEvent.class)));
         
     }
 
@@ -178,6 +187,7 @@ public class OrderManagementApplicationServiceIT {
         var changed = this.orders.ofId(order.id()).orElseThrow();
 
         Assertions.assertThat(changed.isReady()).isTrue();
+        Mockito.verify(this.orderEventListener, Mockito.times(1)).listenReadyEvent((Mockito.any(OrderReadyEvent.class)));
         
     }
 
@@ -209,7 +219,7 @@ public class OrderManagementApplicationServiceIT {
 
         var order = OrderTestDataBuilder.anOrder()
             .customerId(customer.id())
-            .status(OrderStatus.PAID)
+            .status(OrderStatus.READY)
             .build();
 
         this.orders.add(order);
