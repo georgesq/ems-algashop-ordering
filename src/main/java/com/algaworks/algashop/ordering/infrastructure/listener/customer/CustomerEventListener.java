@@ -5,9 +5,11 @@ import java.util.Objects;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import com.algaworks.algashop.ordering.application.notification.CustomerNotificationService;
+import com.algaworks.algashop.ordering.application.customer.loyaltypoints.CustomerLoyaltyPointsApplicationService;
+import com.algaworks.algashop.ordering.application.notification.CustomerNotificationApplicationService;
 import com.algaworks.algashop.ordering.domain.model.customer.CustomerArchivedEvent;
 import com.algaworks.algashop.ordering.domain.model.customer.CustomerRegisteredEvent;
+import com.algaworks.algashop.ordering.domain.model.order.OrderReadyEvent;
 import com.algaworks.algashop.ordering.infrastructure.notification.customer.CustomerNotificationServiceFakeImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -20,20 +22,30 @@ public class CustomerEventListener {
 
     private final CustomerNotificationServiceFakeImpl customerNotificationService;
 
+    private final CustomerLoyaltyPointsApplicationService customerLoyaltyPointsApplicationService;
+
     @EventListener
-    public void listenRegisterEvent(CustomerRegisteredEvent event) {
+    public void listen(CustomerRegisteredEvent event) {
 
         Objects.requireNonNull(event);
         
-        this.customerNotificationService.notifyNewRegistration(new CustomerNotificationService.NotifyNewRegistrationInput(event.customerId().value(), event.fullName().toString(), 
+        this.customerNotificationService.notifyNewRegistration(new CustomerNotificationApplicationService.NotifyNewRegistrationInput(event.customerId().value(), event.fullName().toString(), 
             event.email().toString()));
 
     }
 
     @EventListener
-    public void listenArchiverEvent(CustomerArchivedEvent event) {
+    public void listen(CustomerArchivedEvent event) {
 
         log.info(event.toString());
+
+    }
+
+    @EventListener
+    public void listen(OrderReadyEvent event) {
+
+        this.customerLoyaltyPointsApplicationService.addLoyaltyPoints(event.customerId().value(), 
+            event.orderId().toString());
 
     }
 

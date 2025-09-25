@@ -4,13 +4,13 @@ import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
-import com.algaworks.algashop.ordering.application.notification.CustomerNotificationService;
+import com.algaworks.algashop.ordering.application.notification.CustomerNotificationApplicationService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class CustomerNotificationServiceFakeImpl implements CustomerNotificationService {
+public class CustomerNotificationServiceFakeImpl implements CustomerNotificationApplicationService {
 
     @Override
     public void notifyNewRegistration(NotifyNewRegistrationInput input) {

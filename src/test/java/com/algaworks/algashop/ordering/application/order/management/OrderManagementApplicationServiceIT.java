@@ -8,18 +8,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.algaworks.algashop.ordering.application.customer.loyaltypoints.CustomerLoyaltyPointsApplicationService;
 import com.algaworks.algashop.ordering.domain.model.customer.Customer;
 import com.algaworks.algashop.ordering.domain.model.customer.CustomerTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.customer.Customers;
 import com.algaworks.algashop.ordering.domain.model.order.OrderId;
 import com.algaworks.algashop.ordering.domain.model.order.OrderNotFoundException;
-import com.algaworks.algashop.ordering.domain.model.order.OrderPaidEvent;
-import com.algaworks.algashop.ordering.domain.model.order.OrderReadyEvent;
 import com.algaworks.algashop.ordering.domain.model.order.OrderStatus;
 import com.algaworks.algashop.ordering.domain.model.order.OrderStatusCannotBeChangedException;
 import com.algaworks.algashop.ordering.domain.model.order.OrderTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.order.Orders;
-import com.algaworks.algashop.ordering.infrastructure.listener.order.OrderEventListener;
 
 @SpringBootTest
 @Transactional
@@ -35,7 +33,7 @@ public class OrderManagementApplicationServiceIT {
     private Customers customers;
 
     @MockitoSpyBean
-    private OrderEventListener orderEventListener;
+    private CustomerLoyaltyPointsApplicationService customerLoyaltyPointsApplicationService;
 
     @Test
     void shouldCancel() {
@@ -122,7 +120,6 @@ public class OrderManagementApplicationServiceIT {
         var canceled = this.orders.ofId(order.id()).orElseThrow();
 
         Assertions.assertThat(canceled.isPaid()).isTrue();
-        Mockito.verify(this.orderEventListener, Mockito.times(1)).listenPaidEvent((Mockito.any(OrderPaidEvent.class)));
         
     }
 
@@ -187,7 +184,7 @@ public class OrderManagementApplicationServiceIT {
         var changed = this.orders.ofId(order.id()).orElseThrow();
 
         Assertions.assertThat(changed.isReady()).isTrue();
-        Mockito.verify(this.orderEventListener, Mockito.times(1)).listenReadyEvent((Mockito.any(OrderReadyEvent.class)));
+        Mockito.verify(this.customerLoyaltyPointsApplicationService, Mockito.times(1)).addLoyaltyPoints(customer.id().value(), order.id().toString());
         
     }
 

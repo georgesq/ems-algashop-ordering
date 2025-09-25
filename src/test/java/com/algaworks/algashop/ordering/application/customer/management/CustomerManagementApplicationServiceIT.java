@@ -51,7 +51,7 @@ class CustomerManagementApplicationServiceIT {
                         LocalDate.of(1991, 7, 5));
 
         Assertions.assertThat(customerOutput.getRegisteredAt()).isNotNull();
-        Mockito.verify(this.customerEventListener).listenRegisterEvent((Mockito.any(CustomerRegisteredEvent.class)));
+        Mockito.verify(this.customerEventListener).listen((Mockito.any(CustomerRegisteredEvent.class)));
 
     }
 
@@ -119,7 +119,7 @@ class CustomerManagementApplicationServiceIT {
         Assertions.assertThat(archivedCustomer.getAddress().getNumber()).isNotNull().isEqualTo("Anonymized");
         Assertions.assertThat(archivedCustomer.getAddress().getComplement()).isNull();
 
-        Mockito.verify(this.customerEventListener).listenArchiverEvent((Mockito.any(CustomerArchivedEvent.class)));
+        Mockito.verify(this.customerEventListener).listen((Mockito.any(CustomerArchivedEvent.class)));
 
     }
 
