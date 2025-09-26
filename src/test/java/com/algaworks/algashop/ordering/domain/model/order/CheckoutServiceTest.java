@@ -89,9 +89,6 @@ class CheckoutServiceTest {
         Product productInStock = ProductTestDataBuilder.aProduct().build();
         shoppingCart.addItem(productInStock, new Quantity(2));
 
-        Money initialTotalAmount = shoppingCart.totalAmount();
-        Quantity initialTotalItems = shoppingCart.totalItems();
-
         Product productAlt = ProductTestDataBuilder.aProductAltRamMemory().build();
         shoppingCart.addItem(productAlt, new Quantity(1));
 
