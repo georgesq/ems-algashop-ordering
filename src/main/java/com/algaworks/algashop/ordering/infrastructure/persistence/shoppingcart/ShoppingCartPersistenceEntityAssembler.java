@@ -1,13 +1,15 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.shoppingcart;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
 import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCart;
 import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCartItem;
 import com.algaworks.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntityRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -21,12 +23,16 @@ public class ShoppingCartPersistenceEntityAssembler {
 
     public ShoppingCartPersistenceEntity merge(ShoppingCartPersistenceEntity persistenceEntity,
                                                ShoppingCart shoppingCart) {
+
         persistenceEntity.setId(shoppingCart.id().value());
         persistenceEntity.setCustomer(customerPersistenceEntityRepository.getReferenceById(shoppingCart.customerId().value()));
         persistenceEntity.setTotalAmount(shoppingCart.totalAmount().value());
         persistenceEntity.setTotalItems(shoppingCart.totalItems().value());
         persistenceEntity.setCreatedAt(shoppingCart.createdAt());
         persistenceEntity.replaceItems(toOrderItemsEntities(shoppingCart.items()));
+
+		persistenceEntity.addEvents(shoppingCart.domainEvents());
+
         return persistenceEntity;
     }
 
@@ -58,4 +64,5 @@ public class ShoppingCartPersistenceEntityAssembler {
                 .totalAmount(source.totalAmount().value())
                 .build();
     }
+
 }
