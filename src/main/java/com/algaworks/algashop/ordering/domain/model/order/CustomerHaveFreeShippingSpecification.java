@@ -1,29 +1,36 @@
 package com.algaworks.algashop.ordering.domain.model.order;
 
-import java.time.Year;
-
 import com.algaworks.algashop.ordering.domain.model.Specification;
 import com.algaworks.algashop.ordering.domain.model.customer.Customer;
 import com.algaworks.algashop.ordering.domain.model.customer.LoyaltyPoints;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public class CustomerHaveFreeShippingSpecification implements Specification<Customer> {
 
-    private final Orders orders;
-    private final int minPointsForFreeShippingRules2;
-    private final int salesQuantityForFreeShippingRules;
-    private final int minPointsForFreeShippingRules1;
+    private final CustomerHasOrderedEnoughAtYearSpecification hasOrderedEnoughAtYear;
+
+    private final CustomerHasEnougLoyaltyPointsSpecification hasEnoughBasicLoyaltyPoints;
+
+    private final CustomerHasEnougLoyaltyPointsSpecification hasEnoughPremiumLoyaltyPoints;
+
+    public CustomerHaveFreeShippingSpecification(Orders orders, 
+            LoyaltyPoints basicLoyaltyPoints,
+            long salesQuantityForFreeShipping, 
+            LoyaltyPoints premiumLoyaltyPoints) {
+
+        this.hasOrderedEnoughAtYear = new CustomerHasOrderedEnoughAtYearSpecification(orders, salesQuantityForFreeShipping);
+        this.hasEnoughBasicLoyaltyPoints = new CustomerHasEnougLoyaltyPointsSpecification(basicLoyaltyPoints);
+        this.hasEnoughPremiumLoyaltyPoints= new CustomerHasEnougLoyaltyPointsSpecification(premiumLoyaltyPoints);
+
+    }
 
 
     @Override
-    public boolean isSatisfied(Customer customer) {
+    public boolean isSatisfiedBy(Customer customer) {
 
-		return customer.loyaltyPoints().compareTo(new LoyaltyPoints(minPointsForFreeShippingRules1)) >= 0
-			&& this.orders.salesQuantityByCustomerInYear(customer.id(), Year.now()) >= salesQuantityForFreeShippingRules
-			|| customer.loyaltyPoints().compareTo(new LoyaltyPoints(minPointsForFreeShippingRules2)) >= 0;
-
+        return hasEnoughBasicLoyaltyPoints
+                .and(hasOrderedEnoughAtYear)
+                .or(hasEnoughPremiumLoyaltyPoints)
+                .isSatisfiedBy(customer);
     }
     
 }

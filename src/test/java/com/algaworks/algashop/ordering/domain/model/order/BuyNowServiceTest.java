@@ -32,15 +32,13 @@ class BuyNowServiceTest {
 
     @BeforeEach
     void setup() {
-
         var specification = new CustomerHaveFreeShippingSpecification(
                 orders,
-                100,
-                2,
-                2000);
-
-        this.buyNowService = new BuyNowService(specification);
-
+                new LoyaltyPoints(100),
+                2L,
+                new LoyaltyPoints(2000)
+        );
+        buyNowService = new BuyNowService(specification);
     }
 
     @Test
@@ -82,8 +80,7 @@ class BuyNowServiceTest {
         PaymentMethod paymentMethod = PaymentMethod.CREDIT_CARD;
 
         assertThatExceptionOfType(ProductOutOfStockException.class)
-                .isThrownBy(() -> buyNowService.buyNow(product, customer, billingInfo, shippingInfo, quantity,
-                        paymentMethod));
+                .isThrownBy(() -> buyNowService.buyNow(product, customer, billingInfo, shippingInfo, quantity, paymentMethod));
     }
 
     @Test
@@ -96,12 +93,15 @@ class BuyNowServiceTest {
         PaymentMethod paymentMethod = PaymentMethod.CREDIT_CARD;
 
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> buyNowService.buyNow(product, customer, billingInfo, shippingInfo, quantity,
-                        paymentMethod));
+                .isThrownBy(() -> buyNowService.buyNow(product, customer, billingInfo, shippingInfo, quantity, paymentMethod));
     }
 
     @Test
     void givenCustomerWithFreeShipping_whenBuyNow_shouldReturnPlacedOrderWithFreeShipping() {
+        Mockito.when(orders.salesQuantityByCustomerInYear(
+                Mockito.any(CustomerId.class),
+                Mockito.any(Year.class)
+        )).thenReturn(2L);
 
         Product product = ProductTestDataBuilder.aProduct().build();
         Customer customer = CustomerTestDataBuilder.existingCustomer().loyaltyPoints(new LoyaltyPoints(100)).build();
