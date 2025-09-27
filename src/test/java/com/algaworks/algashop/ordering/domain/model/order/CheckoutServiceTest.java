@@ -1,24 +1,53 @@
 package com.algaworks.algashop.ordering.domain.model.order;
 
-import com.algaworks.algashop.ordering.domain.model.product.ProductTestDataBuilder;
-import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCart;
-import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCartTestDataBuilder;
-import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCartCantProceedToCheckoutException;
-import com.algaworks.algashop.ordering.domain.model.commons.Money;
-import com.algaworks.algashop.ordering.domain.model.product.Product;
-import com.algaworks.algashop.ordering.domain.model.commons.Quantity;
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import java.time.Year;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.algaworks.algashop.ordering.domain.model.commons.Money;
+import com.algaworks.algashop.ordering.domain.model.commons.Quantity;
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerId;
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerTestDataBuilder;
+import com.algaworks.algashop.ordering.domain.model.customer.LoyaltyPoints;
+import com.algaworks.algashop.ordering.domain.model.product.Product;
+import com.algaworks.algashop.ordering.domain.model.product.ProductTestDataBuilder;
+import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCart;
+import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCartCantProceedToCheckoutException;
+import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCartTestDataBuilder;
+
+@ExtendWith(MockitoExtension.class)
 class CheckoutServiceTest {
 
-    private final CheckoutService checkoutService = new CheckoutService();
+    private CheckoutService checkoutService;
+
+    @Mock
+    private Orders orders;
+
+    @BeforeEach
+    void setup() {
+
+        var specification = new CustomerHaveFreeShippingSpecification(
+                orders,
+                new LoyaltyPoints(100),
+                2L,
+                new LoyaltyPoints(2000)
+        );
+
+        this.checkoutService = new CheckoutService(specification);
+    }
 
     @Test
     void givenValidShoppingCart_whenCheckout_shouldReturnPlacedOrderAndEmptyShoppingCart() {
-        ShoppingCart shoppingCart = ShoppingCart.startShopping(ShoppingCartTestDataBuilder.aShoppingCart().customerId);
+        var customer = CustomerTestDataBuilder.existingCustomer().build();
+        ShoppingCart shoppingCart = ShoppingCart.startShopping(customer.id());
         shoppingCart.addItem(ProductTestDataBuilder.aProduct().build(), new Quantity(2));
         shoppingCart.addItem(ProductTestDataBuilder.aProductAltRamMemory().build(), new Quantity(1));
 
@@ -30,7 +59,7 @@ class CheckoutServiceTest {
         Quantity expectedOrderTotalItems = shoppingCart.totalItems();
         int expectedOrderItemsCount = shoppingCart.items().size();
 
-        Order order = checkoutService.checkout(shoppingCart, billingInfo, shippingInfo, paymentMethod);
+        Order order = checkoutService.checkout(customer, shoppingCart, billingInfo, shippingInfo, paymentMethod);
 
         assertThat(order).isNotNull();
         assertThat(order.id()).isNotNull();
@@ -52,7 +81,8 @@ class CheckoutServiceTest {
 
     @Test
     void givenShoppingCartWithUnavailableItems_whenCheckout_shouldThrowShoppingCartCantProceedToCheckoutException() {
-        ShoppingCart shoppingCart = ShoppingCartTestDataBuilder.aShoppingCart().withItems(false).build();
+        var customer = CustomerTestDataBuilder.existingCustomer().build();
+        ShoppingCart shoppingCart = ShoppingCart.startShopping(customer.id());
         Product product = ProductTestDataBuilder.aProduct().build();
         shoppingCart.addItem(product, new Quantity(1));
 
@@ -64,7 +94,7 @@ class CheckoutServiceTest {
         PaymentMethod paymentMethod = PaymentMethod.CREDIT_CARD;
 
         assertThatExceptionOfType(ShoppingCartCantProceedToCheckoutException.class)
-                .isThrownBy(() -> checkoutService.checkout(shoppingCart, billingInfo, shippingInfo, paymentMethod));
+                .isThrownBy(() -> checkoutService.checkout(customer, shoppingCart, billingInfo, shippingInfo, paymentMethod));
 
         assertThat(shoppingCart.isEmpty()).isFalse();
         assertThat(shoppingCart.items()).hasSize(1);
@@ -72,20 +102,22 @@ class CheckoutServiceTest {
 
     @Test
     void givenEmptyShoppingCart_whenCheckout_shouldThrowShoppingCartCantProceedToCheckoutException() {
-        ShoppingCart shoppingCart = ShoppingCartTestDataBuilder.aShoppingCart().withItems(false).build();
+        var customer = CustomerTestDataBuilder.existingCustomer().build();
+        ShoppingCart shoppingCart = ShoppingCartTestDataBuilder.aShoppingCart().customerId(customer.id()).withItems(false).build();
         Billing billingInfo = OrderTestDataBuilder.aBilling();
         Shipping shippingInfo = OrderTestDataBuilder.aShipping();
         PaymentMethod paymentMethod = PaymentMethod.CREDIT_CARD;
 
         assertThatExceptionOfType(ShoppingCartCantProceedToCheckoutException.class)
-                .isThrownBy(() -> checkoutService.checkout(shoppingCart, billingInfo, shippingInfo, paymentMethod));
+                .isThrownBy(() -> checkoutService.checkout(customer, shoppingCart, billingInfo, shippingInfo, paymentMethod));
 
         assertThat(shoppingCart.isEmpty()).isTrue();
     }
 
     @Test
     void givenShoppingCartWithUnavailableItems_whenCheckout_shouldNotModifyShoppingCartState() {
-        ShoppingCart shoppingCart = ShoppingCart.startShopping(ShoppingCartTestDataBuilder.aShoppingCart().customerId);
+        var customer = CustomerTestDataBuilder.existingCustomer().build();
+        ShoppingCart shoppingCart = ShoppingCartTestDataBuilder.aShoppingCart().customerId(customer.id()).withItems(false).build();
         Product productInStock = ProductTestDataBuilder.aProduct().build();
         shoppingCart.addItem(productInStock, new Quantity(2));
 
@@ -100,7 +132,7 @@ class CheckoutServiceTest {
         PaymentMethod paymentMethod = PaymentMethod.CREDIT_CARD;
 
         assertThatExceptionOfType(ShoppingCartCantProceedToCheckoutException.class)
-                .isThrownBy(() -> checkoutService.checkout(shoppingCart, billingInfo, shippingInfo, paymentMethod));
+                .isThrownBy(() -> checkoutService.checkout(customer, shoppingCart, billingInfo, shippingInfo, paymentMethod));
 
         assertThat(shoppingCart.isEmpty()).isFalse();
 
@@ -110,4 +142,28 @@ class CheckoutServiceTest {
         assertThat(shoppingCart.totalItems()).isEqualTo(new Quantity(3));
         assertThat(shoppingCart.items()).hasSize(2);
     }
+
+    @Test
+    void givenValidShoppingCartWithCustomerWithFreeShipping_whenBuyNow_shouldReturnPlacedOrderWithFreeShipping() {
+
+        Mockito.when(orders.salesQuantityByCustomerInYear(
+                Mockito.any(CustomerId.class),
+                Mockito.any(Year.class)
+        )).thenReturn(2L);
+ 
+        var customer = CustomerTestDataBuilder.existingCustomer().loyaltyPoints(new LoyaltyPoints(3000)).build();
+        ShoppingCart shoppingCart = ShoppingCart.startShopping(customer.id());
+        shoppingCart.addItem(ProductTestDataBuilder.aProduct().build(), new Quantity(5));
+        shoppingCart.addItem(ProductTestDataBuilder.aProductAltRamMemory().build(), new Quantity(10));
+
+        Billing billingInfo = OrderTestDataBuilder.aBilling();
+        Shipping shippingInfo = OrderTestDataBuilder.aShipping();
+        PaymentMethod paymentMethod = PaymentMethod.CREDIT_CARD;
+
+        Order order = checkoutService.checkout(customer, shoppingCart, billingInfo, shippingInfo, paymentMethod);
+
+        assertThat(order.shipping()).isEqualTo(shippingInfo.toBuilder().cost(Money.ZERO).build());
+        
+    }
+
 }
