@@ -2,8 +2,8 @@ package com.algaworks.algashop.ordering.application.shoppingcart.management;
 
 import java.util.UUID;
 
-import com.algaworks.algashop.ordering.application.checkout.BillingData;
 import com.algaworks.algashop.ordering.application.checkout.ShippingInput;
+import com.algaworks.algashop.ordering.application.order.query.BillingData;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

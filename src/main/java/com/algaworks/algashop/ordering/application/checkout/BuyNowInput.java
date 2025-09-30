@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+import com.algaworks.algashop.ordering.application.order.query.BillingData;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

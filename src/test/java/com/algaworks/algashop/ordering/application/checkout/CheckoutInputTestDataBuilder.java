@@ -3,6 +3,8 @@ package com.algaworks.algashop.ordering.application.checkout;
 import java.util.UUID;
 
 import com.algaworks.algashop.ordering.application.commons.AddressData;
+import com.algaworks.algashop.ordering.application.order.query.BillingData;
+import com.algaworks.algashop.ordering.application.order.query.RecipientData;
 import com.algaworks.algashop.ordering.application.shoppingcart.management.CheckoutInput;
 
 public class CheckoutInputTestDataBuilder {
