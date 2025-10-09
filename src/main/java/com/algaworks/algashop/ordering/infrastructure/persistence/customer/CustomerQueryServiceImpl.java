@@ -1,17 +1,32 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.customer;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.algaworks.algashop.ordering.application.customer.query.CustomerFilter;
 import com.algaworks.algashop.ordering.application.customer.query.CustomerOutput;
 import com.algaworks.algashop.ordering.application.customer.query.CustomerQueryService;
+import com.algaworks.algashop.ordering.application.customer.query.CustomerSummaryOutput;
 import com.algaworks.algashop.ordering.domain.model.customer.CustomerNotFoundException;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -62,10 +77,108 @@ public class CustomerQueryServiceImpl implements CustomerQueryService {
         } catch (NoResultException e) {
 
             throw new CustomerNotFoundException();
-            
+
         }
 
     }
 
-    
+    @Override
+    public Page<CustomerSummaryOutput> filter(CustomerFilter filter) {
+
+        Long totalQueryResults = countTotalQueryResults(filter);
+
+        if (totalQueryResults.equals(0L)) {
+
+            PageRequest pageRequest = PageRequest.of(filter.getPage(), filter.getSize());
+            return new PageImpl<>(new ArrayList<>(), pageRequest, totalQueryResults);
+
+        }
+
+        return filterQuery(filter, totalQueryResults);
+
+    }
+
+    private Page<CustomerSummaryOutput> filterQuery(CustomerFilter filter, Long totalQueryResults) {
+
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<CustomerSummaryOutput> criteriaQuery = builder.createQuery(CustomerSummaryOutput.class);
+
+        Root<CustomerPersistenceEntity> root = criteriaQuery.from(CustomerPersistenceEntity.class);
+
+        criteriaQuery.select(
+                builder.construct(CustomerSummaryOutput.class,
+                        root.get("id"),
+                        root.get("firstName"),
+                        root.get("lastName"),
+                        root.get("email"),
+                        root.get("document"),
+                        root.get("phone"),
+                        root.get("birthDate"),
+                        root.get("loyaltyPoints"),
+                        root.get("registeredAt"),
+                        root.get("archivedAt"),
+                        root.get("promotionNotificationsAllowed"),
+                        root.get("archived")));
+
+        Predicate[] predicates = toPredicates(builder, root, filter);
+
+        criteriaQuery.where(predicates);
+        criteriaQuery.orderBy(this.toSortOrder(builder, root, filter));
+
+        TypedQuery<CustomerSummaryOutput> typedQuery = entityManager.createQuery(criteriaQuery);
+
+        typedQuery.setFirstResult(filter.getSize() * filter.getPage());
+        typedQuery.setMaxResults(filter.getSize());
+
+        PageRequest pageRequest = PageRequest.of(filter.getPage(), filter.getSize());
+
+        List<CustomerSummaryOutput> resultList = typedQuery.getResultList();
+
+        return new PageImpl<>(resultList, pageRequest, totalQueryResults);
+
+    }
+
+    private Long countTotalQueryResults(CustomerFilter filter) {
+
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = builder.createQuery(Long.class);
+        Root<CustomerPersistenceEntity> root = criteriaQuery.from(CustomerPersistenceEntity.class);
+
+        Expression<Long> count = builder.count(root);
+        Predicate[] predicates = toPredicates(builder, root, filter);
+
+        criteriaQuery.select(count);
+        criteriaQuery.where(predicates);
+
+        TypedQuery<Long> query = entityManager.createQuery(criteriaQuery);
+
+        return query.getSingleResult();
+
+    }
+
+    private Order toSortOrder(CriteriaBuilder builder, Root<CustomerPersistenceEntity> root, CustomerFilter filter) {
+
+        if (filter.getSortDirectionOrDefault() == Sort.Direction.ASC) {
+            return builder.asc(root.get(filter.getSortByPropertyOrDefault().getPropertyName()));
+        }
+
+        return builder.desc(root.get(filter.getSortByPropertyOrDefault().getPropertyName()));
+
+    }
+
+    private Predicate[] toPredicates(CriteriaBuilder builder,
+            Root<CustomerPersistenceEntity> root, CustomerFilter filter) {
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (!Objects.isNull(filter.getEmail())) {
+            predicates.add(builder.equal(root.get("email"), filter.getEmail()));
+        }
+
+        if (!Objects.isNull(filter.getFirstName())) {
+            predicates.add(builder.equal(root.get("firstName"), filter.getFirstName()));
+        }
+
+        return predicates.toArray(new Predicate[] {});
+    }
+
 }
