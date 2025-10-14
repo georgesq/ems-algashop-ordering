@@ -37,7 +37,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(of = "id")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = falsemvn)
 @Table(name = "\"shopping_cart\"")
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
