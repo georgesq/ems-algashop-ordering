@@ -42,7 +42,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString(of = "id")
 @Table(name = "\"order\"")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @EntityListeners(AuditingEntityListener.class)
 public class OrderPersistenceEntity
 		extends AbstractAggregateRoot<CustomerPersistenceEntity> {

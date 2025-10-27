@@ -52,17 +52,4 @@ public class ShoppingCartPersistenceEntityAssembler {
         return persistenceEntity;
     }
 
-    private ShoppingCartItemPersistenceEntity toOrderItemsEntities(ShoppingCartItem source) {
-        return ShoppingCartItemPersistenceEntity.builder()
-                .id(source.id().value())
-                .shoppingCart(ShoppingCartPersistenceEntity.builder().id(source.shoppingCartId().value()).build())
-                .productId(source.productId().value())
-                .name(source.name().value())
-                .price(source.price().value())
-                .quantity(source.quantity().value())
-                .available(source.isAvailable())
-                .totalAmount(source.totalAmount().value())
-                .build();
-    }
-
 }
