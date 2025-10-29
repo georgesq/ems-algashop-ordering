@@ -1,14 +1,22 @@
 package com.algaworks.algashop.ordering.presentation;
 
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.context.WebApplicationContext;
+
+import com.algaworks.algashop.ordering.application.customer.management.CustomerInput;
+import com.algaworks.algashop.ordering.application.customer.management.CustomerManagementApplicationService;
+import com.algaworks.algashop.ordering.application.customer.query.CustomerOutputTestDataBuilder;
+import com.algaworks.algashop.ordering.application.customer.query.CustomerQueryService;
 
 import io.restassured.config.EncoderConfig;
 import io.restassured.http.ContentType;
@@ -21,12 +29,18 @@ public class CustomerControllerContractTest {
     @Autowired
     private WebApplicationContext context;
 
+    @MockitoBean
+    private CustomerManagementApplicationService applicationService;
+
+    @MockitoBean
+    private CustomerQueryService queryService;
+
     @BeforeEach
     void setupAll() {
 
         RestAssuredMockMvc.webAppContextSetup(context);
         RestAssuredMockMvc.config = RestAssuredMockMvcConfig.config()
-            .encoderConfig(new EncoderConfig(StandardCharsets.UTF_8.name(), StandardCharsets.UTF_8.name()));
+                .encoderConfig(new EncoderConfig(StandardCharsets.UTF_8.name(), StandardCharsets.UTF_8.name()));
 
         RestAssuredMockMvc.enableLoggingOfRequestAndResponseIfValidationFails();
 
@@ -57,6 +71,12 @@ public class CustomerControllerContractTest {
                     }
                 """;
 
+        var customerOutput = CustomerOutputTestDataBuilder.existing().build();
+        UUID customerId = customerOutput.getId();
+        Mockito.when(this.applicationService.create(Mockito.any(CustomerInput.class))).thenReturn(customerId);
+        Mockito.when(this.queryService.findById(Mockito.any(UUID.class)))
+                .thenReturn(customerOutput);
+
         // assert
         RestAssuredMockMvc
                 .given()
@@ -70,7 +90,7 @@ public class CustomerControllerContractTest {
                 .statusCode(HttpStatus.CREATED.value())
                 .contentType(ContentType.JSON)
                 .body(
-                        "id", Matchers.notNullValue(),
+                        "id", Matchers.equalTo(customerId.toString()),
                         "registeredAt", Matchers.notNullValue(),
                         "firstName", Matchers.is("John"),
                         "lastName", Matchers.is("Doe"),
