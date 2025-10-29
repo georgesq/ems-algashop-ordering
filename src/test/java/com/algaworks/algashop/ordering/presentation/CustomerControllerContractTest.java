@@ -110,4 +110,50 @@ public class CustomerControllerContractTest {
 
     }
 
+    @Test
+    void createCustomerWithValidationContractError() {
+
+        // arrange
+        String jsonInput = """
+                    {
+                        "firstName": "",
+                        "lastName": "",
+                        "email": "johndoe@email.com",
+                        "document": "12345",
+                        "phone": "1191234564",
+                        "birthDate": "1991-07-05",
+                        "promotionNotificationsAllowed": false,
+                            "address": {
+                                "street": "Bourbon Street",
+                                "number": "2000",
+                                "complement": "apt 122",
+                                "neighborhood": "North Ville",
+                                "city": "Yostfort",
+                                "state": "South Carolina",
+                                "zipCode": "12321"
+                            }
+                    }
+                """;
+
+        // assert
+        RestAssuredMockMvc
+                .given()
+                .accept(ContentType.JSON)
+                .body(jsonInput)
+                .contentType(ContentType.JSON)
+                .when()
+                .post("/api/v1/customers")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .contentType(ContentType.JSON)
+                .body(
+                    "status", Matchers.equalTo(HttpStatus.BAD_REQUEST.value()),
+                    "type", Matchers.equalTo("/errors/invalid-fields"),
+                    "title", Matchers.notNullValue(),
+                    "detail", Matchers.notNullValue(),
+                    "instance", Matchers.notNullValue(),
+                    "fields", Matchers.notNullValue()
+                );
+     }
 }

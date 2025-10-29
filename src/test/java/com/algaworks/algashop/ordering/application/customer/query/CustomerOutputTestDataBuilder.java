@@ -5,7 +5,6 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import com.algaworks.algashop.ordering.application.commons.AddressData;
-import com.algaworks.algashop.ordering.application.customer.query.CustomerOutput;
 
 public class CustomerOutputTestDataBuilder {
 
