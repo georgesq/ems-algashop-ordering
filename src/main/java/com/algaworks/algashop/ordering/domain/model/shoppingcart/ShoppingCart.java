@@ -231,10 +231,6 @@ public class ShoppingCart
         this.items = items;
     }
 
-    private void setVersion(Long version) {
-        this.version = version;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

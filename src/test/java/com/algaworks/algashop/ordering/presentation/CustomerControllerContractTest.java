@@ -25,6 +25,9 @@ import com.algaworks.algashop.ordering.application.customer.query.CustomerOutput
 import com.algaworks.algashop.ordering.application.customer.query.CustomerQueryService;
 import com.algaworks.algashop.ordering.application.customer.query.CustomerSummaryOutput;
 import com.algaworks.algashop.ordering.application.customer.query.CustomerSummaryOutputTestDataBuilder;
+import com.algaworks.algashop.ordering.domain.model.DomainException;
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerEmailIsInUseException;
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerNotFoundException;
 
 import io.restassured.config.EncoderConfig;
 import io.restassured.http.ContentType;
@@ -120,7 +123,7 @@ public class CustomerControllerContractTest {
     }
 
     @Test
-    void createCustomerWithValidationContractError() {
+    void createCustomerWithError400Contract() {
 
         // arrange
         String jsonInput = """
@@ -271,4 +274,173 @@ public class CustomerControllerContractTest {
 
     }
     
+    @Test
+    void findByIdWithError404Contract() {
+
+        // arrange
+        UUID customerId = UUID.randomUUID();
+
+        Mockito.when(this.queryService.findById(customerId)).thenThrow(CustomerNotFoundException.class);
+
+        // assert
+        RestAssuredMockMvc
+                .given()
+                    .accept(ContentType.JSON)
+                    .pathParam("customerId", customerId)
+                .when()
+                    .get("/api/v1/customers/{customerId}")
+                .then()
+                    .assertThat()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .contentType(ContentType.JSON)
+                        .body(
+                                "status", Matchers.equalTo(HttpStatus.NOT_FOUND.value()),
+                                "type", Matchers.equalTo("/errors/not-found"),
+                                "title", Matchers.notNullValue(),
+                                "instance", Matchers.notNullValue()
+                        );
+
+    }
+
+    @Test
+    void createCustomerWithError409Contract() {
+
+        // arrange
+        String jsonInput = """
+                    {
+                        "firstName": "fn",
+                        "lastName": "ln",
+                        "email": "johndoe@email.com",
+                        "document": "12345",
+                        "phone": "1191234564",
+                        "birthDate": "1991-07-05",
+                        "promotionNotificationsAllowed": false,
+                            "address": {
+                                "street": "Bourbon Street",
+                                "number": "2000",
+                                "complement": "apt 122",
+                                "neighborhood": "North Ville",
+                                "city": "Yostfort",
+                                "state": "South Carolina",
+                                "zipCode": "12321"
+                            }
+                    }
+                """;
+
+        Mockito.when(this.applicationService.create(Mockito.any(CustomerInput.class))).thenThrow(DomainException.class);
+
+        // assert
+        RestAssuredMockMvc
+                .given()
+                    .accept(ContentType.JSON)
+                    .body(jsonInput)
+                    .contentType(ContentType.JSON)
+                .when()
+                    .post("/api/v1/customers")
+                .then()
+                    .assertThat()
+                        .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value())
+                        .contentType(ContentType.JSON)
+                        .body(
+                                "status", Matchers.equalTo(HttpStatus.UNPROCESSABLE_ENTITY.value()),
+                                "type", Matchers.equalTo("/errors/unprocessable-entity"),
+                                "title", Matchers.notNullValue(),
+                                "instance", Matchers.notNullValue()
+                        );
+    }
+
+    @Test
+    void createCustomerWithError422Contract() {
+
+        // arrange
+        String jsonInput = """
+                    {
+                        "firstName": "fn",
+                        "lastName": "ln",
+                        "email": "johndoe@email.com",
+                        "document": "12345",
+                        "phone": "1191234564",
+                        "birthDate": "1991-07-05",
+                        "promotionNotificationsAllowed": false,
+                            "address": {
+                                "street": "Bourbon Street",
+                                "number": "2000",
+                                "complement": "apt 122",
+                                "neighborhood": "North Ville",
+                                "city": "Yostfort",
+                                "state": "South Carolina",
+                                "zipCode": "12321"
+                            }
+                    }
+                """;
+
+        Mockito.when(this.applicationService.create(Mockito.any(CustomerInput.class))).thenThrow(CustomerEmailIsInUseException.class);
+
+        // assert
+        RestAssuredMockMvc
+                .given()
+                    .accept(ContentType.JSON)
+                    .body(jsonInput)
+                    .contentType(ContentType.JSON)
+                .when()
+                    .post("/api/v1/customers")
+                .then()
+                    .assertThat()
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .contentType(ContentType.JSON)
+                        .body(
+                                "status", Matchers.equalTo(HttpStatus.CONFLICT.value()),
+                                "type", Matchers.equalTo("/errors/conflict"),
+                                "title", Matchers.notNullValue(),
+                                "instance", Matchers.notNullValue()
+                        );
+    }
+
+    @Test
+    void createCustomerWithError500Contract() {
+
+        // arrange
+        String jsonInput = """
+                    {
+                        "firstName": "fn",
+                        "lastName": "ln",
+                        "email": "johndoe@email.com",
+                        "document": "12345",
+                        "phone": "1191234564",
+                        "birthDate": "1991-07-05",
+                        "promotionNotificationsAllowed": false,
+                            "address": {
+                                "street": "Bourbon Street",
+                                "number": "2000",
+                                "complement": "apt 122",
+                                "neighborhood": "North Ville",
+                                "city": "Yostfort",
+                                "state": "South Carolina",
+                                "zipCode": "12321"
+                            }
+                    }
+                """;
+
+        Mockito.when(this.applicationService.create(Mockito.any(CustomerInput.class))).thenThrow(IllegalArgumentException.class);
+
+        // assert
+        RestAssuredMockMvc
+                .given()
+                    .accept(ContentType.JSON)
+                    .body(jsonInput)
+                    .contentType(ContentType.JSON)
+                .when()
+                    .post("/api/v1/customers")
+                .then()
+                    .assertThat()
+                        .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                        .contentType(ContentType.JSON)
+                        .body(
+                                "status", Matchers.equalTo(HttpStatus.INTERNAL_SERVER_ERROR.value()),
+                                "type", Matchers.equalTo("/errors/internal-error"),
+                                "title", Matchers.notNullValue(),
+                                "instance", Matchers.notNullValue()
+                        );
+    }
+
 }
