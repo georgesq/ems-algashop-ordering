@@ -95,6 +95,7 @@ public class CustomerControllerContractTest {
                 .assertThat()
                 .statusCode(HttpStatus.CREATED.value())
                 .contentType(ContentType.JSON)
+                .headers("Location", Matchers.containsString("/api/v1/customers/" + customerId))
                 .body(
                         "id", Matchers.equalTo(customerId.toString()),
                         "registeredAt", Matchers.notNullValue(),
