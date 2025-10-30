@@ -34,9 +34,15 @@ public class CustomerController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CustomerOutput create(@Valid @RequestBody CustomerInput input) {
+    public CustomerOutput create(@Valid @RequestBody CustomerInput input, HttpServletResponse response) {
 
         var customerId = this.applicationService.create(input);
+
+        UriComponentsBuilder builder = MvcUriComponentsBuilder.fromMethodCall(
+                    MvcUriComponentsBuilder.on(CustomerController.class)
+                        .findById(customerId, response));;
+
+        response.addHeader("Location", builder.build().toString());
 
         return this.queryService.findById(customerId);
 
