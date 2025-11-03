@@ -48,7 +48,7 @@ public class BuyNowApplicationService {
 
         PaymentMethod paymentMethod = PaymentMethod.valueOf(input.getPaymentMethod());
         CustomerId customerId = new CustomerId(input.getCustomerId());
-        Customer customer = this.customers.ofId(customerId).orElseThrow(() -> new CustomerNotFoundException());
+        Customer customer = this.customers.ofId(customerId).orElseThrow(() -> new CustomerNotFoundException(customerId));
         Quantity quantity = new Quantity(input.getQuantity());
 
         Product product = findProduct(new ProductId(input.getProductId()));
@@ -77,7 +77,7 @@ public class BuyNowApplicationService {
 
     private Product findProduct(ProductId productId) {
         return productCatalogService.ofId(productId)
-                .orElseThrow(()-> new ProductNotFoundException());
+                .orElseThrow(()-> new ProductNotFoundException(productId));
     }
 
 }

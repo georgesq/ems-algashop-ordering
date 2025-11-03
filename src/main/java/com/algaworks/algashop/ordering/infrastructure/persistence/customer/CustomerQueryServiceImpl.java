@@ -16,6 +16,7 @@ import com.algaworks.algashop.ordering.application.customer.query.CustomerFilter
 import com.algaworks.algashop.ordering.application.customer.query.CustomerOutput;
 import com.algaworks.algashop.ordering.application.customer.query.CustomerQueryService;
 import com.algaworks.algashop.ordering.application.customer.query.CustomerSummaryOutput;
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerId;
 import com.algaworks.algashop.ordering.domain.model.customer.CustomerNotFoundException;
 
 import jakarta.persistence.EntityManager;
@@ -76,7 +77,7 @@ public class CustomerQueryServiceImpl implements CustomerQueryService {
 
         } catch (NoResultException e) {
 
-            throw new CustomerNotFoundException();
+            throw new CustomerNotFoundException(new CustomerId(customerId));
 
         }
 

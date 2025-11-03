@@ -5,7 +5,6 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.algaworks.algashop.ordering.application.shoppingcart.management.CheckoutInput;
 import com.algaworks.algashop.ordering.domain.model.commons.ZipCode;
 import com.algaworks.algashop.ordering.domain.model.customer.CustomerNotFoundException;
 import com.algaworks.algashop.ordering.domain.model.customer.Customers;
@@ -46,7 +45,7 @@ public class CheckoutApplicationService {
         // arrange
         ShoppingCart shoppingCart = shoppingCarts.ofId(new ShoppingCartId(input.getShoppingCartId()))
             .orElseThrow(() -> new ShoppingCartNotFoundException());
-        var customer = this.customers.ofId(shoppingCart.customerId()).orElseThrow(() -> new CustomerNotFoundException());
+        var customer = this.customers.ofId(shoppingCart.customerId()).orElseThrow(() -> new CustomerNotFoundException(shoppingCart.customerId()));
         Billing billing = billingInputDisassembler.toDomainModel(input.getBilling());
         CalculationResult shippingCalculationResult = this.shippingCostService.calculate(ShippingCostService.CalculationRequest
             .builder()
