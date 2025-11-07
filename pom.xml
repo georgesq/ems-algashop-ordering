@@ -131,12 +131,12 @@
 			<scope>test</scope>
 		</dependency>
 
-<dependency>
-    <groupId>org.wiremock.integrations</groupId>
-    <artifactId>wiremock-spring-boot</artifactId>
-    <version>3.10.0</version> <!-- Use the latest compatible version -->
-    <scope>test</scope>
-</dependency>
+		<dependency>
+			<groupId>org.wiremock.integrations</groupId>
+			<artifactId>wiremock-spring-boot</artifactId>
+			<version>3.10.0</version> <!-- Use the latest compatible version -->
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 

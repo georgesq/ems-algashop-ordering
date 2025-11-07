@@ -111,4 +111,45 @@ public class OrderControllerIT {
                 .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
     }
 
+    @Test
+    public void shouldNotCreateOrderUsingProductWhenProductAPIUnavailable() {
+
+        // arrange
+        String json = AlgaShopResourceUtils.readContent("json/create-order-with-product.json");
+        this.wireMockProductCatalog.stop();
+
+        // act / assert
+        RestAssured
+                .given()
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType("application/vnd.order-with-product.v1+json")
+                    .body(json)
+                .when()
+                    .post("/api/v1/orders")
+                .then()
+                    .assertThat()
+                        .statusCode(HttpStatus.BAD_GATEWAY.value())
+                        .contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
+    }
+
+    @Test
+    public void shouldNotCreateOrderUsingProductWhenProductNotExists() {
+
+        // arrange
+        String json = AlgaShopResourceUtils.readContent("json/create-order-with-invalid-product.json");
+
+        // act / assert
+        RestAssured
+                .given()
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType("application/vnd.order-with-product.v1+json")
+                    .body(json)
+                .when()
+                    .post("/api/v1/orders")
+                .then()
+                    .assertThat()
+                        .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value())
+                        .contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
+    }
+
 }
