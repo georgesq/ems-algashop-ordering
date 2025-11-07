@@ -4,6 +4,7 @@ import static io.restassured.config.JsonConfig.jsonConfig;
 
 import java.util.UUID;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.wiremock.spring.ConfigureWireMock;
 import org.wiremock.spring.EnableWireMock;
 import org.wiremock.spring.InjectWireMock;
 
+import com.algaworks.algashop.ordering.application.checkout.BuyNowInputTestDataBuilder;
+import com.algaworks.algashop.ordering.application.order.query.OrderDetailOutput;
 import com.algaworks.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntityRepository;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntityTestDataBuilder;
 import com.algaworks.algashop.ordering.utils.AlgaShopResourceUtils;
@@ -47,6 +50,7 @@ public class OrderControllerIT {
     private CustomerPersistenceEntityRepository customerRepository;
 
     private static final UUID validCustomerId = UUID.fromString("6e148bd5-47f6-4022-b9da-07cfaa294f7a");
+    private static final UUID validProductId = UUID.fromString("4f229073-2e69-4479-ba24-9a47aa98cfc5");
 
     @InjectWireMock("product-catalog")
     private WireMockServer wireMockProductCatalog;
@@ -92,6 +96,31 @@ public class OrderControllerIT {
                 .assertThat()
                 .statusCode(HttpStatus.CREATED.value())
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    @Test
+    public void shouldCreateOrderUsingProduct_DTO() {
+
+        // arrange
+        var json = BuyNowInputTestDataBuilder.aBuyNowInput().customerId(validCustomerId).productId(validProductId).build();
+
+        OrderDetailOutput output = RestAssured
+                        .given()
+                            .accept(MediaType.APPLICATION_JSON_VALUE)
+                            .contentType("application/vnd.order-with-product.v1+json")
+                            .body(json)
+                        .when()
+                            .post("/api/v1/orders")
+                        .then()
+                            .assertThat()
+                                .statusCode(HttpStatus.CREATED.value())
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .extract().as(OrderDetailOutput.class);
+
+        // assert
+        Assertions.assertThat(output).isNotNull();
+        Assertions.assertThat(output.getCustomer().getId()).isEqualTo(json.getCustomerId());
+        
     }
 
     @Test
