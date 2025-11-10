@@ -10,13 +10,13 @@ public class FieldValidations {
     }
 
     public static void requiresNonBlank(String value) {
-        requiresNonBlank(value, null);
+        requiresNonBlank(value, "");
     }
 
     public static void requiresNonBlank(String value, String errorMessage) {
         Objects.requireNonNull(value);
         if (value.isBlank()) {
-            throw new IllegalArgumentException(errorMessage);
+            throw new IllegalArgumentException();
         }
     }
 

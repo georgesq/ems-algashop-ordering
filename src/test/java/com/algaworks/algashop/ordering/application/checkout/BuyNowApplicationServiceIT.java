@@ -66,4 +66,5 @@ class BuyNowApplicationServiceIT {
         Assertions.assertThat(orders.exists(new OrderId(orderId))).isTrue();
     }
 
+
 }

@@ -1,6 +1,5 @@
 package com.algaworks.algashop.ordering.infrastructure.product.client.http;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
@@ -25,29 +24,35 @@ public class ProductCatalogServiceHttpImpl implements ProductCatalogService {
 
     @Override
     public Optional<Product> ofId(ProductId productId) {
+        ProductResponse response = null;
 
-        ProductResponse productResponse = null;
         try {
-            productResponse = productCatalogAPIClient.getById(productId.value());
+
+            response = this.productCatalogAPIClient.getById(productId.value());
+            
         } catch (ResourceAccessException e) {
-            throw new GatewayTimeoutException("Product Catalog API Timeout", e);
-        } catch (HttpClientErrorException.NotFound e) {
+            
+            throw new GatewayTimeoutException("Gateway Timeout when accessing Product Catalog Service");
+
+        } catch (HttpClientErrorException e) {
+
+            throw new BadGatewayException("Bad Gateway when accessing Product Catalog Service", e);
+
+        } 
+
+        if (response == null) {
 
             return Optional.empty();
-            
-        } catch (HttpClientErrorException e) {
-            throw new BadGatewayException("Product Catalog API Bad Gateway", e);
+
         }
 
-        Objects.requireNonNull(productResponse);
+        return Optional.of(new Product(
+            new ProductId(response.getId()),
+            new ProductName(response.getName()),
+            new Money(response.getSalePrice()),
+            response.getInStock()
+        ));
 
-        return Optional.of(
-                Product.builder()
-                        .id(new ProductId(productResponse.getId()))
-                        .name(new ProductName(productResponse.getName()))
-                        .inStock(productResponse.getInStock())
-                        .price(new Money(productResponse.getSalePrice()))
-                        .build()
-        );
-    }
+    };
+
 }

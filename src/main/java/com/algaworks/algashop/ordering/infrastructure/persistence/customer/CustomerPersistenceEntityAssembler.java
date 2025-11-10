@@ -1,9 +1,10 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.customer;
 
-import com.algaworks.algashop.ordering.domain.model.customer.Customer;
-import com.algaworks.algashop.ordering.domain.model.commons.Address;
-import com.algaworks.algashop.ordering.infrastructure.persistence.commons.AddressEmbeddable;
 import org.springframework.stereotype.Component;
+
+import com.algaworks.algashop.ordering.domain.model.commons.Address;
+import com.algaworks.algashop.ordering.domain.model.customer.Customer;
+import com.algaworks.algashop.ordering.infrastructure.persistence.commons.AddressEmbeddable;
 
 @Component
 public class CustomerPersistenceEntityAssembler {
@@ -13,6 +14,7 @@ public class CustomerPersistenceEntityAssembler {
 	}
 
 	public CustomerPersistenceEntity merge(CustomerPersistenceEntity customerPersistenceEntity, Customer customer) {
+
 		customerPersistenceEntity.setId(customer.id().value());
 		customerPersistenceEntity.setFirstName(customer.fullName().firstName());
 		customerPersistenceEntity.setLastName(customer.fullName().lastName());
@@ -27,7 +29,9 @@ public class CustomerPersistenceEntityAssembler {
 		customerPersistenceEntity.setLoyaltyPoints(customer.loyaltyPoints().value());
 		customerPersistenceEntity.setAddress(toAddressEmbeddable(customer.address()));
 		customerPersistenceEntity.setVersion(customer.version());
+
 		customerPersistenceEntity.addEvents(customer.domainEvents());
+
 		return customerPersistenceEntity;
 	}
 
@@ -42,4 +46,5 @@ public class CustomerPersistenceEntityAssembler {
 				.zipCode(address.zipCode().value())
 				.build();
 	}
+
 }

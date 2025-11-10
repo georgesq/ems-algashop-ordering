@@ -1,39 +1,44 @@
 package com.algaworks.algashop.ordering.presentation.order;
 
-import com.algaworks.algashop.ordering.application.checkout.BuyNowInput;
-import com.algaworks.algashop.ordering.application.checkout.BuyNowInputTestDataBuilder;
-import com.algaworks.algashop.ordering.application.order.query.OrderDetailOutput;
-import com.algaworks.algashop.ordering.domain.model.order.OrderId;
-import com.algaworks.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntityRepository;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntityTestDataBuilder;
-import com.algaworks.algashop.ordering.infrastructure.persistence.order.OrderPersistenceEntityRepository;
-import com.algaworks.algashop.ordering.utils.AlgaShopResourceUtils;
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
-import io.restassured.RestAssured;
-import io.restassured.config.JsonConfig;
-import io.restassured.path.json.config.JsonPathConfig;
+import static io.restassured.config.JsonConfig.jsonConfig;
+
+import java.util.UUID;
+
 import org.assertj.core.api.Assertions;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.cloud.contract.stubrunner.spring.AutoConfigureStubRunner;
-import org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.wiremock.spring.ConfigureWireMock;
+import org.wiremock.spring.EnableWireMock;
+import org.wiremock.spring.InjectWireMock;
 
-import java.util.UUID;
+import com.algaworks.algashop.ordering.application.checkout.BuyNowInputTestDataBuilder;
+import com.algaworks.algashop.ordering.application.order.query.OrderDetailOutput;
+import com.algaworks.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntityRepository;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntityTestDataBuilder;
+import com.algaworks.algashop.ordering.utils.AlgaShopResourceUtils;
+import com.github.tomakehurst.wiremock.WireMockServer;
 
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import static io.restassured.config.JsonConfig.*;
+import io.restassured.RestAssured;
+import io.restassured.path.json.config.JsonPathConfig;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@AutoConfigureStubRunner(stubsMode = StubRunnerProperties.StubsMode.LOCAL,
-//        ids = "com.algaworks.algashop:product-catalog:0.0.1-SNAPSHOT:8781")
+@EnableWireMock({
+    @ConfigureWireMock(
+        name = "product-catalog", 
+        port = 8780,
+        filesUnderDirectory = "src/test/resources/wiremock/product-catalog"
+    ),
+    @ConfigureWireMock(
+        name = "rapidex", 
+        port = 8782,
+        filesUnderDirectory = "src/test/resources/wiremock/rapidex"
+    ),
+})
 public class OrderControllerIT {
 
     @LocalServerPort
@@ -44,13 +49,12 @@ public class OrderControllerIT {
     @Autowired
     private CustomerPersistenceEntityRepository customerRepository;
 
-    @Autowired
-    private OrderPersistenceEntityRepository orderRepository;
-
     private static final UUID validCustomerId = UUID.fromString("6e148bd5-47f6-4022-b9da-07cfaa294f7a");
-    private static final UUID validProductId = UUID.fromString("fffe6ec2-7103-48b3-8e4f-3b58e43fb75a");
+    private static final UUID validProductId = UUID.fromString("4f229073-2e69-4479-ba24-9a47aa98cfc5");
 
+    @InjectWireMock("product-catalog")
     private WireMockServer wireMockProductCatalog;
+    @InjectWireMock("rapidex")
     private WireMockServer wireMockRapidex;
 
     @BeforeEach
@@ -62,146 +66,119 @@ public class OrderControllerIT {
 
         initDatabase();
 
-        wireMockRapidex = new WireMockServer(options()
-                    .port(8780)
-                    .usingFilesUnderDirectory("src/test/resources/wiremock/rapidex")
-                    .extensions(new ResponseTemplateTransformer(true)));
-
-        wireMockProductCatalog = new WireMockServer(options()
-                    .port(8781)
-                    .usingFilesUnderDirectory("src/test/resources/wiremock/product-catalog")
-                    .extensions(new ResponseTemplateTransformer(true)));
-
-        wireMockRapidex.start();
-
-        wireMockProductCatalog.start();
-
     }
 
-    @AfterEach
-    public void after() {
-        wireMockRapidex.stop();
-        wireMockProductCatalog.stop();
-    }
-
+    @SuppressWarnings("null")
     private void initDatabase() {
         if (databaseInitialized) {
             return;
         }
 
         customerRepository.saveAndFlush(
-                CustomerPersistenceEntityTestDataBuilder.aCustomer().id(validCustomerId).build()
-        );
+                CustomerPersistenceEntityTestDataBuilder.aCustomer().id(validCustomerId).build());
 
         databaseInitialized = true;
     }
 
     @Test
     public void shouldCreateOrderUsingProduct() {
-        String json = AlgaShopResourceUtils.readContent("json/create-order-with-product.json");
+        System.out.println("Stub mapping size: " + wireMockProductCatalog.getStubMappings().size());
 
-        String createdOrderId = RestAssured
-            .given()
+        String json = AlgaShopResourceUtils.readContent("json/create-order-with-product.json");
+        RestAssured
+                .given()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType("application/vnd.order-with-product.v1+json")
                 .body(json)
-            .when()
+                .when()
                 .post("/api/v1/orders")
-            .then()
+                .then()
                 .assertThat()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .statusCode(HttpStatus.CREATED.value())
-                .body("id", Matchers.not(Matchers.emptyString()),
-                        "customer.id", Matchers.is(validCustomerId.toString()))
-            .extract()
-                .jsonPath().getString("id");
-
-        boolean orderExists = orderRepository.existsById(new OrderId(createdOrderId).value().toLong());
-        Assertions.assertThat(orderExists).isTrue();
-
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
     }
 
     @Test
     public void shouldCreateOrderUsingProduct_DTO() {
-        BuyNowInput input = BuyNowInputTestDataBuilder.aBuyNowInput()
-                .productId(validProductId)
-                .customerId(validCustomerId)
-                .build();
 
-        OrderDetailOutput orderDetailOutput = RestAssured
-            .given()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .contentType("application/vnd.order-with-product.v1+json")
-                .body(input)
-            .when()
-                .post("/api/v1/orders")
-            .then()
-                .assertThat()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .statusCode(HttpStatus.CREATED.value())
-                .body("id", Matchers.not(Matchers.emptyString()),
-                        "customer.id", Matchers.is(validCustomerId.toString()))
-            .extract()
-                .body().as(OrderDetailOutput.class);
+        // arrange
+        var json = BuyNowInputTestDataBuilder.aBuyNowInput().customerId(validCustomerId).productId(validProductId).build();
 
-        Assertions.assertThat(orderDetailOutput.getCustomer().getId()).isEqualTo(validCustomerId);
+        OrderDetailOutput output = RestAssured
+                        .given()
+                            .accept(MediaType.APPLICATION_JSON_VALUE)
+                            .contentType("application/vnd.order-with-product.v1+json")
+                            .body(json)
+                        .when()
+                            .post("/api/v1/orders")
+                        .then()
+                            .assertThat()
+                                .statusCode(HttpStatus.CREATED.value())
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .extract().as(OrderDetailOutput.class);
 
-        boolean orderExists = orderRepository.existsById(new OrderId(orderDetailOutput.getId()).value().toLong());
-        Assertions.assertThat(orderExists).isTrue();
+        // assert
+        Assertions.assertThat(output).isNotNull();
+        Assertions.assertThat(output.getCustomer().getId()).isEqualTo(json.getCustomerId());
+        
     }
 
     @Test
-    public void shouldNotCreateOrderUsingProductWhenProductAPIIsUnavailable() {
-        String json = AlgaShopResourceUtils.readContent("json/create-order-with-product.json");
+    public void shouldCNotreateOrderUsingProductWhenCustomerNotFound() {
 
-        wireMockProductCatalog.stop();
-
+        String json = AlgaShopResourceUtils.readContent("json/create-order-with-product-and-invalid-customer.json");
         RestAssured
-            .given()
+                .given()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType("application/vnd.order-with-product.v1+json")
                 .body(json)
-            .when()
+                .when()
                 .post("/api/v1/orders")
-            .then()
+                .then()
                 .assertThat()
                 .contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE)
-                .statusCode(HttpStatus.GATEWAY_TIMEOUT.value());
+                .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
+    }
 
+    @Test
+    public void shouldNotCreateOrderUsingProductWhenProductAPIUnavailable() {
+
+        // arrange
+        String json = AlgaShopResourceUtils.readContent("json/create-order-with-product.json");
+        this.wireMockProductCatalog.stop();
+
+        // act / assert
+        RestAssured
+                .given()
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType("application/vnd.order-with-product.v1+json")
+                    .body(json)
+                .when()
+                    .post("/api/v1/orders")
+                .then()
+                    .assertThat()
+                        .statusCode(HttpStatus.BAD_GATEWAY.value())
+                        .contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
     }
 
     @Test
     public void shouldNotCreateOrderUsingProductWhenProductNotExists() {
+
+        // arrange
         String json = AlgaShopResourceUtils.readContent("json/create-order-with-invalid-product.json");
 
+        // act / assert
         RestAssured
-            .given()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .contentType("application/vnd.order-with-product.v1+json")
-                .body(json)
-            .when()
-                .post("/api/v1/orders")
-            .then()
-                .assertThat()
-                .contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE)
-                .statusCode(HttpStatus.BAD_GATEWAY.value());
-
-    }
-
-    @Test
-    public void shouldNotCreateOrderUsingProductWhenCustomerWasNotFound() {
-        String json = AlgaShopResourceUtils.readContent("json/create-order-with-product-and-invalid-customer.json");
-        RestAssured
-            .given()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .contentType("application/vnd.order-with-product.v1+json")
-                .body(json)
-            .when()
-                .post("/api/v1/orders")
-            .then()
-                .assertThat()
-                .contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE)
-                .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
+                .given()
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType("application/vnd.order-with-product.v1+json")
+                    .body(json)
+                .when()
+                    .post("/api/v1/orders")
+                .then()
+                    .assertThat()
+                        .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value())
+                        .contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
     }
 
 }

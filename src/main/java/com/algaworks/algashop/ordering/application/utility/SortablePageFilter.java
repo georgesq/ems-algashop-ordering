@@ -1,10 +1,11 @@
 package com.algaworks.algashop.ordering.application.utility;
 
+import org.springframework.data.domain.Sort;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Sort;
 
 @Data
 @AllArgsConstructor

@@ -1,21 +1,27 @@
 package com.algaworks.algashop.ordering.domain.model.shoppingcart;
 
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
 import com.algaworks.algashop.ordering.domain.model.AbstractEventSourceEntity;
 import com.algaworks.algashop.ordering.domain.model.AggregateRoot;
 import com.algaworks.algashop.ordering.domain.model.commons.Money;
-import com.algaworks.algashop.ordering.domain.model.product.Product;
 import com.algaworks.algashop.ordering.domain.model.commons.Quantity;
 import com.algaworks.algashop.ordering.domain.model.customer.CustomerId;
+import com.algaworks.algashop.ordering.domain.model.product.Product;
 import com.algaworks.algashop.ordering.domain.model.product.ProductId;
+
 import lombok.Builder;
 
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
-import java.util.*;
-
-public class ShoppingCart
-        extends AbstractEventSourceEntity
-        implements AggregateRoot<ShoppingCartId> {
+public class ShoppingCart 
+    extends AbstractEventSourceEntity
+    implements AggregateRoot<ShoppingCartId> {
+        
     private ShoppingCartId id;
     private CustomerId customerId;
     private Money totalAmount;
@@ -29,49 +35,54 @@ public class ShoppingCart
     public ShoppingCart(ShoppingCartId id, Long version, CustomerId customerId,
                         Money totalAmount, Quantity totalItems, OffsetDateTime createdAt,
                         Set<ShoppingCartItem> items) {
-        this.setId(id);
+        
+                            this.setId(id);
         this.setCustomerId(customerId);
         this.setTotalAmount(totalAmount);
         this.setTotalItems(totalItems);
         this.setCreatedAt(createdAt);
         this.setItems(items);
+
     }
 
     public static ShoppingCart startShopping(CustomerId customerId) {
+
         ShoppingCart shoppingCart = new ShoppingCart(new ShoppingCartId(), null, customerId, Money.ZERO,
                 Quantity.ZERO, OffsetDateTime.now(), new HashSet<>());
-        shoppingCart.publishDomainEvent(new ShoppingCartCreatedEvent(
-                shoppingCart.id(),
-                shoppingCart.customerId(),
-                shoppingCart.createdAt()
-        ));
+
+        shoppingCart.publicDomainEvent(
+            new ShoppingCartCreatedEvent(shoppingCart.id(), shoppingCart.customerId(), shoppingCart.createdAt())
+        );
+
         return shoppingCart;
     }
 
     public void empty() {
+
         items.clear();
         totalAmount = Money.ZERO;
         totalItems = Quantity.ZERO;
-        this.publishDomainEvent(new ShoppingCartEmptiedEvent(
-                this.id(),
-                this.customerId(),
-                OffsetDateTime.now()
-        ));
+
+        super.publicDomainEvent(
+            new ShoppingCartEmptiedEvent(this.id(), this.customerId(), OffsetDateTime.now())
+        );
+
     }
 
     public void removeItem(ShoppingCartItemId shoppingCartItemId) {
+
         ShoppingCartItem shoppingCartItem = this.findItem(shoppingCartItemId);
         this.items.remove(shoppingCartItem);
         this.recalculateTotals();
-        this.publishDomainEvent(new ShoppingCartItemRemovedEvent(
-                this.id(),
-                this.customerId(),
-                shoppingCartItem.productId(),
-                OffsetDateTime.now()
-        ));
+
+        super.publicDomainEvent(
+            new ShoppingCartItemRemovedEvent(this.id(), this.customerId(), shoppingCartItem.productId(), OffsetDateTime.now())
+        );
+
     }
 
     public void addItem(Product product, Quantity quantity) {
+        
         Objects.requireNonNull(product);
         Objects.requireNonNull(quantity);
 
@@ -91,12 +102,10 @@ public class ShoppingCart
 
         this.recalculateTotals();
 
-        this.publishDomainEvent(new ShoppingCartItemAddedEvent(
-                this.id(),
-                this.customerId(),
-                product.id(),
-                OffsetDateTime.now()
-        ));
+        super.publicDomainEvent(
+            new ShoppingCartItemAddedEvent(this.id(), this.customerId(), shoppingCartItem.productId(), OffsetDateTime.now())
+        );
+
     }
 
     public ShoppingCartItem findItem(ShoppingCartItemId shoppingCartItemId) {
@@ -220,10 +229,6 @@ public class ShoppingCart
     private void setItems(Set<ShoppingCartItem> items) {
         Objects.requireNonNull(items);
         this.items = items;
-    }
-
-    private void setVersion(Long version) {
-        this.version = version;
     }
 
     @Override

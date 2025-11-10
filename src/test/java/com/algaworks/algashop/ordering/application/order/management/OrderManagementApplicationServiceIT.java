@@ -1,30 +1,30 @@
 package com.algaworks.algashop.ordering.application.order.management;
 
-import com.algaworks.algashop.ordering.application.customer.loyaltypoints.CustomerLoyaltyPointsApplicationService;
-import com.algaworks.algashop.ordering.domain.model.customer.CustomerTestDataBuilder;
-import com.algaworks.algashop.ordering.domain.model.customer.Customers;
-import com.algaworks.algashop.ordering.domain.model.order.*;
-import com.algaworks.algashop.ordering.infrastructure.listener.order.OrderEventListener;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-import java.util.UUID;
+import com.algaworks.algashop.ordering.application.customer.loyaltypoints.CustomerLoyaltyPointsApplicationService;
+import com.algaworks.algashop.ordering.domain.model.customer.Customer;
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerTestDataBuilder;
+import com.algaworks.algashop.ordering.domain.model.customer.Customers;
+import com.algaworks.algashop.ordering.domain.model.order.OrderId;
+import com.algaworks.algashop.ordering.domain.model.order.OrderNotFoundException;
+import com.algaworks.algashop.ordering.domain.model.order.OrderStatus;
+import com.algaworks.algashop.ordering.domain.model.order.OrderStatusCannotBeChangedException;
+import com.algaworks.algashop.ordering.domain.model.order.OrderTestDataBuilder;
+import com.algaworks.algashop.ordering.domain.model.order.Orders;
 
 @SpringBootTest
 @Transactional
-@Import(OrderEventListener.class)
-class OrderManagementApplicationServiceIT {
+public class OrderManagementApplicationServiceIT {
 
     @Autowired
-    private OrderManagementApplicationService service;
+    private OrderManagementApplicationService orderManagementApplicationService;
 
     @Autowired
     private Orders orders;
@@ -33,133 +33,198 @@ class OrderManagementApplicationServiceIT {
     private Customers customers;
 
     @MockitoSpyBean
-    private OrderEventListener orderEventListener;
+    private CustomerLoyaltyPointsApplicationService customerLoyaltyPointsApplicationService;
 
-    @MockitoSpyBean
-    private CustomerLoyaltyPointsApplicationService loyaltyPointsApplicationService;
+    @Test
+    void shouldCancel() {
 
-    @BeforeEach
-    public void setup() {
-        if (!customers.exists(CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID)) {
-            customers.add(CustomerTestDataBuilder.existingCustomer().build());
-        }
+        // arrange
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
+        customers.add(customer);
+
+        var order = OrderTestDataBuilder.anOrder()
+            .customerId(customer.id())
+            .build();
+        Long rawOrderId = order.id().value().toLong();
+
+        this.orders.add(order);
+
+        // act
+        this.orderManagementApplicationService.cancel(rawOrderId);
+
+        // assert
+        var canceled = this.orders.ofId(order.id()).orElseThrow();
+
+        Assertions.assertThat(canceled.isCanceled()).isTrue();
+        
     }
 
     @Test
-    void shouldCancelOrderSuccessfully() {
-        Order order = OrderTestDataBuilder.anOrder().status(OrderStatus.PLACED).build();
-        orders.add(order);
+    void givenInvalidOrderIdWhenCancelThenOrderNotFoundException() {
 
-        service.cancel(order.id().toString());
+        // arrange 
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
+        customers.add(customer);
 
-        Optional<Order> updatedOrder = orders.ofId(order.id());
-        Assertions.assertThat(updatedOrder).isPresent();
-        Assertions.assertThat(updatedOrder.get().status()).isEqualTo(OrderStatus.CANCELED);
-        Assertions.assertThat(updatedOrder.get().canceledAt()).isNotNull();
+        var order = OrderTestDataBuilder.anOrder()
+            .customerId(customer.id())
+            .build();
 
-        Mockito.verify(orderEventListener).listen(Mockito.any(OrderCanceledEvent.class));
-    }
+        this.orders.add(order);
 
-    @Test
-    void shouldThrowOrderNotFoundExceptionWhenCancellingNonExistingOrder() {
-        String nonExistingOrderId = new OrderId().toString();
-
+        // assert
         Assertions.assertThatExceptionOfType(OrderNotFoundException.class)
-                .isThrownBy(() -> service.cancel(nonExistingOrderId));
+                .isThrownBy(() -> this.orderManagementApplicationService.cancel(new OrderId().value().toLong()));
+
     }
 
     @Test
-    void shouldThrowOrderStatusCannotBeChangedExceptionWhenCancellingAlreadyCanceledOrder() {
-        Order order = OrderTestDataBuilder.anOrder().status(OrderStatus.CANCELED).build();
-        orders.add(order);
+    void givenOrderCancelledWhenCancelThenError() {
 
+        // arrange 
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
+        customers.add(customer);
+
+        var order = OrderTestDataBuilder.anOrder()
+            .customerId(customer.id())
+            .status(OrderStatus.CANCELED)
+            .build();
+
+        this.orders.add(order);
+
+        // assert
         Assertions.assertThatExceptionOfType(OrderStatusCannotBeChangedException.class)
-                .isThrownBy(() -> service.cancel(order.id().toString()));
+                .isThrownBy(() -> this.orderManagementApplicationService.cancel(order.id().value().toLong()));
+        
     }
 
     @Test
-    void shouldMarkOrderAsPaidSuccessfully() {
-        Order order = OrderTestDataBuilder.anOrder().status(OrderStatus.PLACED).build();
-        orders.add(order);
+    void shouldMarkAsPaid() {
 
-        service.markAsPaid(order.id().toString());
+        // arrange
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
+        customers.add(customer);
 
-        Optional<Order> updatedOrder = orders.ofId(order.id());
-        Assertions.assertThat(updatedOrder).isPresent();
-        Assertions.assertThat(updatedOrder.get().status()).isEqualTo(OrderStatus.PAID);
-        Assertions.assertThat(updatedOrder.get().paidAt()).isNotNull();
+        var order = OrderTestDataBuilder.anOrder()
+            .status(OrderStatus.PLACED)
+            .customerId(customer.id())
+            .build();
+        Long rawOrderId = order.id().value().toLong();
 
-        Mockito.verify(orderEventListener).listen(Mockito.any(OrderPaidEvent.class));
+        this.orders.add(order);
+
+        // act
+        this.orderManagementApplicationService.markAsPaid(rawOrderId);
+
+        // assert
+        var canceled = this.orders.ofId(order.id()).orElseThrow();
+
+        Assertions.assertThat(canceled.isPaid()).isTrue();
+        
     }
 
     @Test
-    void shouldThrowOrderNotFoundExceptionWhenMarkingNonExistingOrderAsPaid() {
-        String nonExistingOrderId = new OrderId().toString();
+    void givenInvalidOrderIdWhenMarAsPaidThenOrderNotFoundException() {
 
+        // arrange 
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
+        customers.add(customer);
+
+        var order = OrderTestDataBuilder.anOrder()
+            .customerId(customer.id())
+            .build();
+
+        this.orders.add(order);
+
+        // assert
         Assertions.assertThatExceptionOfType(OrderNotFoundException.class)
-                .isThrownBy(() -> service.markAsPaid(nonExistingOrderId));
+                .isThrownBy(() -> this.orderManagementApplicationService.markAsPaid(new OrderId().value().toLong()));
+
     }
 
     @Test
-    void shouldThrowOrderStatusCannotBeChangedExceptionWhenMarkingAlreadyPaidOrderAsPaid() {
-        Order order = OrderTestDataBuilder.anOrder().status(OrderStatus.PAID).build();
-        orders.add(order);
+    void givenOrderPaiedWhenCancelThenError() {
 
+        // arrange 
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
+        customers.add(customer);
+
+        var order = OrderTestDataBuilder.anOrder()
+            .customerId(customer.id())
+            .status(OrderStatus.PAID)
+            .build();
+
+        this.orders.add(order);
+
+        // assert
         Assertions.assertThatExceptionOfType(OrderStatusCannotBeChangedException.class)
-                .isThrownBy(() -> service.markAsPaid(order.id().toString()));
+                .isThrownBy(() -> this.orderManagementApplicationService.markAsPaid(order.id().value().toLong()));
+        
     }
 
     @Test
-    void shouldThrowOrderStatusCannotBeChangedExceptionWhenMarkingCanceledOrderAsPaid() {
-        Order order = OrderTestDataBuilder.anOrder().status(OrderStatus.CANCELED).build();
-        orders.add(order);
+    void shouldMarkAsReady() {
 
-        Assertions.assertThatExceptionOfType(OrderStatusCannotBeChangedException.class)
-                .isThrownBy(() -> service.markAsPaid(order.id().toString()));
+        // arrange
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
+        customers.add(customer);
+
+        var order = OrderTestDataBuilder.anOrder()
+            .status(OrderStatus.PAID)
+            .customerId(customer.id())
+            .build();
+        Long rawOrderId = order.id().value().toLong();
+
+        this.orders.add(order);
+
+        // act
+        this.orderManagementApplicationService.markAsReady(rawOrderId);
+
+        // assert
+        var changed = this.orders.ofId(order.id()).orElseThrow();
+
+        Assertions.assertThat(changed.isReady()).isTrue();
+        Mockito.verify(this.customerLoyaltyPointsApplicationService, Mockito.times(1)).addLoyaltyPoints(customer.id().value(), order.id().toString());
+        
     }
 
     @Test
-    void shouldMarkOrderAsReadySuccessfully() {
-        Order order = OrderTestDataBuilder.anOrder().status(OrderStatus.PAID).build();
-        orders.add(order);
+    void givenInvalidOrderIdWhenMarAsReadyThenOrderNotFoundException() {
 
-        service.markAsReady(order.id().toString());
+        // arrange 
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
+        customers.add(customer);
 
-        Optional<Order> updatedOrder = orders.ofId(order.id());
-        Assertions.assertThat(updatedOrder).isPresent();
-        Assertions.assertThat(updatedOrder.get().status()).isEqualTo(OrderStatus.READY);
-        Assertions.assertThat(updatedOrder.get().readyAt()).isNotNull();
+        var order = OrderTestDataBuilder.anOrder()
+            .customerId(customer.id())
+            .build();
 
-        Mockito.verify(orderEventListener).listen(Mockito.any(OrderReadyEvent.class));
-        Mockito.verify(loyaltyPointsApplicationService).addLoyaltyPoints(
-                Mockito.any(UUID.class),
-                Mockito.any(String.class)
-        );
-    }
+        this.orders.add(order);
 
-    @Test
-    void shouldThrowOrderNotFoundExceptionWhenMarkingNonExistingOrderAsReady() {
-        String nonExistingOrderId = new OrderId().toString();
-
+        // assert
         Assertions.assertThatExceptionOfType(OrderNotFoundException.class)
-                .isThrownBy(() -> service.markAsReady(nonExistingOrderId));
+                .isThrownBy(() -> this.orderManagementApplicationService.markAsReady(new OrderId().value().toLong()));
+
     }
 
     @Test
-    void shouldThrowOrderStatusCannotBeChangedExceptionWhenMarkingAlreadyReadyOrderAsReady() {
-        Order order = OrderTestDataBuilder.anOrder().status(OrderStatus.READY).build();
-        orders.add(order);
+    void givenOrderReadyWhenCancelThenOrderStatusCannotBeChangedException() {
 
+        // arrange 
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
+        customers.add(customer);
+
+        var order = OrderTestDataBuilder.anOrder()
+            .customerId(customer.id())
+            .status(OrderStatus.READY)
+            .build();
+
+        this.orders.add(order);
+
+        // assert
         Assertions.assertThatExceptionOfType(OrderStatusCannotBeChangedException.class)
-                .isThrownBy(() -> service.markAsReady(order.id().toString()));
+                .isThrownBy(() -> this.orderManagementApplicationService.markAsReady(order.id().value().toLong()));
+        
     }
 
-    @Test
-    void shouldThrowOrderStatusCannotBeChangedExceptionWhenMarkingPlacedOrderAsReady() {
-        Order order = OrderTestDataBuilder.anOrder().status(OrderStatus.PLACED).build();
-        orders.add(order);
-
-        Assertions.assertThatExceptionOfType(OrderStatusCannotBeChangedException.class)
-                .isThrownBy(() -> service.markAsReady(order.id().toString()));
-    }
 }

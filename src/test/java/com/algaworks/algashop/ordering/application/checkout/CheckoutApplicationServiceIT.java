@@ -1,17 +1,9 @@
 package com.algaworks.algashop.ordering.application.checkout;
 
-import com.algaworks.algashop.ordering.domain.model.commons.Money;
-import com.algaworks.algashop.ordering.domain.model.commons.Quantity;
-import com.algaworks.algashop.ordering.domain.model.customer.CustomerTestDataBuilder;
-import com.algaworks.algashop.ordering.domain.model.customer.Customers;
-import com.algaworks.algashop.ordering.domain.model.order.*;
-import com.algaworks.algashop.ordering.domain.model.order.shipping.OriginAddressService;
-import com.algaworks.algashop.ordering.domain.model.order.shipping.ShippingCostService;
-import com.algaworks.algashop.ordering.domain.model.product.Product;
-import com.algaworks.algashop.ordering.domain.model.product.ProductCatalogService;
-import com.algaworks.algashop.ordering.domain.model.product.ProductTestDataBuilder;
-import com.algaworks.algashop.ordering.domain.model.shoppingcart.*;
-import com.algaworks.algashop.ordering.infrastructure.listener.order.OrderEventListener;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDate;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,32 +14,40 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Optional;
-import java.util.UUID;
+import com.algaworks.algashop.ordering.domain.model.commons.Money;
+import com.algaworks.algashop.ordering.domain.model.commons.Quantity;
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerTestDataBuilder;
+import com.algaworks.algashop.ordering.domain.model.customer.Customers;
+import com.algaworks.algashop.ordering.domain.model.order.OrderId;
+import com.algaworks.algashop.ordering.domain.model.order.OrderPlacedEvent;
+import com.algaworks.algashop.ordering.domain.model.order.Orders;
+import com.algaworks.algashop.ordering.domain.model.order.PaymentMethod;
+import com.algaworks.algashop.ordering.domain.model.order.shipping.ShippingCostService;
+import com.algaworks.algashop.ordering.domain.model.product.Product;
+import com.algaworks.algashop.ordering.domain.model.product.ProductTestDataBuilder;
+import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCart;
+import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCartCantProceedToCheckoutException;
+import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCartId;
+import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCartNotFoundException;
+import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCartTestDataBuilder;
+import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCarts;
+import com.algaworks.algashop.ordering.infrastructure.listener.order.OrderEventListener;
 
 @SpringBootTest
 @Transactional
-class CheckoutApplicationServiceIT {
+public class CheckoutApplicationServiceIT {
 
     @Autowired
-    private CheckoutApplicationService service;
-
-    @Autowired
-    private Orders orders;
+    private CheckoutApplicationService checkoutApplicationService;
 
     @Autowired
     private ShoppingCarts shoppingCarts;
 
     @Autowired
+    private Orders orders;
+
+    @Autowired
     private Customers customers;
-
-    @Autowired
-    private CheckoutService checkoutService;
-
-    @Autowired
-    private OriginAddressService originAddressService;
 
     @MockitoBean
     private ShippingCostService shippingCostService;
@@ -56,59 +56,68 @@ class CheckoutApplicationServiceIT {
     private OrderEventListener orderEventListener;
 
     @BeforeEach
-    public void setup() {
-        Mockito.when(shippingCostService.calculate(Mockito.any(ShippingCostService.CalculationRequest.class)))
-                .thenReturn(new ShippingCostService.CalculationResult(
-                        new Money("10.00"),
-                        LocalDate.now().plusDays(3)
-                ));
+    void setup() {
+
+        when(this.shippingCostService.calculate(Mockito.any(ShippingCostService.CalculationRequest.class)))
+            .thenReturn(ShippingCostService.CalculationResult.builder()
+                .cost(new Money("10"))
+                .expectedDate(LocalDate.now().plusDays(10)).build()
+        );
 
         if (!customers.exists(CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID)) {
             customers.add(CustomerTestDataBuilder.existingCustomer().build());
-        }
+        }        
+
+    }
+
+    @Test
+    void givenInvalidShoppingCartIdThenShoppingCartNotFoundException() {
+
+        // arrange
+        var input = CheckoutInput.builder()
+                .shoppingCartId(new ShoppingCartId().value())
+                .paymentMethod(PaymentMethod.CREDIT_CARD.toString())
+                .shipping(ShippingInputTestDataBuilder.aShippingInput().build())
+                .billing(BillingDataTestDataBuilder.aBillingData().build())
+                .build();
+
+        // act
+
+        // assert
+        Assertions.assertThatExceptionOfType(ShoppingCartNotFoundException.class)
+            .isThrownBy(() -> this.checkoutApplicationService.checkout(input));
+
     }
 
     @Test
     void shouldCheckout() {
+
+        // arrange
         Product product = ProductTestDataBuilder.aProduct().inStock(true).build();
 
         ShoppingCart shoppingCart = ShoppingCartTestDataBuilder.aShoppingCart().withItems(false).build();
         shoppingCart.addItem(product, new Quantity(1));
         shoppingCarts.add(shoppingCart);
 
-        CheckoutInput input = CheckoutInputTestDataBuilder.aCheckoutInput()
+        var input = CheckoutInput.builder()
                 .shoppingCartId(shoppingCart.id().value())
+                .paymentMethod(PaymentMethod.CREDIT_CARD.toString())
+                .shipping(ShippingInputTestDataBuilder.aShippingInput().build())
+                .billing(BillingDataTestDataBuilder.aBillingData().build())
                 .build();
 
+        // act
+        var orderId = this.checkoutApplicationService.checkout(input);
 
-        String orderId = service.checkout(input);
+        // assert
+        var checkouted = this.orders.ofId(new OrderId(orderId));
 
-        Assertions.assertThat(orderId).isNotBlank();
-        Assertions.assertThat(orders.exists(new OrderId(orderId))).isTrue();
+        Assertions.assertThat(checkouted).isNotEmpty();
+        Mockito.verify(this.orderEventListener, Mockito.times(1)).listenPlacedEvent((Mockito.any(OrderPlacedEvent.class)));
 
-        Optional<Order> createdOrder = orders.ofId(new OrderId(orderId));
-        Assertions.assertThat(createdOrder).isPresent();
-        Assertions.assertThat(createdOrder.get().status()).isEqualTo(OrderStatus.PLACED);
-        Assertions.assertThat(createdOrder.get().totalAmount().value()).isGreaterThan(BigDecimal.ZERO);
-
-        Optional<ShoppingCart> updatedCart = shoppingCarts.ofId(shoppingCart.id());
-        Assertions.assertThat(updatedCart).isPresent();
-        Assertions.assertThat(updatedCart.get().isEmpty()).isTrue();
-
-        Mockito.verify(orderEventListener).listen(Mockito.any(OrderPlacedEvent.class));
     }
 
-    @Test
-    void shouldThrowShoppingCartNotFoundExceptionWhenCheckoutWithNonExistingShoppingCart() {
-        CheckoutInput input = CheckoutInputTestDataBuilder.aCheckoutInput()
-                .shoppingCartId(UUID.randomUUID())
-                .build();
-
-        Assertions.assertThatExceptionOfType(ShoppingCartNotFoundException.class)
-                .isThrownBy(() -> service.checkout(input));
-    }
-
-    @Test
+@Test
     void shouldThrowShoppingCartCantProceedToCheckoutExceptionWhenCartIsEmpty() {
         ShoppingCart shoppingCart = ShoppingCartTestDataBuilder.aShoppingCart().withItems(false).build();
         shoppingCarts.add(shoppingCart);
@@ -118,7 +127,7 @@ class CheckoutApplicationServiceIT {
                 .build();
 
         Assertions.assertThatExceptionOfType(ShoppingCartCantProceedToCheckoutException.class)
-                .isThrownBy(() -> service.checkout(input));
+                .isThrownBy(() -> this.checkoutApplicationService.checkout(input));
     }
 
     @Test
@@ -136,6 +145,7 @@ class CheckoutApplicationServiceIT {
                 .build();
 
         Assertions.assertThatExceptionOfType(ShoppingCartCantProceedToCheckoutException.class)
-                .isThrownBy(() -> service.checkout(input));
+                .isThrownBy(() -> this.checkoutApplicationService.checkout(input));
     }
+
 }

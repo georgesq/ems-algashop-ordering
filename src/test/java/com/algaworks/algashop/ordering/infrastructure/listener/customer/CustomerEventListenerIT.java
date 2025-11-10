@@ -1,14 +1,8 @@
 package com.algaworks.algashop.ordering.infrastructure.listener.customer;
 
-import com.algaworks.algashop.ordering.application.customer.loyaltypoints.CustomerLoyaltyPointsApplicationService;
-import com.algaworks.algashop.ordering.application.customer.notification.CustomerNotificationApplicationService;
-import com.algaworks.algashop.ordering.application.customer.notification.CustomerNotificationApplicationService.NotifyNewRegistrationInput;
-import com.algaworks.algashop.ordering.domain.model.commons.Email;
-import com.algaworks.algashop.ordering.domain.model.commons.FullName;
-import com.algaworks.algashop.ordering.domain.model.customer.CustomerId;
-import com.algaworks.algashop.ordering.domain.model.customer.CustomerRegisteredEvent;
-import com.algaworks.algashop.ordering.domain.model.order.OrderId;
-import com.algaworks.algashop.ordering.domain.model.order.OrderReadyEvent;
+import java.time.OffsetDateTime;
+import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +11,19 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import java.time.OffsetDateTime;
-import java.util.UUID;
+import com.algaworks.algashop.ordering.application.customer.loyaltypoints.CustomerLoyaltyPointsApplicationService;
+import com.algaworks.algashop.ordering.application.notification.CustomerNotificationApplicationService;
+import com.algaworks.algashop.ordering.application.notification.CustomerNotificationApplicationService.NotifyNewRegistrationInput;
+import com.algaworks.algashop.ordering.domain.model.commons.Email;
+import com.algaworks.algashop.ordering.domain.model.commons.FullName;
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerArchivedEvent;
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerId;
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerRegisteredEvent;
+import com.algaworks.algashop.ordering.domain.model.order.OrderId;
+import com.algaworks.algashop.ordering.domain.model.order.OrderReadyEvent;
 
 @SpringBootTest
-class CustomerEventListenerIT {
+public class CustomerEventListenerIT {
 
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
@@ -30,44 +32,50 @@ class CustomerEventListenerIT {
     private CustomerEventListener customerEventListener;
 
     @MockitoBean
-    private CustomerLoyaltyPointsApplicationService loyaltyPointsApplicationService;
+    private CustomerLoyaltyPointsApplicationService customerLoyaltyPointsApplicationService;
 
     @MockitoSpyBean
-    private CustomerNotificationApplicationService notificationApplicationService;
+    private CustomerNotificationApplicationService customerNotificationApplicationService;
 
     @Test
-    public void shouldListenOrderReadyEvent() {
+    void shouldListenReadyEvent() {
         applicationEventPublisher.publishEvent(
-                new OrderReadyEvent(
-                        new OrderId(),
-                        new CustomerId(),
-                        OffsetDateTime.now()
-                )
+            new OrderReadyEvent(new OrderId(), new CustomerId(), OffsetDateTime.now())
         );
 
-        Mockito.verify(customerEventListener).listen(Mockito.any(OrderReadyEvent.class));
+        Mockito.verify(this.customerEventListener).listen(Mockito.any(OrderReadyEvent.class));
 
-        Mockito.verify(loyaltyPointsApplicationService).addLoyaltyPoints(
-                Mockito.any(UUID.class),
-                Mockito.any(String.class)
-        );
+        Mockito.verify(this.customerLoyaltyPointsApplicationService).addLoyaltyPoints(Mockito.any(UUID.class), Mockito.anyString());
+
     }
 
     @Test
-    public void shouldListenCustomerRegisteredEvent() {
+    void shouldListenCustomerRegisteredEvent() {
+
         applicationEventPublisher.publishEvent(
-                new CustomerRegisteredEvent(
-                        new CustomerId(),
-                        OffsetDateTime.now(),
-                        new FullName("John", "Doe"),
-                        new Email("john.doe@email.com")
-                )
+            new CustomerRegisteredEvent(
+                new CustomerId(), 
+                OffsetDateTime.now(), 
+                new FullName("fn", "ln"), 
+                new Email("a@a.com"))
         );
 
-        Mockito.verify(customerEventListener).listen(Mockito.any(CustomerRegisteredEvent.class));
+        Mockito.verify(this.customerEventListener).listen(Mockito.any(CustomerRegisteredEvent.class));
 
-        Mockito.verify(notificationApplicationService)
-                .notifyNewRegistration(Mockito.any(NotifyNewRegistrationInput.class));
+        Mockito.verify(this.customerNotificationApplicationService).notifyNewRegistration(Mockito.any(NotifyNewRegistrationInput.class));
+
     }
 
+    @Test
+    void shouldListenCustomerArchivedEvent() {
+        
+        applicationEventPublisher.publishEvent(
+            new CustomerArchivedEvent(
+                new CustomerId(), 
+                OffsetDateTime.now())
+        );
+
+        Mockito.verify(this.customerEventListener).listen(Mockito.any(CustomerArchivedEvent.class));
+
+    }
 }

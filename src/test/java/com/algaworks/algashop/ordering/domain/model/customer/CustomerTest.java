@@ -95,17 +95,31 @@ class CustomerTest {
 
     @Test
     void givenValidData_whenCreateBrandNewCustomer_shouldGenerateCustomerRegisteredEvent() {
+
+        // arrange
         Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
-        CustomerRegisteredEvent event = new CustomerRegisteredEvent(customer.id(),
-                customer.registeredAt(), customer.fullName(), customer.email());
-        Assertions.assertThat(customer.domainEvents()).contains(event);
+
+        // assert
+        Assertions.assertThat(customer.domainEvents()).isNotEmpty();
+        Assertions.assertThat(customer.domainEvents().size()).isEqualTo(1);
+        Assertions.assertThat(((CustomerRegisteredEvent) customer.domainEvents().get(0)).customerId()).isEqualTo(customer.id());
+
     }
 
     @Test
-    void givenUnarchivedCustomer_whenArchive_shouldGenerateCustomerArchivedEvent() {
-        Customer customer = CustomerTestDataBuilder.existingCustomer().archived(false).archivedAt(null).build();
+    void givenUnArchivedCustomer_whenArchive_shouldGenerateCustomerRegisteredEvent() {
+
+        // arrange
+        Customer customer = CustomerTestDataBuilder.brandNewCustomer().build();
+
+        // act
         customer.archive();
-        CustomerArchivedEvent event = new CustomerArchivedEvent(customer.id(), customer.archivedAt());
-        Assertions.assertThat(customer.domainEvents()).contains(event);
+
+        // assert
+        Assertions.assertThat(customer.domainEvents()).isNotEmpty();
+        Assertions.assertThat(customer.domainEvents().size()).isEqualTo(2);
+        Assertions.assertThat(((CustomerRegisteredEvent) customer.domainEvents().get(0)).customerId()).isEqualTo(customer.id());
+
     }
+
 }

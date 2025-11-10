@@ -1,14 +1,26 @@
 package com.algaworks.algashop.ordering.application.customer.management;
 
-import com.algaworks.algashop.ordering.application.commons.AddressData;
-import com.algaworks.algashop.ordering.domain.model.commons.*;
-import com.algaworks.algashop.ordering.domain.model.customer.*;
-import lombok.RequiredArgsConstructor;
+import java.util.Objects;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
-import java.util.UUID;
+import com.algaworks.algashop.ordering.application.commons.AddressData;
+import com.algaworks.algashop.ordering.domain.model.commons.Address;
+import com.algaworks.algashop.ordering.domain.model.commons.Document;
+import com.algaworks.algashop.ordering.domain.model.commons.Email;
+import com.algaworks.algashop.ordering.domain.model.commons.FullName;
+import com.algaworks.algashop.ordering.domain.model.commons.Phone;
+import com.algaworks.algashop.ordering.domain.model.commons.ZipCode;
+import com.algaworks.algashop.ordering.domain.model.customer.BirthDate;
+import com.algaworks.algashop.ordering.domain.model.customer.Customer;
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerId;
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerNotFoundException;
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerRegistrationService;
+import com.algaworks.algashop.ordering.domain.model.customer.Customers;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +63,7 @@ public class CustomerManagementApplicationService {
         Objects.requireNonNull(rawCustomerId);
 
         Customer customer = customers.ofId(new CustomerId(rawCustomerId))
-                .orElseThrow(() -> new CustomerNotFoundException());
+                .orElseThrow(() -> new CustomerNotFoundException(new CustomerId(rawCustomerId)));
 
         customer.changeName(new FullName(input.getFirstName(), input.getLastName()));
         customer.changePhone(new Phone(input.getPhone()));
@@ -79,18 +91,16 @@ public class CustomerManagementApplicationService {
 
     @Transactional
     public void archive(UUID rawCustomerId) {
-        CustomerId customerId = new CustomerId(rawCustomerId);
         Customer customer = customers.ofId(new CustomerId(rawCustomerId))
-                .orElseThrow(()-> new CustomerNotFoundException());
+                .orElseThrow(()-> new CustomerNotFoundException(new CustomerId(rawCustomerId)));
         customer.archive();
         customers.add(customer);
     }
 
     @Transactional
     public void changeEmail(UUID rawCustomerId, String newEmail) {
-        CustomerId customerId = new CustomerId(rawCustomerId);
         Customer customer = customers.ofId(new CustomerId(rawCustomerId))
-                .orElseThrow(()-> new CustomerNotFoundException());
+                .orElseThrow(()-> new CustomerNotFoundException(new CustomerId(rawCustomerId)));
         customerRegistration.changeEmail(customer, new Email(newEmail));
         customers.add(customer);
     }

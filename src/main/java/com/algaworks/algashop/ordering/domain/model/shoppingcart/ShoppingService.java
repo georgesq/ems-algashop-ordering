@@ -20,7 +20,7 @@ public class ShoppingService {
 		}
 
 		if (shoppingCarts.ofCustomer(customerId).isPresent()) {
-			throw new CustomerAlreadyHaveShoppingCartException(customerId);
+			throw new CustomerAlreadyHaveShoppingCartException();
 		}
 
 		return ShoppingCart.startShopping(customerId);

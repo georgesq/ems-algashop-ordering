@@ -1,18 +1,22 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.order;
 
-import com.algaworks.algashop.ordering.domain.model.commons.*;
-import com.algaworks.algashop.ordering.domain.model.order.*;
-import com.algaworks.algashop.ordering.domain.model.product.ProductName;
-import com.algaworks.algashop.ordering.domain.model.customer.CustomerId;
-import com.algaworks.algashop.ordering.domain.model.order.OrderId;
-import com.algaworks.algashop.ordering.domain.model.order.OrderItemId;
-import com.algaworks.algashop.ordering.domain.model.product.ProductId;
-import com.algaworks.algashop.ordering.infrastructure.persistence.commons.AddressEmbeddable;
-import org.springframework.stereotype.Component;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
+import com.algaworks.algashop.ordering.domain.model.commons.Money;
+import com.algaworks.algashop.ordering.domain.model.commons.Quantity;
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerId;
+import com.algaworks.algashop.ordering.domain.model.order.Order;
+import com.algaworks.algashop.ordering.domain.model.order.OrderId;
+import com.algaworks.algashop.ordering.domain.model.order.OrderItem;
+import com.algaworks.algashop.ordering.domain.model.order.OrderItemId;
+import com.algaworks.algashop.ordering.domain.model.order.OrderStatus;
+import com.algaworks.algashop.ordering.domain.model.order.PaymentMethod;
+import com.algaworks.algashop.ordering.domain.model.product.ProductId;
+import com.algaworks.algashop.ordering.domain.model.product.ProductName;
 
 @Component
 public class OrderPersistenceEntityDisassembler {
@@ -48,43 +52,6 @@ public class OrderPersistenceEntityDisassembler {
                 .price(new Money(persistenceEntity.getPrice()))
                 .quantity(new Quantity(persistenceEntity.getQuantity()))
                 .totalAmount(new Money(persistenceEntity.getTotalAmount()))
-                .build();
-    }
-
-    private Shipping toShippingValueObject(ShippingEmbeddable shippingEmbeddable) {
-        RecipientEmbeddable recipientEmbeddable = shippingEmbeddable.getRecipient();
-        return Shipping.builder()
-                .cost(new Money(shippingEmbeddable.getCost()))
-                .expectedDate(shippingEmbeddable.getExpectedDate())
-                .recipient(
-                        Recipient.builder()
-                                .fullName(new FullName(recipientEmbeddable.getFirstName(), recipientEmbeddable.getLastName()))
-                                .document(new Document(recipientEmbeddable.getDocument()))
-                                .phone(new Phone(recipientEmbeddable.getPhone()))
-                                .build()
-                )
-                .address(toAddressValueObject(shippingEmbeddable.getAddress()))
-                .build();
-    }
-
-    private Billing toBillingValueObject(BillingEmbeddable billingEmbeddable) {
-        return Billing.builder()
-                .fullName(new FullName(billingEmbeddable.getFirstName(), billingEmbeddable.getLastName()))
-                .document(new Document(billingEmbeddable.getDocument()))
-                .phone(new Phone(billingEmbeddable.getPhone()))
-                .address(toAddressValueObject(billingEmbeddable.getAddress()))
-                .build();
-    }
-
-    private Address toAddressValueObject(AddressEmbeddable address) {
-        return Address.builder()
-                .street(address.getStreet())
-                .number(address.getNumber())
-                .complement(address.getComplement())
-                .neighborhood(address.getNeighborhood())
-                .city(address.getCity())
-                .state(address.getState())
-                .zipCode(new ZipCode(address.getZipCode()))
                 .build();
     }
 
