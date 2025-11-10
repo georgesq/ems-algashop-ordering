@@ -1,15 +1,12 @@
 package com.algaworks.algashop.ordering.application.order.management;
 
-import java.util.Objects;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import com.algaworks.algashop.ordering.domain.model.order.Order;
 import com.algaworks.algashop.ordering.domain.model.order.OrderId;
 import com.algaworks.algashop.ordering.domain.model.order.OrderNotFoundException;
 import com.algaworks.algashop.ordering.domain.model.order.Orders;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,43 +14,31 @@ public class OrderManagementApplicationService {
 
     private final Orders orders;
 
-	@Transactional
-    public void cancel(Long rawOrderId) {
-
-        Objects.requireNonNull(rawOrderId);
-
-        var order = this.orders.ofId(new OrderId(rawOrderId)).orElseThrow(() -> new OrderNotFoundException());
-
+    @Transactional
+    public void cancel(String rawOrderId) {
+        Order order = findOrder(rawOrderId);
         order.cancel();
-
-        this.orders.add(order);
-
+        orders.add(order);
     }
 
-	@Transactional
-    public void markAsPaid(Long rawOrderId) {
-
-        Objects.requireNonNull(rawOrderId);
-
-        var order = this.orders.ofId(new OrderId(rawOrderId)).orElseThrow(() -> new OrderNotFoundException());
-
+    @Transactional
+    public void markAsPaid(String rawOrderId) {
+        Order order = findOrder(rawOrderId);
         order.markAsPaid();
-
-        this.orders.add(order);
-
+        orders.add(order);
     }
 
-	@Transactional
-    public void markAsReady(Long rawOrderId) {
-
-        Objects.requireNonNull(rawOrderId);
-
-        var order = this.orders.ofId(new OrderId(rawOrderId)).orElseThrow(() -> new OrderNotFoundException());
-
+    @Transactional
+    public void markAsReady(String rawOrderId) {
+        Order order = findOrder(rawOrderId);
         order.markAsReady();
+        orders.add(order);
+    }
 
-        this.orders.add(order);
-
+    private Order findOrder(String rawOrderId) {
+        OrderId orderId = new OrderId(rawOrderId);
+        return orders.ofId(orderId)
+                .orElseThrow(() -> new OrderNotFoundException());
     }
 
 }

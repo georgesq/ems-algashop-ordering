@@ -1,35 +1,18 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.customer;
 
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.UUID;
-
+import com.algaworks.algashop.ordering.infrastructure.persistence.commons.AddressEmbeddable;
+import jakarta.persistence.*;
+import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.algaworks.algashop.ordering.infrastructure.persistence.commons.AddressEmbeddable;
-
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.AttributeOverrides;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.Collection;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -41,7 +24,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class CustomerPersistenceEntity 
+public class CustomerPersistenceEntity
 		extends AbstractAggregateRoot<CustomerPersistenceEntity> {
 	@Id
 	@EqualsAndHashCode.Include
@@ -82,26 +65,14 @@ public class CustomerPersistenceEntity
 	private UUID lastModifiedByUserId;
 
 	public Collection<Object> getEvents() {
-
 		return super.domainEvents();
-
 	}
 
 	public void addEvents(Collection<Object> events) {
-
-		if (!Objects.isNull(events)) {
-
+		if (events != null) {
 			for (Object event : events) {
-				this.registerEvent(event);	
-			} 
-			
+				this.registerEvent(event);
+			}
 		}
-
-	}
-
-	public void clearEvents() {
-
-		super.clearDomainEvents();
-
 	}
 }

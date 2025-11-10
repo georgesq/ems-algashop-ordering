@@ -1,11 +1,5 @@
 package com.algaworks.algashop.ordering.infrastructure.product.client.http;
 
-import java.util.Optional;
-
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.ResourceAccessException;
-
 import com.algaworks.algashop.ordering.domain.model.commons.Money;
 import com.algaworks.algashop.ordering.domain.model.product.Product;
 import com.algaworks.algashop.ordering.domain.model.product.ProductCatalogService;
@@ -13,8 +7,12 @@ import com.algaworks.algashop.ordering.domain.model.product.ProductId;
 import com.algaworks.algashop.ordering.domain.model.product.ProductName;
 import com.algaworks.algashop.ordering.presentation.BadGatewayException;
 import com.algaworks.algashop.ordering.presentation.GatewayTimeoutException;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
+
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -24,35 +22,24 @@ public class ProductCatalogServiceHttpImpl implements ProductCatalogService {
 
     @Override
     public Optional<Product> ofId(ProductId productId) {
-        ProductResponse response = null;
-
+        ProductResponse productResponse;
         try {
-
-            response = this.productCatalogAPIClient.getById(productId.value());
-            
+            productResponse = productCatalogAPIClient.getById(productId.value());
         } catch (ResourceAccessException e) {
-            
-            throw new GatewayTimeoutException("Gateway Timeout when accessing Product Catalog Service");
-
-        } catch (HttpClientErrorException e) {
-
-            throw new BadGatewayException("Bad Gateway when accessing Product Catalog Service", e);
-
-        } 
-
-        if (response == null) {
-
+            throw new GatewayTimeoutException("Product Catalog API Timeout", e);
+        } catch (HttpClientErrorException.NotFound e) {
             return Optional.empty();
-
+        } catch (HttpClientErrorException e) {
+            throw new BadGatewayException("Product Catalog API Bad Gateway", e);
         }
 
-        return Optional.of(new Product(
-            new ProductId(response.getId()),
-            new ProductName(response.getName()),
-            new Money(response.getSalePrice()),
-            response.getInStock()
-        ));
-
-    };
-
+        return Optional.of(
+                Product.builder()
+                        .id(new ProductId(productResponse.getId()))
+                        .name(new ProductName(productResponse.getName()))
+                        .inStock(productResponse.getInStock())
+                        .price(new Money(productResponse.getSalePrice()))
+                        .build()
+        );
+    }
 }

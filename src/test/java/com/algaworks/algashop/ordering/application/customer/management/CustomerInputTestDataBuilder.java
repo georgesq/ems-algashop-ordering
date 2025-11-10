@@ -1,8 +1,9 @@
 package com.algaworks.algashop.ordering.application.customer.management;
 
-import java.time.LocalDate;
-
 import com.algaworks.algashop.ordering.application.commons.AddressData;
+import com.algaworks.algashop.ordering.application.customer.management.CustomerInput;
+
+import java.time.LocalDate;
 
 public class CustomerInputTestDataBuilder {
 
