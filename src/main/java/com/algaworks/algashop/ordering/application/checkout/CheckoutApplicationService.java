@@ -1,5 +1,10 @@
 package com.algaworks.algashop.ordering.application.checkout;
 
+import java.util.Objects;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.algaworks.algashop.ordering.domain.model.commons.ZipCode;
 import com.algaworks.algashop.ordering.domain.model.customer.Customer;
 import com.algaworks.algashop.ordering.domain.model.customer.CustomerNotFoundException;
@@ -10,19 +15,13 @@ import com.algaworks.algashop.ordering.domain.model.order.Orders;
 import com.algaworks.algashop.ordering.domain.model.order.PaymentMethod;
 import com.algaworks.algashop.ordering.domain.model.order.shipping.OriginAddressService;
 import com.algaworks.algashop.ordering.domain.model.order.shipping.ShippingCostService;
-import com.algaworks.algashop.ordering.domain.model.product.Product;
 import com.algaworks.algashop.ordering.domain.model.product.ProductCatalogService;
-import com.algaworks.algashop.ordering.domain.model.product.ProductId;
-import com.algaworks.algashop.ordering.domain.model.product.ProductNotFoundException;
 import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCart;
 import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCartId;
 import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCartNotFoundException;
 import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCarts;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -69,11 +68,6 @@ public class CheckoutApplicationService {
 		ZipCode origin = originAddressService.originAddress().zipCode();
 		ZipCode destination = new ZipCode(shipping.getAddress().getZipCode());
 		return shippingCostService.calculate(new ShippingCostService.CalculationRequest(origin, destination));
-	}
-
-	private Product findProduct(ProductId productId) {
-		return productCatalogService.ofId(productId)
-				.orElseThrow(()-> new ProductNotFoundException());
 	}
 
 }
