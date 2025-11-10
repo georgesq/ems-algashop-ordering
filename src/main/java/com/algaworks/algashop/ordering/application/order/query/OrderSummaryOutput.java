@@ -1,14 +1,13 @@
 package com.algaworks.algashop.ordering.application.order.query;
 
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
-
 import com.algaworks.algashop.ordering.domain.model.order.OrderId;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 
 @Data
 @AllArgsConstructor

@@ -1,16 +1,8 @@
 package com.algaworks.algashop.ordering.application.customer.query;
 
-import org.springframework.data.domain.Sort;
-
 import com.algaworks.algashop.ordering.application.utility.SortablePageFilter;
-
-import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import org.springframework.data.domain.Sort;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -18,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 public class CustomerFilter
         extends SortablePageFilter<CustomerFilter.SortType> {
-
-    @Email
     private String email;
     private String firstName;
 
@@ -45,5 +35,4 @@ public class CustomerFilter
 
         private final String propertyName;
     }
-
 }

@@ -11,18 +11,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class AddressData {
-
     @NotBlank
     private String street;
+
     @NotBlank
     private String number;
+
     private String complement;
+
     @NotBlank
     private String neighborhood;
+
     @NotBlank
     private String city;
+
     @NotBlank
     private String state;
+
     @NotBlank
     private String zipCode;
 }

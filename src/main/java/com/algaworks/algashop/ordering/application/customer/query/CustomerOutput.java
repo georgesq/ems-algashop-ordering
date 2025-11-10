@@ -15,7 +15,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class CustomerOutput {
-
     private UUID id;
     private String firstName;
     private String lastName;
@@ -29,5 +28,4 @@ public class CustomerOutput {
     private Boolean promotionNotificationsAllowed;
     private Boolean archived;
     private AddressData address;
-
 }

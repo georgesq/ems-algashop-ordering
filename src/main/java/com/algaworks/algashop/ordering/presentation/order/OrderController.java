@@ -1,14 +1,5 @@
 package com.algaworks.algashop.ordering.presentation.order;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.algaworks.algashop.ordering.application.checkout.BuyNowApplicationService;
 import com.algaworks.algashop.ordering.application.checkout.BuyNowInput;
 import com.algaworks.algashop.ordering.application.checkout.CheckoutApplicationService;
@@ -22,9 +13,10 @@ import com.algaworks.algashop.ordering.domain.model.product.ProductNotFoundExcep
 import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCartNotFoundException;
 import com.algaworks.algashop.ordering.presentation.PageModel;
 import com.algaworks.algashop.ordering.presentation.UnprocessableEntityException;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/v1/orders")
@@ -50,35 +42,23 @@ public class OrderController {
     public OrderDetailOutput createWithProduct(@Valid @RequestBody BuyNowInput input) {
         String orderId;
         try {
-
             orderId = buyNowApplicationService.buyNow(input);
-
         } catch (CustomerNotFoundException | ProductNotFoundException e) {
-
             throw new UnprocessableEntityException(e.getMessage(), e);
-
         }
-
         return orderQueryService.findById(orderId);
     }
 
     @PostMapping(consumes = "application/vnd.order-with-shopping-cart.v1+json")
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDetailOutput createWithShoppingCart(@Valid @RequestBody CheckoutInput input) {
-
         String orderId;
-
         try {
-
             orderId = checkoutApplicationService.checkout(input);
         } catch (CustomerNotFoundException | ShoppingCartNotFoundException e) {
-
             throw new UnprocessableEntityException(e.getMessage(), e);
-
         }
-
         return orderQueryService.findById(orderId);
-
     }
 
 }
