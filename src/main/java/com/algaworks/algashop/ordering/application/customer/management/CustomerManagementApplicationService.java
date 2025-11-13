@@ -3,8 +3,6 @@ package com.algaworks.algashop.ordering.application.customer.management;
 import com.algaworks.algashop.ordering.application.commons.AddressData;
 import com.algaworks.algashop.ordering.domain.model.commons.*;
 import com.algaworks.algashop.ordering.domain.model.customer.*;
-import com.algaworks.algashop.ordering.presentation.UnprocessableEntityException;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,29 +80,17 @@ public class CustomerManagementApplicationService {
     @Transactional
     public void archive(UUID rawCustomerId) {
         CustomerId customerId = new CustomerId(rawCustomerId);
-        Customer customer = null;
-
-        try {
-            
-            customer = customers.ofId(new CustomerId(rawCustomerId))
-                    .orElseThrow(()-> new CustomerNotFoundException(customerId));
-
-        } catch (CustomerNotFoundException e) {
-
-            throw new UnprocessableEntityException(e.getMessage(), e);
-
-        }
-
+        Customer customer = customers.ofId(new CustomerId(rawCustomerId))
+                .orElseThrow(()-> new CustomerNotFoundException());
         customer.archive();
         customers.add(customer);
-        
     }
 
     @Transactional
     public void changeEmail(UUID rawCustomerId, String newEmail) {
         CustomerId customerId = new CustomerId(rawCustomerId);
         Customer customer = customers.ofId(new CustomerId(rawCustomerId))
-                .orElseThrow(()-> new CustomerNotFoundException(customerId));
+                .orElseThrow(()-> new CustomerNotFoundException());
         customerRegistration.changeEmail(customer, new Email(newEmail));
         customers.add(customer);
     }
