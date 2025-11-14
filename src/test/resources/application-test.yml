@@ -15,7 +15,7 @@ spring:
     show-sql: true
   flyway:
     enabled: true
-    locations: classpath:db/migration,classpath:db/clean
+    locations: classpath:db/clean,classpath:db/migration
     user: postgres
     password: postgres
     url: jdbc:postgresql://localhost:5432/ordering_test
