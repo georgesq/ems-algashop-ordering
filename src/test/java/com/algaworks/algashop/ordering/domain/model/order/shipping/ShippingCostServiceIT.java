@@ -35,14 +35,12 @@ class ShippingCostServiceIT {
     }
 
     private void initWireMock() {
-
         wireMockRapidex = new WireMockServer(options()
                 .port(8780)
                 .usingFilesUnderDirectory("src/test/resources/wiremock/rapidex")
                 .extensions(new ResponseTemplateTransformer(true)));
 
         wireMockRapidex.start();
-        
     }
 
     @Test
