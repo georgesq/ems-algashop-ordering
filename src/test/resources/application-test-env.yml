@@ -1,6 +1,3 @@
-spring:
-  application:
-    name: ordering
   datasource:
     url: jdbc:postgresql://localhost:5432/ordering_test
     username: postgres
