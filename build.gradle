@@ -112,3 +112,15 @@ tasks.register('integrationTest', Test) {
 		excludeTestsMatching "*Test"
 	}
 }
+
+bootJar {
+	archiveFileName = "ordering.jar"
+}
+
+tasks.register('dockerBuild', Exec) {
+	description = 'Builds a Docker image for the application.'
+	group = 'build'	 
+	dependsOn bootJar
+	commandLine 'docker', 'buildx', 'build', '--builder', 'ordering-builder', '--platform', 
+		'linux/amd64,linux/arm64', '-t', 'algashop/ordering:dev', '.'
+}
