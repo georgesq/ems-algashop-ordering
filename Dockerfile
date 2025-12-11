@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk-alpine
+FROM eclipse-temurin:21-jre
 ENV JAR_NAME=ordering.jar
-ADD build/libs/${JAR_NAME} /app/${JAR_NAME}
-CMD java $JAVA_OPTS -jar /app/${JAR_NAME}      
+ADD build/libs/$JAR_NAME $JAR_NAME
+CMD java $JAVA_OPTS -jar $JAR_NAME

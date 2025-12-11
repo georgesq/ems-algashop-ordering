@@ -114,14 +114,14 @@ tasks.register('integrationTest', Test) {
 }
 
 bootJar {
-	archiveFileName = "ordering.jar"
+	archiveFileName = 'ordering.jar'
 }
 
 tasks.register('dockerBuild', Exec) {
-	description = 'Builds a Docker image for the application.'
-	group = 'build'	 
-	dependsOn bootJar
-	commandLine 'docker', 'buildx', 'build', '--load', '-t', 'algashop/ordering:dev', '.'
-	// commandLine 'docker', 'buildx', 'build', '--builder', 'ordering-builder', '--platform', 'linux/amd64,linux/arm64', '-t', 'algashop/ordering:dev', '.'
+	description = 'Builds a multi-platform Docker image using Buildx'
+	group = 'build'
+	dependsOn('bootJar')
+	workingDir project.rootDir
+	commandLine 'docker', 'buildx', 'build', '--platform', 'linux/arm64/v8,linux/amd64',
+			'--tag', 'algashop/ordering:dev', '.'
 }
-

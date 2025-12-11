@@ -4,6 +4,8 @@ import com.algaworks.algashop.ordering.domain.model.commons.*;
 import com.algaworks.algashop.ordering.domain.model.order.*;
 import com.algaworks.algashop.ordering.domain.model.product.ProductName;
 import com.algaworks.algashop.ordering.domain.model.customer.CustomerId;
+import com.algaworks.algashop.ordering.domain.model.order.OrderId;
+import com.algaworks.algashop.ordering.domain.model.order.OrderItemId;
 import com.algaworks.algashop.ordering.domain.model.product.ProductId;
 import com.algaworks.algashop.ordering.infrastructure.persistence.commons.AddressEmbeddable;
 import org.springframework.stereotype.Component;
@@ -53,7 +55,6 @@ public class OrderPersistenceEntityDisassembler {
                 .price(new Money(persistenceEntity.getPrice()))
                 .quantity(new Quantity(persistenceEntity.getQuantity()))
                 .totalAmount(new Money(persistenceEntity.getTotalAmount()))
-                
                 .build();
     }
 
