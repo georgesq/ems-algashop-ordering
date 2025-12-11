@@ -1,4 +1,4 @@
-package com.algaworks.algashop.ordering.presentation.shoppingcart;
+package com.algaworks.algashop.ordering.infrastructure.adapters.in.web.shoppingcart;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.algaworks.algashop.ordering.core.application.shoppingcart.query.ShoppingCartItemOutput;
+import com.algaworks.algashop.ordering.core.ports.in.shoppingcart.ShoppingCartItemOutput;
 
 @Data
 @NoArgsConstructor

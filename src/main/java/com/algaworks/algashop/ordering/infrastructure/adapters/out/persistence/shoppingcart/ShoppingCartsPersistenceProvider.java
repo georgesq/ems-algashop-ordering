@@ -1,4 +1,4 @@
-package com.algaworks.algashop.ordering.infrastructure.persistence.shoppingcart;
+package com.algaworks.algashop.ordering.infrastructure.adapters.out.persistence.shoppingcart;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
