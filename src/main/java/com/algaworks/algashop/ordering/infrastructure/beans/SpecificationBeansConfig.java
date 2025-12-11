@@ -1,10 +1,11 @@
 package com.algaworks.algashop.ordering.infrastructure.beans;
 
-import com.algaworks.algashop.ordering.domain.model.customer.LoyaltyPoints;
-import com.algaworks.algashop.ordering.domain.model.order.CustomerHaveFreeShippingSpecification;
-import com.algaworks.algashop.ordering.domain.model.order.Orders;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import com.algaworks.algashop.ordering.core.domain.model.customer.LoyaltyPoints;
+import com.algaworks.algashop.ordering.core.domain.model.order.CustomerHaveFreeShippingSpecification;
+import com.algaworks.algashop.ordering.core.domain.model.order.Orders;
 
 @Configuration
 public class SpecificationBeansConfig {

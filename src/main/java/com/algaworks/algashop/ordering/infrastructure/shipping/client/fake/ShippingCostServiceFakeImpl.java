@@ -1,9 +1,10 @@
 package com.algaworks.algashop.ordering.infrastructure.shipping.client.fake;
 
-import com.algaworks.algashop.ordering.domain.model.order.shipping.ShippingCostService;
-import com.algaworks.algashop.ordering.domain.model.commons.Money;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+
+import com.algaworks.algashop.ordering.core.domain.model.commons.Money;
+import com.algaworks.algashop.ordering.core.domain.model.order.shipping.ShippingCostService;
 
 import java.time.LocalDate;
 
