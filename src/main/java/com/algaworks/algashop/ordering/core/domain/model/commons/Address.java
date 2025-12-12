@@ -5,7 +5,7 @@ import lombok.Builder;
 
 import java.util.Objects;
 
-@Builder(toBuilder = true)
+
 public record Address(
         String street,
         String complement,
@@ -13,7 +13,9 @@ public record Address(
         String number,
         String city,
         String state,
-        ZipCode zipCode) {
+        ZipCode zipCode
+) {
+    @Builder(toBuilder = true)
     public Address {
         FieldValidations.requiresNonBlank(street);
         FieldValidations.requiresNonBlank(neighborhood);
