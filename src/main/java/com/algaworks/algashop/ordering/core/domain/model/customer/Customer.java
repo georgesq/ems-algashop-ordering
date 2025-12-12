@@ -1,16 +1,15 @@
 package com.algaworks.algashop.ordering.core.domain.model.customer;
 
+import com.algaworks.algashop.ordering.core.domain.model.AbstractEventSourceEntity;
+import com.algaworks.algashop.ordering.core.domain.model.AggregateRoot;
+import com.algaworks.algashop.ordering.core.domain.model.commons.*;
 import lombok.Builder;
-
-import static com.algaworks.algashop.ordering.core.domain.model.ErrorMessages.*;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import com.algaworks.algashop.ordering.core.domain.model.AbstractEventSourceEntity;
-import com.algaworks.algashop.ordering.core.domain.model.AggregateRoot;
-import com.algaworks.algashop.ordering.core.domain.model.commons.*;
+import static com.algaworks.algashop.ordering.core.domain.model.ErrorMessages.*;
 
 public class Customer
         extends AbstractEventSourceEntity

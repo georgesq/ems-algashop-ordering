@@ -1,12 +1,12 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.entity;
 
-import com.algaworks.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntity;
 import com.algaworks.algashop.ordering.infrastructure.persistence.commons.AddressEmbeddable;
-
-import static com.algaworks.algashop.ordering.core.domain.model.customer.CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID;
+import com.algaworks.algashop.ordering.infrastructure.adapters.out.persistence.customer.CustomerPersistenceEntity;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+
+import static com.algaworks.algashop.ordering.core.domain.model.customer.CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID;
 
 public class CustomerPersistenceEntityTestDataBuilder {
 

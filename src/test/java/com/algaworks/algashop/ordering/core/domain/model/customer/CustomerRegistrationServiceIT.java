@@ -1,19 +1,14 @@
 package com.algaworks.algashop.ordering.core.domain.model.customer;
 
+import com.algaworks.algashop.ordering.core.domain.model.commons.*;
+import com.algaworks.algashop.ordering.core.domain.model.AbstractDomainIT;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import com.algaworks.algashop.ordering.core.domain.model.commons.*;
-import com.algaworks.algashop.ordering.core.domain.model.customer.BirthDate;
-import com.algaworks.algashop.ordering.core.domain.model.customer.Customer;
-import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerRegistrationService;
 
 import java.time.LocalDate;
 
-@SpringBootTest
-class CustomerRegistrationServiceIT {
+class CustomerRegistrationServiceIT extends AbstractDomainIT {
 
     @Autowired
     private CustomerRegistrationService customerRegistrationService;

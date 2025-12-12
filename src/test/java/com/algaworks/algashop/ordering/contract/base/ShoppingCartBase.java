@@ -1,8 +1,11 @@
 package com.algaworks.algashop.ordering.contract.base;
 
-import java.nio.charset.StandardCharsets;
-import java.util.UUID;
-
+import com.algaworks.algashop.ordering.core.application.shoppingcart.ShoppingCartManagementApplicationService;
+import com.algaworks.algashop.ordering.core.application.shoppingcart.query.ShoppingCartOutputTestDataBuilder;
+import com.algaworks.algashop.ordering.core.ports.in.shoppingcart.ForQueryingShoppingCarts;
+import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCartNotFoundException;
+import com.algaworks.algashop.ordering.infrastructure.adapters.in.web.shoppingcart.ShoppingCartController;
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +14,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.algaworks.algashop.ordering.core.application.shoppingcart.ShoppingCartManagementApplicationService;
-import com.algaworks.algashop.ordering.core.application.shoppingcart.query.ShoppingCartOutputTestDataBuilder;
-import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCartNotFoundException;
-import com.algaworks.algashop.ordering.core.ports.in.shoppingcart.ForQueryingShoppingCarts;
-import com.algaworks.algashop.ordering.infrastructure.adapters.in.web.shoppingcart.ShoppingCartController;
-
-import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 @WebMvcTest(controllers = ShoppingCartController.class)
 public class ShoppingCartBase {

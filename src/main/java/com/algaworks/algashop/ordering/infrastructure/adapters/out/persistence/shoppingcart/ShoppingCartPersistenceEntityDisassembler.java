@@ -1,16 +1,15 @@
 package com.algaworks.algashop.ordering.infrastructure.adapters.out.persistence.shoppingcart;
 
-import org.springframework.stereotype.Component;
-
+import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCart;
+import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCartItem;
 import com.algaworks.algashop.ordering.core.domain.model.commons.Money;
+import com.algaworks.algashop.ordering.core.domain.model.product.ProductName;
 import com.algaworks.algashop.ordering.core.domain.model.commons.Quantity;
 import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerId;
 import com.algaworks.algashop.ordering.core.domain.model.product.ProductId;
-import com.algaworks.algashop.ordering.core.domain.model.product.ProductName;
-import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCart;
 import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCartId;
-import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCartItem;
 import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCartItemId;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.stream.Collectors;

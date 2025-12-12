@@ -1,16 +1,15 @@
 package com.algaworks.algashop.ordering.infrastructure.adapters.out.persistence.shoppingcart;
 
+import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCart;
+import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCarts;
+import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerId;
+import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCartId;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
-
-import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerId;
-import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCart;
-import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCartId;
-import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCarts;
 
 import java.lang.reflect.Field;
 import java.util.Optional;

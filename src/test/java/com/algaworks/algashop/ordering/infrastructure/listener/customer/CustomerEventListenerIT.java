@@ -1,28 +1,28 @@
 package com.algaworks.algashop.ordering.infrastructure.listener.customer;
 
-import com.algaworks.algashop.ordering.core.application.customer.loyaltypoints.CustomerLoyaltyPointsApplicationService;
-import com.algaworks.algashop.ordering.core.application.customer.notification.CustomerNotificationApplicationService;
-import com.algaworks.algashop.ordering.core.application.customer.notification.CustomerNotificationApplicationService.NotifyNewRegistrationInput;
+import java.time.OffsetDateTime;
+import java.util.UUID;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
+
+import com.algaworks.algashop.ordering.core.application.AbstractApplicationIT;
+import com.algaworks.algashop.ordering.core.application.customer.CustomerLoyaltyPointsApplicationService;
 import com.algaworks.algashop.ordering.core.domain.model.commons.Email;
 import com.algaworks.algashop.ordering.core.domain.model.commons.FullName;
 import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerId;
 import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerRegisteredEvent;
 import com.algaworks.algashop.ordering.core.domain.model.order.OrderId;
 import com.algaworks.algashop.ordering.core.domain.model.order.OrderReadyEvent;
+import com.algaworks.algashop.ordering.core.ports.out.customer.ForNotifyingCustomers;
+import com.algaworks.algashop.ordering.core.ports.out.customer.ForNotifyingCustomers.NotifyNewRegistrationInput;
+import com.algaworks.algashop.ordering.infrastructure.adapters.in.listener.customer.CustomerEventListener;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
-
-import java.time.OffsetDateTime;
-import java.util.UUID;
-
-@SpringBootTest
-class CustomerEventListenerIT {
+class CustomerEventListenerIT extends AbstractApplicationIT {
 
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
@@ -34,7 +34,7 @@ class CustomerEventListenerIT {
     private CustomerLoyaltyPointsApplicationService loyaltyPointsApplicationService;
 
     @MockitoSpyBean
-    private CustomerNotificationApplicationService notificationApplicationService;
+    private ForNotifyingCustomers notificationApplicationService;
 
     @Test
     public void shouldListenOrderReadyEvent() {
@@ -58,7 +58,7 @@ class CustomerEventListenerIT {
     public void shouldListenCustomerRegisteredEvent() {
         applicationEventPublisher.publishEvent(
                 new CustomerRegisteredEvent(
-                        new CustomerId(),
+                        new CustomerId(UUID.fromString("6e148bd5-47f6-4022-b9da-07cfaa294f7a")),
                         OffsetDateTime.now(),
                         new FullName("John", "Doe"),
                         new Email("john.doe@email.com")

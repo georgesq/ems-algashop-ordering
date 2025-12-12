@@ -1,7 +1,6 @@
 package com.algaworks.algashop.ordering.core.application.checkout;
 
-import com.algaworks.algashop.ordering.core.application.checkout.BuyNowApplicationService;
-import com.algaworks.algashop.ordering.core.application.checkout.BuyNowInput;
+import com.algaworks.algashop.ordering.core.application.AbstractApplicationIT;
 import com.algaworks.algashop.ordering.core.domain.model.commons.Money;
 import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerTestDataBuilder;
 import com.algaworks.algashop.ordering.core.domain.model.customer.Customers;
@@ -11,22 +10,18 @@ import com.algaworks.algashop.ordering.core.domain.model.order.shipping.Shipping
 import com.algaworks.algashop.ordering.core.domain.model.product.Product;
 import com.algaworks.algashop.ordering.core.domain.model.product.ProductCatalogService;
 import com.algaworks.algashop.ordering.core.domain.model.product.ProductTestDataBuilder;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
-@SpringBootTest
-@Transactional
-class BuyNowApplicationServiceIT {
+class BuyNowApplicationServiceIT
+        extends AbstractApplicationIT {
 
     @Autowired
     private BuyNowApplicationService buyNowApplicationService;

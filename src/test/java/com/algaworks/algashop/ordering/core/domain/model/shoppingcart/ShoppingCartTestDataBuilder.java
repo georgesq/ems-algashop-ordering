@@ -4,8 +4,6 @@ import com.algaworks.algashop.ordering.core.domain.model.commons.Quantity;
 import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerId;
 import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerTestDataBuilder;
 import com.algaworks.algashop.ordering.core.domain.model.product.ProductTestDataBuilder;
-import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCart;
-import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCartId;
 
 public class ShoppingCartTestDataBuilder {
 

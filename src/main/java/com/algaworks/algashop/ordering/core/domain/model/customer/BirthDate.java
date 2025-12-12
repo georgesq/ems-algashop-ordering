@@ -1,10 +1,10 @@
 package com.algaworks.algashop.ordering.core.domain.model.customer;
 
+import com.algaworks.algashop.ordering.core.domain.model.ErrorMessages;
+
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Objects;
-
-import com.algaworks.algashop.ordering.core.domain.model.ErrorMessages;
 
 public record BirthDate(LocalDate value) {
 

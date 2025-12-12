@@ -1,9 +1,9 @@
 package com.algaworks.algashop.ordering.core.domain.model.order;
 
+import com.algaworks.algashop.ordering.core.domain.model.IdGenerator;
+
 import java.util.Objects;
 import java.util.UUID;
-
-import com.algaworks.algashop.ordering.core.domain.model.IdGenerator;
 
 public record CreditCardId(UUID id) {
     public CreditCardId() {

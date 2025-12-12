@@ -1,5 +1,6 @@
 package com.algaworks.algashop.ordering.core.application.order.query;
 
+import com.algaworks.algashop.ordering.core.ports.in.commons.AddressData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,8 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
-import com.algaworks.algashop.ordering.core.application.commons.AddressData;
 
 @Data
 @AllArgsConstructor

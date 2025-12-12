@@ -3,7 +3,6 @@ package com.algaworks.algashop.ordering.core.domain.model.order;
 import com.algaworks.algashop.ordering.core.domain.model.Specification;
 import com.algaworks.algashop.ordering.core.domain.model.customer.Customer;
 import com.algaworks.algashop.ordering.core.domain.model.customer.LoyaltyPoints;
-
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

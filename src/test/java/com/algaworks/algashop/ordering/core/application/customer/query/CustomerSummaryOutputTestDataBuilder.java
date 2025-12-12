@@ -1,10 +1,10 @@
 package com.algaworks.algashop.ordering.core.application.customer.query;
 
+import com.algaworks.algashop.ordering.core.ports.in.customer.CustomerSummaryOutput;
+
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.UUID;
-
-import com.algaworks.algashop.ordering.core.application.customer.query.CustomerSummaryOutput;
 
 public class CustomerSummaryOutputTestDataBuilder {
 

@@ -1,16 +1,11 @@
 package com.algaworks.algashop.ordering.core.domain.model.order;
 
-import lombok.RequiredArgsConstructor;
-
-import java.time.Year;
-
 import com.algaworks.algashop.ordering.core.domain.model.DomainService;
 import com.algaworks.algashop.ordering.core.domain.model.commons.Money;
-import com.algaworks.algashop.ordering.core.domain.model.commons.Quantity;
 import com.algaworks.algashop.ordering.core.domain.model.customer.Customer;
-import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerId;
-import com.algaworks.algashop.ordering.core.domain.model.customer.LoyaltyPoints;
 import com.algaworks.algashop.ordering.core.domain.model.product.Product;
+import com.algaworks.algashop.ordering.core.domain.model.commons.Quantity;
+import lombok.RequiredArgsConstructor;
 
 @DomainService
 @RequiredArgsConstructor

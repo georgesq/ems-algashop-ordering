@@ -1,16 +1,33 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.order;
 
-import com.algaworks.algashop.ordering.core.domain.model.commons.*;
-import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerId;
-import com.algaworks.algashop.ordering.core.domain.model.order.*;
-import com.algaworks.algashop.ordering.core.domain.model.product.ProductId;
-import com.algaworks.algashop.ordering.core.domain.model.product.ProductName;
-import com.algaworks.algashop.ordering.infrastructure.persistence.commons.AddressEmbeddable;
-import org.springframework.stereotype.Component;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
+import com.algaworks.algashop.ordering.core.domain.model.commons.Address;
+import com.algaworks.algashop.ordering.core.domain.model.commons.Document;
+import com.algaworks.algashop.ordering.core.domain.model.commons.Email;
+import com.algaworks.algashop.ordering.core.domain.model.commons.FullName;
+import com.algaworks.algashop.ordering.core.domain.model.commons.Money;
+import com.algaworks.algashop.ordering.core.domain.model.commons.Phone;
+import com.algaworks.algashop.ordering.core.domain.model.commons.Quantity;
+import com.algaworks.algashop.ordering.core.domain.model.commons.ZipCode;
+import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerId;
+import com.algaworks.algashop.ordering.core.domain.model.order.Billing;
+import com.algaworks.algashop.ordering.core.domain.model.order.CreditCardId;
+import com.algaworks.algashop.ordering.core.domain.model.order.Order;
+import com.algaworks.algashop.ordering.core.domain.model.order.OrderId;
+import com.algaworks.algashop.ordering.core.domain.model.order.OrderItem;
+import com.algaworks.algashop.ordering.core.domain.model.order.OrderItemId;
+import com.algaworks.algashop.ordering.core.domain.model.order.OrderStatus;
+import com.algaworks.algashop.ordering.core.domain.model.order.PaymentMethod;
+import com.algaworks.algashop.ordering.core.domain.model.order.Recipient;
+import com.algaworks.algashop.ordering.core.domain.model.order.Shipping;
+import com.algaworks.algashop.ordering.core.domain.model.product.ProductId;
+import com.algaworks.algashop.ordering.core.domain.model.product.ProductName;
+import com.algaworks.algashop.ordering.infrastructure.persistence.commons.AddressEmbeddable;
 
 @Component
 public class OrderPersistenceEntityDisassembler {

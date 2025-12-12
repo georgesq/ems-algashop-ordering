@@ -1,9 +1,8 @@
 package com.algaworks.algashop.ordering.core.application.order.query;
 
+import com.algaworks.algashop.ordering.core.application.utility.SortablePageFilter;
 import lombok.*;
 import org.springframework.data.domain.Sort;
-
-import com.algaworks.algashop.ordering.core.application.utility.SortablePageFilter;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;

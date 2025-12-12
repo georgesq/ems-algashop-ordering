@@ -1,12 +1,11 @@
 package com.algaworks.algashop.ordering.infrastructure.adapters.out.persistence.shoppingcart;
 
+import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCartProductAdjustmentService;
+import com.algaworks.algashop.ordering.core.domain.model.commons.Money;
+import com.algaworks.algashop.ordering.core.domain.model.product.ProductId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.algaworks.algashop.ordering.core.domain.model.commons.Money;
-import com.algaworks.algashop.ordering.core.domain.model.product.ProductId;
-import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCartProductAdjustmentService;
 
 @Component
 @RequiredArgsConstructor

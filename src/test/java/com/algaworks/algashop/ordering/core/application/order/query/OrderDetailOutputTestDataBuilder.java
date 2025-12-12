@@ -1,12 +1,6 @@
 package com.algaworks.algashop.ordering.core.application.order.query;
 
-import com.algaworks.algashop.ordering.core.application.commons.AddressData;
-import com.algaworks.algashop.ordering.core.application.order.query.BillingData;
-import com.algaworks.algashop.ordering.core.application.order.query.CustomerMinimalOutput;
-import com.algaworks.algashop.ordering.core.application.order.query.OrderDetailOutput;
-import com.algaworks.algashop.ordering.core.application.order.query.OrderItemDetailOutput;
-import com.algaworks.algashop.ordering.core.application.order.query.RecipientData;
-import com.algaworks.algashop.ordering.core.application.order.query.ShippingData;
+import com.algaworks.algashop.ordering.core.ports.in.commons.AddressData;
 import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerId;
 import com.algaworks.algashop.ordering.core.domain.model.order.OrderId;
 import com.algaworks.algashop.ordering.core.domain.model.order.OrderItemId;

@@ -1,11 +1,9 @@
 package com.algaworks.algashop.ordering.core.domain.model.commons;
 
+import com.algaworks.algashop.ordering.core.domain.model.FieldValidations;
 import lombok.Builder;
 
 import java.util.Objects;
-
-import com.algaworks.algashop.ordering.core.domain.model.FieldValidations;
-
 
 @Builder(toBuilder = true)
 public record Address(
@@ -15,8 +13,7 @@ public record Address(
         String number,
         String city,
         String state,
-        ZipCode zipCode
-) {
+        ZipCode zipCode) {
     public Address {
         FieldValidations.requiresNonBlank(street);
         FieldValidations.requiresNonBlank(neighborhood);

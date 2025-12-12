@@ -1,12 +1,10 @@
 package com.algaworks.algashop.ordering.core.application.checkout;
 
-import java.util.UUID;
-
-import com.algaworks.algashop.ordering.core.application.checkout.CheckoutInput;
-import com.algaworks.algashop.ordering.core.application.checkout.ShippingInput;
-import com.algaworks.algashop.ordering.core.application.commons.AddressData;
+import com.algaworks.algashop.ordering.core.ports.in.commons.AddressData;
 import com.algaworks.algashop.ordering.core.application.order.query.BillingData;
 import com.algaworks.algashop.ordering.core.application.order.query.RecipientData;
+
+import java.util.UUID;
 
 public class CheckoutInputTestDataBuilder {
 

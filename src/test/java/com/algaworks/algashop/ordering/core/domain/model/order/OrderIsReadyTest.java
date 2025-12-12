@@ -3,9 +3,6 @@ package com.algaworks.algashop.ordering.core.domain.model.order;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.algaworks.algashop.ordering.core.domain.model.order.Order;
-import com.algaworks.algashop.ordering.core.domain.model.order.OrderStatus;
-
 public class OrderIsReadyTest {
 
     @Test

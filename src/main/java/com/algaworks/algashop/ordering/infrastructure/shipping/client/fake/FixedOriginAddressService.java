@@ -1,10 +1,9 @@
 package com.algaworks.algashop.ordering.infrastructure.shipping.client.fake;
 
-import org.springframework.stereotype.Component;
-
+import com.algaworks.algashop.ordering.core.domain.model.order.shipping.OriginAddressService;
 import com.algaworks.algashop.ordering.core.domain.model.commons.Address;
 import com.algaworks.algashop.ordering.core.domain.model.commons.ZipCode;
-import com.algaworks.algashop.ordering.core.domain.model.order.shipping.OriginAddressService;
+import org.springframework.stereotype.Component;
 
 @Component
 public class FixedOriginAddressService implements OriginAddressService {

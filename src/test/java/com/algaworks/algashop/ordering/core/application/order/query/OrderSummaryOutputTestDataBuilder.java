@@ -1,12 +1,10 @@
 package com.algaworks.algashop.ordering.core.application.order.query;
 
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
-
-import com.algaworks.algashop.ordering.core.application.order.query.CustomerMinimalOutput;
-import com.algaworks.algashop.ordering.core.application.order.query.OrderSummaryOutput;
 import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerId;
 import com.algaworks.algashop.ordering.core.domain.model.order.OrderId;
+
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 
 public class OrderSummaryOutputTestDataBuilder {
 

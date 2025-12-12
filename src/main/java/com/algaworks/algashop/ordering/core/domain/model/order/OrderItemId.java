@@ -1,10 +1,9 @@
 package com.algaworks.algashop.ordering.core.domain.model.order;
 
+import com.algaworks.algashop.ordering.core.domain.model.IdGenerator;
 import io.hypersistence.tsid.TSID;
 
 import java.util.Objects;
-
-import com.algaworks.algashop.ordering.core.domain.model.IdGenerator;
 
 public record OrderItemId(TSID value) {
 

@@ -1,8 +1,8 @@
 package com.algaworks.algashop.ordering.core.domain.model.order;
 
-import static com.algaworks.algashop.ordering.core.domain.model.ErrorMessages.*;
-
 import com.algaworks.algashop.ordering.core.domain.model.DomainException;
+
+import static com.algaworks.algashop.ordering.core.domain.model.ErrorMessages.*;
 
 public class OrderCannotBePlacedException extends DomainException {
 

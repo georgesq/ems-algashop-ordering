@@ -1,31 +1,18 @@
 package com.algaworks.algashop.ordering.core.domain.model.customer;
 
+import com.algaworks.algashop.ordering.core.domain.model.AbstractDomainIT;
 import com.algaworks.algashop.ordering.core.domain.model.commons.Email;
 import com.algaworks.algashop.ordering.core.domain.model.commons.FullName;
-import com.algaworks.algashop.ordering.core.domain.model.customer.Customer;
-import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerId;
-import com.algaworks.algashop.ordering.core.domain.model.customer.Customers;
-import com.algaworks.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntityAssembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntityDisassembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.customer.CustomersPersistenceProvider;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@DataJpaTest
-@Import({CustomersPersistenceProvider.class,
-        CustomerPersistenceEntityAssembler.class,
-        CustomerPersistenceEntityDisassembler.class})
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class CustomersIT {
+class CustomersIT extends AbstractDomainIT {
 
     private Customers customers;
 

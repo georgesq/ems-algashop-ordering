@@ -1,16 +1,15 @@
 package com.algaworks.algashop.ordering.core.domain.model.order;
 
+import com.algaworks.algashop.ordering.core.domain.model.commons.Money;
+import com.algaworks.algashop.ordering.core.domain.model.customer.Customer;
+import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCart;
+import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCartItem;
+import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCartCantProceedToCheckoutException;
+import com.algaworks.algashop.ordering.core.domain.model.DomainService;
+import com.algaworks.algashop.ordering.core.domain.model.product.Product;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
-
-import com.algaworks.algashop.ordering.core.domain.model.DomainService;
-import com.algaworks.algashop.ordering.core.domain.model.commons.Money;
-import com.algaworks.algashop.ordering.core.domain.model.customer.Customer;
-import com.algaworks.algashop.ordering.core.domain.model.product.Product;
-import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCart;
-import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCartCantProceedToCheckoutException;
-import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCartItem;
 
 @DomainService
 @RequiredArgsConstructor

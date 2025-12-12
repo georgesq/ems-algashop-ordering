@@ -1,18 +1,16 @@
 package com.algaworks.algashop.ordering.infrastructure.adapters.out.persistence.shoppingcart;
 
+import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCart;
+import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCartItem;
+import com.algaworks.algashop.ordering.infrastructure.adapters.out.persistence.customer.CustomerPersistenceEntityRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Component;
-
-import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCart;
-import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCartItem;
-import com.algaworks.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntityRepository;
-
-import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -77,4 +75,16 @@ public class ShoppingCartPersistenceEntityAssembler {
         return persistenceEntity;
     }
 
+    private ShoppingCartItemPersistenceEntity toOrderItemsEntities(ShoppingCartItem source) {
+        return ShoppingCartItemPersistenceEntity.builder()
+                .id(source.id().value())
+                .shoppingCart(ShoppingCartPersistenceEntity.builder().id(source.shoppingCartId().value()).build())
+                .productId(source.productId().value())
+                .name(source.name().value())
+                .price(source.price().value())
+                .quantity(source.quantity().value())
+                .available(source.isAvailable())
+                .totalAmount(source.totalAmount().value())
+                .build();
+    }
 }

@@ -1,9 +1,9 @@
 package com.algaworks.algashop.ordering.core.domain.model.shoppingcart;
 
+import com.algaworks.algashop.ordering.core.domain.model.IdGenerator;
+
 import java.util.Objects;
 import java.util.UUID;
-
-import com.algaworks.algashop.ordering.core.domain.model.IdGenerator;
 
 public record ShoppingCartId(UUID value) {
 

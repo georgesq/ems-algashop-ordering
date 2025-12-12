@@ -1,6 +1,5 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.disassembler;
 
-import com.algaworks.algashop.ordering.infrastructure.persistence.order.OrderPersistenceEntity;
 import com.algaworks.algashop.ordering.core.domain.model.commons.Money;
 import com.algaworks.algashop.ordering.core.domain.model.commons.Quantity;
 import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerId;
@@ -9,6 +8,7 @@ import com.algaworks.algashop.ordering.core.domain.model.order.OrderId;
 import com.algaworks.algashop.ordering.core.domain.model.order.OrderStatus;
 import com.algaworks.algashop.ordering.core.domain.model.order.PaymentMethod;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntityTestDataBuilder;
+import com.algaworks.algashop.ordering.infrastructure.persistence.order.OrderPersistenceEntity;
 import com.algaworks.algashop.ordering.infrastructure.persistence.order.OrderPersistenceEntityDisassembler;
 import org.junit.jupiter.api.Test;
 

@@ -1,33 +1,26 @@
 package com.algaworks.algashop.ordering.core.application.customer.query;
 
-import com.algaworks.algashop.ordering.core.application.customer.query.CustomerFilter;
-import com.algaworks.algashop.ordering.core.application.customer.query.CustomerOutput;
-import com.algaworks.algashop.ordering.core.application.customer.query.CustomerQueryService;
-import com.algaworks.algashop.ordering.core.application.customer.query.CustomerSummaryOutput;
+import com.algaworks.algashop.ordering.core.application.AbstractApplicationIT;
 import com.algaworks.algashop.ordering.core.domain.model.commons.Email;
 import com.algaworks.algashop.ordering.core.domain.model.commons.FullName;
 import com.algaworks.algashop.ordering.core.domain.model.customer.Customer;
 import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerId;
 import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerTestDataBuilder;
 import com.algaworks.algashop.ordering.core.domain.model.customer.Customers;
-
+import com.algaworks.algashop.ordering.core.ports.in.customer.CustomerFilter;
+import com.algaworks.algashop.ordering.core.ports.in.customer.CustomerOutput;
+import com.algaworks.algashop.ordering.core.ports.in.customer.ForQueryingCustomers;
+import com.algaworks.algashop.ordering.core.ports.in.customer.CustomerSummaryOutput;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest
-//@Sql(scripts = "classpath:db/clean/afterMigrate.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
-//@Sql(scripts = "classpath:db/clean/afterMigrate.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-@Transactional
-class CustomerQueryServiceIT {
+class CustomerQueryServiceIT extends AbstractApplicationIT {
+
     @Autowired
-    private CustomerQueryService queryService;
+    private ForQueryingCustomers queryService;
 
     @Autowired
     private Customers customers;

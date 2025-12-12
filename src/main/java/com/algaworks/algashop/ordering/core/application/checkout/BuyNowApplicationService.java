@@ -1,9 +1,5 @@
 package com.algaworks.algashop.ordering.core.application.checkout;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.algaworks.algashop.ordering.core.domain.model.DomainException;
 import com.algaworks.algashop.ordering.core.domain.model.commons.Quantity;
 import com.algaworks.algashop.ordering.core.domain.model.commons.ZipCode;
@@ -18,6 +14,9 @@ import com.algaworks.algashop.ordering.core.domain.model.product.Product;
 import com.algaworks.algashop.ordering.core.domain.model.product.ProductCatalogService;
 import com.algaworks.algashop.ordering.core.domain.model.product.ProductId;
 import com.algaworks.algashop.ordering.core.domain.model.product.ProductNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 

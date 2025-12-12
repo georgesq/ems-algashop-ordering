@@ -1,5 +1,11 @@
 package com.algaworks.algashop.ordering.core.domain.model.order;
 
+import com.algaworks.algashop.ordering.core.domain.model.AbstractEventSourceEntity;
+import com.algaworks.algashop.ordering.core.domain.model.AggregateRoot;
+import com.algaworks.algashop.ordering.core.domain.model.commons.Money;
+import com.algaworks.algashop.ordering.core.domain.model.commons.Quantity;
+import com.algaworks.algashop.ordering.core.domain.model.product.Product;
+import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerId;
 import lombok.Builder;
 
 import java.math.BigDecimal;
@@ -9,13 +15,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
-import com.algaworks.algashop.ordering.core.domain.model.AbstractEventSourceEntity;
-import com.algaworks.algashop.ordering.core.domain.model.AggregateRoot;
-import com.algaworks.algashop.ordering.core.domain.model.commons.Money;
-import com.algaworks.algashop.ordering.core.domain.model.commons.Quantity;
-import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerId;
-import com.algaworks.algashop.ordering.core.domain.model.product.Product;
 
 public class Order
         extends AbstractEventSourceEntity

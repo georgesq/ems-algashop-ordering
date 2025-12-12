@@ -1,10 +1,9 @@
 package com.algaworks.algashop.ordering.core.domain.model.product;
 
+import com.algaworks.algashop.ordering.core.domain.model.commons.Money;
 import lombok.Builder;
 
 import java.util.Objects;
-
-import com.algaworks.algashop.ordering.core.domain.model.commons.Money;
 
 @Builder
 public record Product(

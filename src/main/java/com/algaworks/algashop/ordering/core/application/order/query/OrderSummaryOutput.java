@@ -1,5 +1,6 @@
 package com.algaworks.algashop.ordering.core.application.order.query;
 
+import com.algaworks.algashop.ordering.core.domain.model.order.OrderId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,8 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-
-import com.algaworks.algashop.ordering.core.domain.model.order.OrderId;
 
 @Data
 @AllArgsConstructor

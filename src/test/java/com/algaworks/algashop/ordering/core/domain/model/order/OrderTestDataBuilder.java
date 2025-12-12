@@ -2,18 +2,11 @@ package com.algaworks.algashop.ordering.core.domain.model.order;
 
 import com.algaworks.algashop.ordering.core.domain.model.commons.*;
 import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerId;
-import com.algaworks.algashop.ordering.core.domain.model.order.Billing;
-import com.algaworks.algashop.ordering.core.domain.model.order.CreditCardId;
-import com.algaworks.algashop.ordering.core.domain.model.order.Order;
-import com.algaworks.algashop.ordering.core.domain.model.order.OrderStatus;
-import com.algaworks.algashop.ordering.core.domain.model.order.PaymentMethod;
-import com.algaworks.algashop.ordering.core.domain.model.order.Recipient;
-import com.algaworks.algashop.ordering.core.domain.model.order.Shipping;
 import com.algaworks.algashop.ordering.core.domain.model.product.ProductTestDataBuilder;
 
-import static com.algaworks.algashop.ordering.core.domain.model.customer.CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID;
-
 import java.time.LocalDate;
+
+import static com.algaworks.algashop.ordering.core.domain.model.customer.CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID;
 
 public class OrderTestDataBuilder {
 

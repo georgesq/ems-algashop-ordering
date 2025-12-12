@@ -1,27 +1,24 @@
 package com.algaworks.algashop.ordering.core.application.shoppingcart;
 
-import com.algaworks.algashop.ordering.core.domain.model.commons.Quantity;
+import com.algaworks.algashop.ordering.core.application.AbstractApplicationIT;
+import com.algaworks.algashop.ordering.core.ports.in.shoppingcart.ShoppingCartItemInput;
 import com.algaworks.algashop.ordering.core.domain.model.customer.*;
 import com.algaworks.algashop.ordering.core.domain.model.product.*;
 import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.*;
-import com.algaworks.algashop.ordering.core.ports.in.shoppingcart.ShoppingCartItemInput;
-import com.algaworks.algashop.ordering.infrastructure.listener.shoppingcart.ShoppingCartEventListener;
+import com.algaworks.algashop.ordering.core.domain.model.commons.Quantity;
+import com.algaworks.algashop.ordering.infrastructure.adapters.in.listener.shoppingcart.ShoppingCartEventListener;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
 
-@SpringBootTest
-@Transactional
-class ShoppingCartManagementApplicationServiceIT {
+class ShoppingCartManagementApplicationServiceIT
+        extends AbstractApplicationIT {
 
     @Autowired
     private ShoppingCartManagementApplicationService service;
@@ -46,7 +43,7 @@ class ShoppingCartManagementApplicationServiceIT {
         UUID newShoppingCartId = service.createNew(customer.id().value());
 
         Assertions.assertThat(newShoppingCartId).isNotNull();
-        Optional<ShoppingCart> createdCart = shoppingCarts.ofId(new com.algaworks.algashop.ordering.core.domain.model.shoppingcart.ShoppingCartId(newShoppingCartId));
+        Optional<ShoppingCart> createdCart = shoppingCarts.ofId(new ShoppingCartId(newShoppingCartId));
         Assertions.assertThat(createdCart).isPresent();
         Assertions.assertThat(createdCart.get().customerId().value()).isEqualTo(customer.id().value());
         Assertions.assertThat(createdCart.get().isEmpty()).isTrue();

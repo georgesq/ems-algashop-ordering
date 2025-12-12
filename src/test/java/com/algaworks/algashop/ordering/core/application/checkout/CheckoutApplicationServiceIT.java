@@ -1,37 +1,32 @@
 package com.algaworks.algashop.ordering.core.application.checkout;
 
-import com.algaworks.algashop.ordering.core.application.checkout.CheckoutApplicationService;
-import com.algaworks.algashop.ordering.core.application.checkout.CheckoutInput;
+import com.algaworks.algashop.ordering.core.application.AbstractApplicationIT;
 import com.algaworks.algashop.ordering.core.domain.model.commons.Money;
 import com.algaworks.algashop.ordering.core.domain.model.commons.Quantity;
+import com.algaworks.algashop.ordering.core.domain.model.order.*;
+import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.*;
 import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerTestDataBuilder;
 import com.algaworks.algashop.ordering.core.domain.model.customer.Customers;
-import com.algaworks.algashop.ordering.core.domain.model.order.*;
 import com.algaworks.algashop.ordering.core.domain.model.order.shipping.OriginAddressService;
 import com.algaworks.algashop.ordering.core.domain.model.order.shipping.ShippingCostService;
 import com.algaworks.algashop.ordering.core.domain.model.product.Product;
-import com.algaworks.algashop.ordering.core.domain.model.product.ProductCatalogService;
 import com.algaworks.algashop.ordering.core.domain.model.product.ProductTestDataBuilder;
-import com.algaworks.algashop.ordering.core.domain.model.shoppingcart.*;
-import com.algaworks.algashop.ordering.infrastructure.listener.order.OrderEventListener;
+import com.algaworks.algashop.ordering.infrastructure.adapters.in.listener.order.OrderEventListener;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
-@SpringBootTest
-@Transactional
-class CheckoutApplicationServiceIT {
+class CheckoutApplicationServiceIT
+        extends AbstractApplicationIT {
 
     @Autowired
     private CheckoutApplicationService service;

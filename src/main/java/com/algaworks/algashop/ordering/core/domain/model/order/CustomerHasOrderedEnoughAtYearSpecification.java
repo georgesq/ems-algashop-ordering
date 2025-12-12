@@ -1,11 +1,10 @@
 package com.algaworks.algashop.ordering.core.domain.model.order;
 
+import com.algaworks.algashop.ordering.core.domain.model.Specification;
+import com.algaworks.algashop.ordering.core.domain.model.customer.Customer;
 import lombok.RequiredArgsConstructor;
 
 import java.time.Year;
-
-import com.algaworks.algashop.ordering.core.domain.model.Specification;
-import com.algaworks.algashop.ordering.core.domain.model.customer.Customer;
 
 @RequiredArgsConstructor
 public class CustomerHasOrderedEnoughAtYearSpecification

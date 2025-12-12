@@ -1,19 +1,12 @@
 package com.algaworks.algashop.ordering.core.domain.model.order;
 
 import com.algaworks.algashop.ordering.core.domain.model.commons.Quantity;
-import com.algaworks.algashop.ordering.core.domain.model.order.Billing;
-import com.algaworks.algashop.ordering.core.domain.model.order.CreditCardId;
-import com.algaworks.algashop.ordering.core.domain.model.order.Order;
-import com.algaworks.algashop.ordering.core.domain.model.order.OrderCannotBeEditedException;
-import com.algaworks.algashop.ordering.core.domain.model.order.OrderItem;
-import com.algaworks.algashop.ordering.core.domain.model.order.OrderStatus;
-import com.algaworks.algashop.ordering.core.domain.model.order.PaymentMethod;
-import com.algaworks.algashop.ordering.core.domain.model.order.Shipping;
 import com.algaworks.algashop.ordering.core.domain.model.product.Product;
 import com.algaworks.algashop.ordering.core.domain.model.product.ProductTestDataBuilder;
-
-import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class OrderChangingTest {
 

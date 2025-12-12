@@ -1,8 +1,8 @@
 package com.algaworks.algashop.ordering.core.domain.model.shoppingcart;
 
-import java.util.UUID;
-
 import com.algaworks.algashop.ordering.core.domain.model.DomainEntityNotFoundException;
+
+import java.util.UUID;
 
 public class ShoppingCartNotFoundException extends DomainEntityNotFoundException {
 

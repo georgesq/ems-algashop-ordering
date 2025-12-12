@@ -1,28 +1,25 @@
 package com.algaworks.algashop.ordering.core.application.order.management;
 
-import com.algaworks.algashop.ordering.core.application.customer.loyaltypoints.CustomerLoyaltyPointsApplicationService;
-import com.algaworks.algashop.ordering.core.application.order.management.OrderManagementApplicationService;
+import com.algaworks.algashop.ordering.core.application.AbstractApplicationIT;
+import com.algaworks.algashop.ordering.core.application.customer.CustomerLoyaltyPointsApplicationService;
+import com.algaworks.algashop.ordering.core.domain.model.order.*;
 import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerTestDataBuilder;
 import com.algaworks.algashop.ordering.core.domain.model.customer.Customers;
-import com.algaworks.algashop.ordering.core.domain.model.order.*;
-import com.algaworks.algashop.ordering.infrastructure.listener.order.OrderEventListener;
+import com.algaworks.algashop.ordering.infrastructure.adapters.in.listener.order.OrderEventListener;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
 
-@SpringBootTest
-@Transactional
 @Import(OrderEventListener.class)
-class OrderManagementApplicationServiceIT {
+class OrderManagementApplicationServiceIT
+        extends AbstractApplicationIT {
 
     @Autowired
     private OrderManagementApplicationService service;

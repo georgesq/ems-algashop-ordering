@@ -1,14 +1,8 @@
 package com.algaworks.algashop.ordering.core.domain.model.customer;
 
+import com.algaworks.algashop.ordering.core.domain.model.commons.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import com.algaworks.algashop.ordering.core.domain.model.commons.*;
-import com.algaworks.algashop.ordering.core.domain.model.customer.Customer;
-import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerArchivedEvent;
-import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerArchivedException;
-import com.algaworks.algashop.ordering.core.domain.model.customer.CustomerRegisteredEvent;
-import com.algaworks.algashop.ordering.core.domain.model.customer.LoyaltyPoints;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
